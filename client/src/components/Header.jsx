@@ -103,42 +103,42 @@ const Header = () => {
                 to="/" 
                 className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
                   isActiveRoute('/') 
-                    ? 'text-luxe-gold bg-luxe-gold/10 shadow-md' 
+                    ? 'text-luxe-gold' 
                     : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
                 } active:scale-95 active:bg-luxe-gold/20`}
                 aria-label="Aller à la page d'accueil"
               >
                 Collections
                 {isActiveRoute('/') && (
-                  <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-luxe-gold rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-luxe-gold rounded-full" />
                 )}
               </Link>
               <Link 
                 to="/products" 
                 className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
                   isActiveRoute('/products') && !location.search.includes('category=skincare')
-                    ? 'text-luxe-gold bg-luxe-gold/10 shadow-md' 
+                    ? 'text-luxe-gold' 
                     : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
                 } active:scale-95 active:bg-luxe-gold/20`}
                 aria-label="Voir tous les parfums"
               >
                 Parfums
                 {isActiveRoute('/products') && !location.search.includes('category=skincare') && (
-                  <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-luxe-gold rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-luxe-gold rounded-full" />
                 )}
               </Link>
               <Link 
                 to="/products?category=skincare" 
                 className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
                   isActiveRoute('/products?category=skincare')
-                    ? 'text-luxe-gold bg-luxe-gold/10 shadow-md' 
+                    ? 'text-luxe-gold' 
                     : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
                 } active:scale-95 active:bg-luxe-gold/20`}
                 aria-label="Voir les produits esthétique et soins"
               >
                 Esthétique
                 {isActiveRoute('/products?category=skincare') && (
-                  <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-luxe-gold rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-luxe-gold rounded-full" />
                 )}
               </Link>
             </nav>

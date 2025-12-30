@@ -26,16 +26,42 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
-      callback(null, true);
-    } else {
-      // In production, only allow specific origins
-      if (process.env.FRONTEND_URL && origin.includes(process.env.FRONTEND_URL)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
+    // Always allow localhost in development
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    
+    // Allow all Vercel subdomains (*.vercel.app)
+    if (origin.includes('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Check if origin is in the allowed list
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    
+    // In production, check if origin matches FRONTEND_URL (flexible matching)
+    if (process.env.FRONTEND_URL) {
+      try {
+        const frontendUrl = new URL(process.env.FRONTEND_URL);
+        if (origin.includes(frontendUrl.hostname)) {
+          return callback(null, true);
+        }
+      } catch (e) {
+        // If FRONTEND_URL is not a valid URL, just check if origin includes it
+        if (origin.includes(process.env.FRONTEND_URL)) {
+          return callback(null, true);
+        }
       }
     }
+    
+    // Default: allow in non-production, deny in production
+    if (process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

@@ -1,12 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 import ProductBadges from './ProductBadges';
 import WishlistButton from './WishlistButton';
 
 const Product = ({ product, index = 0 }) => {
-  const navigate = useNavigate();
-  
   if (!product || !product._id) {
     return null;
   }
@@ -21,26 +19,10 @@ const Product = ({ product, index = 0 }) => {
   const displayPrice = product.onSale && product.salePrice ? product.salePrice : product.price;
   const originalPrice = product.onSale && product.salePrice ? product.price : null;
 
-  const handleProductClick = (e) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    navigate(`/product/${product._id}`);
-  };
-
   return (
-    <div 
-      className="group relative bg-luxe-warm-white rounded-lg overflow-hidden border border-luxe-charcoal/10 transition-all duration-500 ease-out hover:shadow-2xl hover:shadow-luxe-gold/10 hover:-translate-y-2 hover:border-luxe-gold/30 cursor-pointer"
-      onClick={handleProductClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleProductClick(e);
-        }
-      }}
+    <Link
+      to={`/product/${product._id}`}
+      className="group relative bg-luxe-warm-white rounded-lg overflow-hidden border border-luxe-charcoal/10 transition-all duration-500 ease-out hover:shadow-2xl hover:shadow-luxe-gold/10 hover:-translate-y-2 hover:border-luxe-gold/30 cursor-pointer block"
       aria-label={`Voir ${product.name}`}
       style={{ animationDelay: `${index * 50}ms` }}
     >
@@ -115,7 +97,7 @@ const Product = ({ product, index = 0 }) => {
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

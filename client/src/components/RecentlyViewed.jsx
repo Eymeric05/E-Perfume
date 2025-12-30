@@ -30,9 +30,11 @@ const RecentlyViewed = () => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-          {recentProducts.map((product, index) => (
-            <Product key={product._id} product={product} index={index} />
-          ))}
+          {recentProducts
+            .filter((product) => product && product._id) // Filtrer les produits sans ID
+            .map((product, index) => (
+              <Product key={product._id || `product-${index}`} product={product} index={index} />
+            ))}
         </div>
       </div>
     </section>

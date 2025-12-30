@@ -5,6 +5,18 @@ import Product from '../components/Product';
 import ProductSkeleton from '../components/ProductSkeleton';
 import PriceSlider from '../components/PriceSlider';
 import { FaFilter, FaUndo, FaSyncAlt } from 'react-icons/fa';
+import { 
+  GiFlowerEmblem, 
+  GiSpiceLeaf, 
+  GiTreeBranch, 
+  GiAppleCore, 
+  GiWaterDrop,
+  GiPlantRoots,
+  GiLeafSwirl,
+  GiWaveCrest,
+  GiCupcake,
+  GiLemon
+} from 'react-icons/gi';
 import { apiFetch } from '../utils/api';
 
 const reducer = (state, action) => {
@@ -48,6 +60,26 @@ const ProductsListScreen = () => {
   const allFragranceFamilies = [...new Set(products.map((p) => p.fragranceFamily).filter(Boolean))];
   const allSkinTypes = [...new Set(products.map((p) => p.skinType).filter(Boolean))];
   const allBrands = [...new Set(products.map((p) => p.brand).filter(Boolean))];
+
+  // Mapping des icônes de familles olfactives
+  const fragranceFamilyIcons = {
+    'Floral': GiFlowerEmblem,
+    'Oriental': GiSpiceLeaf,
+    'Boisé': GiTreeBranch,
+    'Fruité': GiAppleCore,
+    'Frais': GiWaterDrop,
+    'Fougère': GiPlantRoots,
+    'Chypré': GiLeafSwirl,
+    'Aquatique': GiWaveCrest,
+    'Gourmand': GiCupcake,
+    'Hespéridé': GiLemon,
+  };
+
+  // Récupérer les logos de marque depuis les produits
+  const getBrandLogo = (brandName) => {
+    const productWithBrand = products.find(p => p.brand === brandName && p.brandLogo);
+    return productWithBrand?.brandLogo || null;
+  };
 
   const priceRanges = [
     { label: 'Moins de 50€', min: 0, max: 50 },
@@ -257,18 +289,24 @@ const ProductsListScreen = () => {
                       )}
                     </div>
                     <div className="flex flex-wrap gap-1.5">
-                      {allFragranceFamilies.map((family, idx) => (
-                        <button
-                          key={family}
-                          onClick={() => toggleFilter('fragranceFamilies', family)}
-                          className={`tag-filter transition-all duration-300 ${
-                            selectedFilters.fragranceFamilies.includes(family) ? 'tag-filter-active' : ''
-                          }`}
-                          style={{ animationDelay: `${idx * 30}ms` }}
-                        >
-                          {family}
-                        </button>
-                      ))}
+                      {allFragranceFamilies.map((family, idx) => {
+                        const IconComponent = fragranceFamilyIcons[family];
+                        return (
+                          <button
+                            key={family}
+                            onClick={() => toggleFilter('fragranceFamilies', family)}
+                            className={`tag-filter transition-all duration-300 flex items-center gap-2 ${
+                              selectedFilters.fragranceFamilies.includes(family) ? 'tag-filter-active' : ''
+                            }`}
+                            style={{ animationDelay: `${idx * 30}ms` }}
+                          >
+                            {IconComponent && (
+                              <IconComponent className="h-4 w-4 opacity-80" />
+                            )}
+                            <span>{family}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -325,18 +363,31 @@ const ProductsListScreen = () => {
                       )}
                     </div>
                     <div className="flex flex-wrap gap-1.5">
-                      {allBrands.map((brand, idx) => (
-                        <button
-                          key={brand}
-                          onClick={() => toggleFilter('brands', brand)}
-                          className={`tag-filter transition-all duration-300 ${
-                            selectedFilters.brands.includes(brand) ? 'tag-filter-active' : ''
-                          }`}
-                          style={{ animationDelay: `${idx * 30}ms` }}
-                        >
-                          {brand}
-                        </button>
-                      ))}
+                      {allBrands.map((brand, idx) => {
+                        const brandLogo = getBrandLogo(brand);
+                        return (
+                          <button
+                            key={brand}
+                            onClick={() => toggleFilter('brands', brand)}
+                            className={`tag-filter transition-all duration-300 flex items-center gap-2 ${
+                              selectedFilters.brands.includes(brand) ? 'tag-filter-active' : ''
+                            }`}
+                            style={{ animationDelay: `${idx * 30}ms` }}
+                          >
+                            {brandLogo && (
+                              <img
+                                src={brandLogo}
+                                alt={brand}
+                                className="h-4 w-4 object-contain opacity-80"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                            )}
+                            <span>{brand}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}

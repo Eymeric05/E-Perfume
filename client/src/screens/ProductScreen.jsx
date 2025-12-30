@@ -491,11 +491,36 @@ const ProductScreen = () => {
 
             {/* Description */}
             {product?.description && (
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <h3 className="font-serif text-xl font-normal text-luxe-black">Description</h3>
-                <p className="font-sans text-base text-luxe-charcoal/70 leading-relaxed">
-                  {product.description}
-                </p>
+                <div className="font-sans text-base text-luxe-charcoal/70 leading-relaxed">
+                  {product.description.split(/\n\s*\n/).map((paragraph, index) => {
+                    const trimmedParagraph = paragraph.trim();
+                    if (!trimmedParagraph) return null;
+                    
+                    // Détecter les titres en majuscules (sections comme "LA CRÉATION", "NOTES OLFACTIVES")
+                    const isTitle = trimmedParagraph.length > 0 && 
+                                   trimmedParagraph.length < 60 && 
+                                   trimmedParagraph === trimmedParagraph.toUpperCase() &&
+                                   !trimmedParagraph.includes('.') &&
+                                   !trimmedParagraph.match(/[0-9]/);
+                    
+                    if (isTitle) {
+                      return (
+                        <h4 key={index} className="font-serif text-lg font-medium text-luxe-black mt-6 mb-3 first:mt-0">
+                          {trimmedParagraph}
+                        </h4>
+                      );
+                    }
+                    
+                    // Pour les paragraphes normaux, préserver les sauts de ligne simples
+                    return (
+                      <p key={index} className="mb-4 last:mb-0 whitespace-pre-line">
+                        {trimmedParagraph}
+                      </p>
+                    );
+                  })}
+                </div>
               </div>
             )}
 

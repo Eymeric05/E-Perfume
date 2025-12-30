@@ -356,7 +356,7 @@ const ProductEditScreen = () => {
                                                     }
                                                 }}
                                                 className="hidden"
-                                                accept="image/*"
+                                                accept="image/svg+xml,image/jpeg,image/jpg,image/png,image/webp"
                                             />
                                         </label>
                                     </div>
@@ -541,7 +541,7 @@ const ProductEditScreen = () => {
                                                 type="file"
                                                 onChange={uploadFileHandler}
                                                 className="hidden"
-                                                accept="image/*"
+                                                accept="image/svg+xml,image/jpeg,image/jpg,image/png,image/webp"
                                             />
                                         </label>
                                     </div>

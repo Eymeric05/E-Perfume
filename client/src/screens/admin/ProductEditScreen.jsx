@@ -60,9 +60,24 @@ const ProductEditScreen = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            // Si c'est un nouveau produit, ne pas faire de fetch
+            if (productId === 'new') {
+                dispatch({ type: 'FETCH_SUCCESS' });
+                return;
+            }
+
             try {
                 dispatch({ type: 'FETCH_REQUEST' });
-                const res = await fetch(`/api/products/${productId}`);
+                const res = await apiFetch(`/api/products/${productId}`);
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(errorText || `HTTP error! status: ${res.status}`);
+                }
+                const contentType = res.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await res.text();
+                    throw new Error(`Expected JSON but got: ${text.substring(0, 100)}`);
+                }
                 const data = await res.json();
                 setName(data.name || '');
                 setPrice(data.price || '');
@@ -99,8 +114,13 @@ const ProductEditScreen = () => {
         e.preventDefault();
         try {
             dispatch({ type: 'UPDATE_REQUEST' });
-            const response = await fetch(`/api/products/${productId}`, {
-                method: 'PUT',
+            
+            const isNewProduct = productId === 'new';
+            const url = isNewProduct ? '/api/products' : `/api/products/${productId}`;
+            const method = isNewProduct ? 'POST' : 'PUT';
+            
+            const response = await apiFetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${userInfo.token}`,
@@ -122,15 +142,38 @@ const ProductEditScreen = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Erreur lors de la mise à jour');
+                const errorText = await response.text();
+                throw new Error(errorText || `HTTP error! status: ${response.status}`);
+            }
+            
+            const contentType = response.headers.get('content-type');
+            let result = null;
+            if (contentType && contentType.includes('application/json')) {
+                result = await response.json();
+            } else {
+                const text = await response.text();
+                // Si ce n'est pas du JSON, essayer de parser quand même si c'est un nouveau produit
+                if (isNewProduct && text) {
+                    try {
+                        result = JSON.parse(text);
+                    } catch (e) {
+                        throw new Error(`Réponse invalide du serveur: ${text.substring(0, 100)}`);
+                    }
+                }
             }
 
             dispatch({ type: 'UPDATE_SUCCESS' });
-            alert('Produit mis à jour avec succès');
-            navigate('/admin/products');
+            alert(isNewProduct ? 'Produit créé avec succès' : 'Produit mis à jour avec succès');
+            
+            // Si c'est un nouveau produit, rediriger vers la page d'édition du produit créé
+            if (isNewProduct && result && result._id) {
+                navigate(`/admin/product/${result._id}`);
+            } else {
+                navigate('/admin/products');
+            }
         } catch (err) {
             dispatch({ type: 'UPDATE_FAIL' });
-            alert('Erreur lors de la mise à jour du produit');
+            alert(`Erreur lors de ${productId === 'new' ? 'la création' : 'la mise à jour'} du produit: ${err.message}`);
         }
     };
 

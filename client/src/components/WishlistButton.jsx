@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Store } from '../context/StoreContext';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { apiFetch } from '../utils/api';
 
 const WishlistButton = ({ product, className = '' }) => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -21,7 +22,7 @@ const WishlistButton = ({ product, className = '' }) => {
       
       if (userInfo?.token) {
         try {
-          await fetch(`/api/users/wishlist/${product._id}`, {
+          await apiFetch(`/api/users/wishlist/${product._id}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
@@ -37,7 +38,7 @@ const WishlistButton = ({ product, className = '' }) => {
       
       if (userInfo?.token) {
         try {
-          await fetch(`/api/users/wishlist/${product._id}`, {
+          await apiFetch(`/api/users/wishlist/${product._id}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

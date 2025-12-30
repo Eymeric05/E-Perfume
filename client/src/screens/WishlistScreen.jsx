@@ -15,28 +15,43 @@ const WishlistScreen = () => {
 
   useEffect(() => {
     const fetchWishlistProducts = async () => {
+      // Si la wishlist locale est vide, ne rien afficher
       if (wishlist.length === 0) {
         setProducts([]);
+        setLoading(false);
         return;
       }
 
       setLoading(true);
       try {
         if (userInfo?.token) {
-          const response = await apiFetch('/api/users/wishlist', {
-            headers: {
-              Authorization: `Bearer ${userInfo.token}`,
-            },
-          });
-          if (response.ok) {
-            const data = await response.json();
-            setProducts(data);
+          // Si l'utilisateur est connecté, récupérer depuis l'API pour synchroniser
+          try {
+            const response = await apiFetch('/api/users/wishlist', {
+              headers: {
+                Authorization: `Bearer ${userInfo.token}`,
+              },
+            });
+            if (response.ok) {
+              const data = await response.json();
+              // Si l'API retourne des produits, les utiliser, sinon utiliser la wishlist locale
+              setProducts(data && Array.isArray(data) && data.length > 0 ? data : wishlist);
+            } else {
+              // Si l'API échoue, utiliser la wishlist locale
+              setProducts(wishlist);
+            }
+          } catch (apiError) {
+            // En cas d'erreur API, utiliser la wishlist locale
+            console.error('Error fetching wishlist from API:', apiError);
+            setProducts(wishlist);
           }
         } else {
+          // Si l'utilisateur n'est pas connecté, utiliser directement la wishlist locale
           setProducts(wishlist);
         }
       } catch (error) {
-        console.error('Error fetching wishlist:', error);
+        console.error('Error in fetchWishlistProducts:', error);
+        // En cas d'erreur, utiliser la wishlist locale
         setProducts(wishlist);
       } finally {
         setLoading(false);

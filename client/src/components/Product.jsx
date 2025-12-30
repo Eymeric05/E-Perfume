@@ -87,23 +87,23 @@ const Product = ({ product, index = 0 }) => {
           />
         </div>
 
-        <div className="flex items-baseline justify-between pt-3 border-t border-luxe-charcoal/10">
-          <div className="flex flex-col gap-1">
-            <span className="font-serif text-xl font-semibold text-luxe-black">
+        <div className="flex items-center justify-between pt-3 border-t border-luxe-charcoal/10 gap-4">
+          <div className="flex flex-col gap-1 min-w-0 flex-1">
+            <span className="font-serif text-xl font-semibold text-luxe-black whitespace-nowrap">
               {formatPrice(displayPrice)}
             </span>
             {originalPrice && (
-              <span className="font-sans text-sm text-luxe-charcoal/50 line-through">
+              <span className="font-sans text-sm text-luxe-charcoal/50 line-through whitespace-nowrap">
                 {formatPrice(originalPrice)}
               </span>
             )}
           </div>
           {product.countInStock === 0 ? (
-            <span className="font-sans text-xs text-red-500/70 uppercase tracking-wider font-medium">
+            <span className="font-sans text-xs text-red-500/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
               Épuisé
             </span>
           ) : (
-            <span className="font-sans text-xs text-green-600/70 uppercase tracking-wider font-medium">
+            <span className="font-sans text-xs text-green-600/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
               En stock
             </span>
           )}

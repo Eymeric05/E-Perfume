@@ -4,10 +4,9 @@ import { Helmet } from 'react-helmet-async';
 import Product from '../components/Product';
 import ProductSkeleton from '../components/ProductSkeleton';
 import PriceSlider from '../components/PriceSlider';
-import { FaFilter, FaUndo, FaSyncAlt } from 'react-icons/fa';
+import { FaFilter, FaUndo, FaSyncAlt, FaPepperHot } from 'react-icons/fa';
 import { 
   GiFlowerEmblem, 
-  GiSpiceLeaf, 
   GiTreeBranch, 
   GiAppleCore, 
   GiWaterDrop,
@@ -64,7 +63,7 @@ const ProductsListScreen = () => {
   // Mapping des icônes de familles olfactives
   const fragranceFamilyIcons = {
     'Floral': GiFlowerEmblem,
-    'Oriental': GiSpiceLeaf,
+    'Oriental': FaPepperHot,
     'Boisé': GiTreeBranch,
     'Fruité': GiAppleCore,
     'Frais': GiWaterDrop,
@@ -234,7 +233,7 @@ const ProductsListScreen = () => {
     selectedFilters.priceMax !== null;
 
   return (
-    <div className="min-h-screen bg-luxe-cream">
+    <div className="min-h-screen bg-luxe-cream dark:bg-luxe-charcoal transition-colors duration-300">
       <Helmet>
         <title>Collections - E-perfume</title>
       </Helmet>
@@ -242,10 +241,10 @@ const ProductsListScreen = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
         {/* Header */}
         <div className="mb-12">
-          <h1 className="font-serif text-5xl md:text-7xl font-light text-luxe-black mb-4">
+          <h1 className="font-serif text-5xl md:text-7xl font-light text-luxe-black dark:text-luxe-cream mb-4">
             {category === 'skincare' ? 'Esthétique' : 'Parfums'}
           </h1>
-          <p className="font-sans text-lg text-luxe-charcoal/70">
+          <p className="font-sans text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70">
             {filteredProducts.length} {filteredProducts.length === 1 ? 'produit' : 'produits'}
           </p>
         </div>
@@ -255,7 +254,7 @@ const ProductsListScreen = () => {
           <aside className="lg:w-64 flex-shrink-0">
             <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-luxe-gold/30 scrollbar-track-transparent hover:scrollbar-thumb-luxe-gold/50">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="font-serif text-2xl font-light text-luxe-black flex items-center gap-2">
+                <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream flex items-center gap-2">
                   <FaFilter className="w-4 h-4 animate-pulse" />
                   Filtres
                 </h2>
@@ -275,7 +274,7 @@ const ProductsListScreen = () => {
                 {category !== 'skincare' && allFragranceFamilies.length > 0 && (
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-sans text-sm font-medium uppercase tracking-wider text-luxe-black">
+                      <h3 className="font-sans text-sm font-medium uppercase tracking-wider text-luxe-black dark:text-luxe-cream">
                         Famille Olfactive
                       </h3>
                       {selectedFilters.fragranceFamilies.length > 0 && (
@@ -315,7 +314,7 @@ const ProductsListScreen = () => {
                 {category === 'skincare' && allSkinTypes.length > 0 && (
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-sans text-sm font-medium uppercase tracking-wider text-luxe-black">
+                      <h3 className="font-sans text-sm font-medium uppercase tracking-wider text-luxe-black dark:text-luxe-cream">
                         Type de Peau
                       </h3>
                       {selectedFilters.skinTypes.length > 0 && (
@@ -349,7 +348,7 @@ const ProductsListScreen = () => {
                 {allBrands.length > 0 && (
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-sans text-sm font-medium uppercase tracking-wider text-luxe-black">
+                      <h3 className="font-sans text-sm font-medium uppercase tracking-wider text-luxe-black dark:text-luxe-cream">
                         Marques
                       </h3>
                       {selectedFilters.brands.length > 0 && (
@@ -408,7 +407,7 @@ const ProductsListScreen = () => {
                       </button>
                     )}
                   </div>
-                  <div className="bg-luxe-warm-white rounded-lg p-4 border border-luxe-charcoal/10">
+                  <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg p-4 border border-luxe-charcoal/10 dark:border-luxe-gold/20">
                     <PriceSlider
                       min={0}
                       max={Math.max(...products.map(p => p.price || 0), 500)}
@@ -453,7 +452,7 @@ const ProductsListScreen = () => {
           <main className="flex-1">
             {/* Sort Controls */}
             <div className="flex items-center justify-between mb-8 pb-4 border-b border-luxe-charcoal/10">
-              <div className="font-sans text-sm text-luxe-charcoal/70">
+              <div className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                 Trier par
               </div>
               <select
@@ -473,7 +472,7 @@ const ProductsListScreen = () => {
             {loading ? (
               <ProductSkeleton count={8} />
             ) : error ? (
-              <div className="text-center py-20 text-luxe-charcoal/70">{error}</div>
+              <div className="text-center py-20 text-luxe-charcoal/70 dark:text-luxe-cream/70">{error}</div>
             ) : sortedProducts.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {sortedProducts.map((product, index) => (

@@ -8,8 +8,9 @@
   }
 
   body {
-    @apply bg-luxe-cream text-luxe-black font-sans antialiased;
+    @apply bg-luxe-cream dark:bg-luxe-charcoal text-luxe-black dark:text-luxe-cream font-sans antialiased;
     font-feature-settings: "kern" 1, "liga" 1;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -33,9 +34,9 @@
 
 @layer components {
   .btn-luxe {
-    @apply px-8 py-3 bg-luxe-black text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out;
-    @apply hover:bg-luxe-gold hover:text-luxe-black hover:shadow-lg hover:shadow-luxe-gold/20;
-    @apply focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2;
+    @apply px-8 py-3 bg-luxe-black dark:bg-luxe-gold text-luxe-cream dark:text-luxe-black font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out;
+    @apply hover:bg-luxe-gold dark:hover:bg-luxe-champagne hover:text-luxe-black dark:hover:text-luxe-black hover:shadow-lg hover:shadow-luxe-gold/20;
+    @apply focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 dark:focus:ring-offset-luxe-charcoal;
     @apply active:scale-95;
     min-height: 44px; /* Taille minimale pour accessibilité tactile */
   }
@@ -54,9 +55,9 @@
   }
 
   .btn-luxe-secondary {
-    @apply px-8 py-3 bg-transparent border-2 border-luxe-black text-luxe-black font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out;
-    @apply hover:bg-luxe-black hover:text-luxe-cream hover:scale-105;
-    @apply focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2;
+    @apply px-8 py-3 bg-transparent border-2 border-luxe-black dark:border-luxe-gold text-luxe-black dark:text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out;
+    @apply hover:bg-luxe-black dark:hover:bg-luxe-gold hover:text-luxe-cream dark:hover:text-luxe-black hover:scale-105;
+    @apply focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 dark:focus:ring-offset-luxe-charcoal;
     @apply active:scale-95;
   }
 
@@ -68,12 +69,12 @@
   }
 
   .tag-filter {
-    @apply px-4 py-2 bg-luxe-cream border border-luxe-charcoal/20 text-luxe-black font-sans text-sm tracking-wide transition-all duration-200;
-    @apply hover:border-luxe-gold hover:bg-luxe-champagne/30 cursor-pointer;
+    @apply px-4 py-2 bg-luxe-cream dark:bg-luxe-charcoal border border-luxe-charcoal/20 dark:border-luxe-gold/30 text-luxe-black dark:text-luxe-cream font-sans text-sm tracking-wide transition-all duration-200;
+    @apply hover:border-luxe-gold dark:hover:border-luxe-gold hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 cursor-pointer;
   }
 
   .tag-filter-active {
-    @apply bg-luxe-gold border-luxe-gold text-luxe-black;
+    @apply bg-luxe-gold dark:bg-luxe-gold border-luxe-gold text-luxe-black dark:text-luxe-black;
   }
 
   .product-card {
@@ -83,8 +84,8 @@
   }
 
   .input-luxe {
-    @apply w-full px-4 py-3 bg-luxe-cream border border-luxe-charcoal/20 text-luxe-black font-sans;
-    @apply focus:outline-none focus:border-luxe-gold focus:ring-1 focus:ring-luxe-gold transition-all duration-200;
+    @apply w-full px-4 py-3 bg-luxe-cream dark:bg-luxe-charcoal border border-luxe-charcoal/20 dark:border-luxe-gold/30 text-luxe-black dark:text-luxe-cream font-sans;
+    @apply focus:outline-none focus:border-luxe-gold dark:focus:border-luxe-gold focus:ring-1 focus:ring-luxe-gold transition-all duration-200;
   }
 
   .section-spacing {

@@ -7,6 +7,7 @@ import CookieConsent from './components/CookieConsent';
 import ScrollToTop from './components/ScrollToTop';
 
 import { StoreProvider } from './context/StoreContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { HelmetProvider } from 'react-helmet-async';
 
 // Lazy loading des écrans utilisateur
@@ -134,13 +135,15 @@ const AppContent = () => {
 
 function App() {
   return (
-    <StoreProvider>
-      <HelmetProvider>
-        <Router>
-          <AppContent />
-        </Router>
-      </HelmetProvider>
-    </StoreProvider>
+    <ThemeProvider>
+      <StoreProvider>
+        <HelmetProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </HelmetProvider>
+      </StoreProvider>
+    </ThemeProvider>
   );
 }
 

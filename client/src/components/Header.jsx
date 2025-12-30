@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaShoppingCart, FaUser, FaSearch, FaTimes, FaBars, FaUserShield, FaHeart } from 'react-icons/fa';
 import { Store } from '../context/StoreContext';
+import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
   const { state } = useContext(Store);
@@ -82,7 +83,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-luxe-cream/95 backdrop-blur-lg border-b-2 border-luxe-charcoal/20 shadow-lg transition-all duration-300">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-luxe-cream/95 dark:bg-luxe-charcoal/95 backdrop-blur-lg border-b-2 border-luxe-charcoal/20 dark:border-luxe-gold/20 shadow-lg transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -104,7 +105,7 @@ const Header = () => {
                 className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none ${
                   isActiveRoute('/') 
                     ? 'text-luxe-gold' 
-                    : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
+                    : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/50 dark:hover:bg-luxe-gold/20'
                 } active:scale-95 active:bg-luxe-gold/20`}
                 aria-label="Aller à la page d'accueil"
               >
@@ -145,6 +146,9 @@ const Header = () => {
 
             {/* Right Side Actions */}
             <div className="flex items-center space-x-4">
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
               {/* Search Button */}
               <button
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
@@ -258,7 +262,7 @@ const Header = () => {
         {isSearchOpen && (
           <div 
             id="search-overlay"
-            className="absolute top-full left-0 right-0 bg-luxe-cream border-b border-luxe-charcoal/10 shadow-lg"
+            className="absolute top-full left-0 right-0 bg-luxe-cream dark:bg-luxe-charcoal border-b border-luxe-charcoal/10 dark:border-luxe-gold/20 shadow-lg"
             role="dialog"
             aria-label="Recherche de produits"
           >
@@ -271,7 +275,7 @@ const Header = () => {
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                   placeholder="Rechercher un parfum, une note olfactive..."
-                  className="w-full px-6 py-4 bg-luxe-warm-white border border-luxe-charcoal/20 text-luxe-black font-sans text-lg focus:outline-none focus:border-luxe-gold transition-all duration-200"
+                  className="w-full px-6 py-4 bg-luxe-warm-white dark:bg-luxe-charcoal border border-luxe-charcoal/20 dark:border-luxe-gold/30 text-luxe-black dark:text-luxe-cream font-sans text-lg focus:outline-none focus:border-luxe-gold transition-all duration-200"
                   autoFocus
                   aria-label="Rechercher un produit"
                   aria-describedby={searchResults.length > 0 ? "search-results" : undefined}
@@ -296,13 +300,13 @@ const Header = () => {
                         setIsSearchOpen(false);
                         setSearchQuery('');
                       }}
-                      className="block p-3 bg-luxe-warm-white border border-luxe-charcoal/10 hover:border-luxe-gold hover:bg-luxe-champagne/30 transition-all duration-200 focus:outline-none"
+                      className="block p-3 bg-luxe-warm-white dark:bg-luxe-charcoal border border-luxe-charcoal/10 dark:border-luxe-gold/30 hover:border-luxe-gold hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 transition-all duration-200 focus:outline-none"
                       role="option"
                       aria-label={`${product.name} par ${product.brand}`}
                       tabIndex={0}
                     >
-                      <div className="font-sans text-sm font-medium text-luxe-black">{product.name}</div>
-                      <div className="font-sans text-xs text-luxe-charcoal/60 mt-1">{product.brand}</div>
+                      <div className="font-sans text-sm font-medium text-luxe-black dark:text-luxe-cream">{product.name}</div>
+                      <div className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/70 mt-1">{product.brand}</div>
                     </Link>
                   ))}
                 </div>
@@ -315,7 +319,7 @@ const Header = () => {
       {/* Side Navigation */}
       <div
         id="mobile-menu"
-        className={`fixed top-0 right-0 h-full w-80 bg-luxe-cream border-l border-luxe-charcoal/10 shadow-2xl transform transition-transform duration-500 ease-out z-40 ${
+        className={`fixed top-0 right-0 h-full w-80 bg-luxe-cream dark:bg-luxe-charcoal border-l border-luxe-charcoal/10 dark:border-luxe-gold/20 shadow-2xl transform transition-transform duration-500 ease-out z-40 ${
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="navigation"
@@ -324,7 +328,7 @@ const Header = () => {
       >
         <div className="p-8 h-full flex flex-col">
           <div className="flex justify-between items-center mb-12">
-            <h2 className="font-serif text-2xl font-light tracking-wider text-luxe-black">Menu</h2>
+            <h2 className="font-serif text-2xl font-light tracking-wider text-luxe-black dark:text-luxe-cream">Menu</h2>
             <button
               onClick={() => setIsMenuOpen(false)}
               className="p-2 text-luxe-black hover:text-luxe-gold transition-colors duration-200 focus:outline-none rounded"
@@ -341,7 +345,7 @@ const Header = () => {
               className={`block font-sans text-base font-semibold tracking-wider uppercase transition-all duration-200 py-3 px-4 rounded-lg border-b-2 ${
                 isActiveRoute('/')
                   ? 'text-luxe-gold bg-luxe-gold/10 border-luxe-gold'
-                  : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/30 border-transparent hover:border-luxe-gold/30'
+                  : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 border-transparent hover:border-luxe-gold/30'
               } active:scale-95 active:bg-luxe-gold/20`}
             >
               Accueil

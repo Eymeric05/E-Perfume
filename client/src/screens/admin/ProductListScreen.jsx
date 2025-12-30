@@ -196,14 +196,14 @@ const ProductListScreen = () => {
                                             Prix
                                         </th>
                                         <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream    dark:text-luxe-cream">
-                                            dark:text-luxe-cream
+                                            Stock
                                         </th>
                                         <th className="text-right px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream">
-                                            dark:text-luxe-cream
+                                            Editer
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-luxe-charcoal/10 dark:divide-luxe-gold/20 dark:text-luxe-cream">
+                                <tbody className="divide-y divide-luxe-charcoal/10">
                                     {filteredProducts.map((product) => (
                                         <tr key={product._id} className="hover:bg-luxe-champagne/10 transition-colors">
                                             <td className="px-6 py-4">
@@ -217,10 +217,10 @@ const ProductListScreen = () => {
                                                 <p className="font-serif text-base text-luxe-black dark:text-luxe-cream">{product.name}</p>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="font-sans text-sm text-luxe-charcoal/70">{product.brand}</p>
+                                                <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream">{product.brand}</p>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="inline-block px-3 py-1 rounded-full bg-luxe-champagne/30 text-luxe-charcoal/70 font-sans text-xs">
+                                                <span className="inline-block px-3 py-1 rounded-full bg-luxe-champagne/30 text-luxe-charcoal/70 font-sans text-xs dark:text-luxe-cream">
                                                     {product.category}
                                                 </span>
                                             </td>

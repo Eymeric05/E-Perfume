@@ -8,6 +8,7 @@ import WishlistButton from '../components/WishlistButton';
 import SimilarProducts from '../components/SimilarProducts';
 import ProductBadges from '../components/ProductBadges';
 import FragranceNotes from '../components/FragranceNotes';
+import { apiFetch } from '../utils/api';
 
 const ReviewForm = ({ productId, onReviewAdded }) => {
   const { state } = useContext(Store);
@@ -31,7 +32,7 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
     setSuccess(false);
 
     try {
-      const res = await fetch(`/api/products/${productId}/reviews`, {
+      const res = await apiFetch(`/api/products/${productId}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -159,7 +160,7 @@ const ProductScreen = () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`/api/products/${id}`);
+        const res = await apiFetch(`/api/products/${id}`);
         if (!res.ok) {
           throw new Error('Produit non trouvé');
         }
@@ -548,7 +549,7 @@ const ProductScreen = () => {
           {userInfo ? (
             <ReviewForm productId={id} onReviewAdded={() => {
               // Reload product data
-              fetch(`/api/products/${id}`)
+              apiFetch(`/api/products/${id}`)
                 .then(res => res.json())
                 .then(data => setProduct(data))
                 .catch(err => console.error('Error reloading product:', err));

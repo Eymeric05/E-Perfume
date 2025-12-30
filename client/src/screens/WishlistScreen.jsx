@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import Product from '../components/Product';
 import ProductSkeleton from '../components/ProductSkeleton';
 import { FaHeart, FaTrash } from 'react-icons/fa';
+import { apiFetch } from '../utils/api';
 
 const WishlistScreen = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -22,7 +23,7 @@ const WishlistScreen = () => {
       setLoading(true);
       try {
         if (userInfo?.token) {
-          const response = await fetch('/api/users/wishlist', {
+          const response = await apiFetch('/api/users/wishlist', {
             headers: {
               Authorization: `Bearer ${userInfo.token}`,
             },
@@ -50,7 +51,7 @@ const WishlistScreen = () => {
     
     if (userInfo?.token) {
       try {
-        await fetch(`/api/users/wishlist/${productId}`, {
+        await apiFetch(`/api/users/wishlist/${productId}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${userInfo.token}`,

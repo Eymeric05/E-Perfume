@@ -5,6 +5,7 @@ import Product from '../components/Product';
 import ProductSkeleton from '../components/ProductSkeleton';
 import PriceSlider from '../components/PriceSlider';
 import { FaFilter, FaUndo, FaSyncAlt } from 'react-icons/fa';
+import { apiFetch } from '../utils/api';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -63,7 +64,7 @@ const ProductsListScreen = () => {
         if (category) url += `?category=${category}`;
         if (featured) url += `?featured=true`;
 
-        const result = await fetch(url);
+        const result = await apiFetch(url);
         if (!result.ok) {
           throw new Error(`HTTP error! status: ${result.status}`);
         }

@@ -4,6 +4,7 @@ import { Store } from '../../context/StoreContext';
 import AdminLayout from '../../components/AdminLayout';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { FaCheck, FaTimes, FaEye, FaStar } from 'react-icons/fa';
+import { apiFetch } from '../../utils/api';
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -42,7 +43,7 @@ const ReviewsModerationScreen = () => {
         const fetchData = async () => {
             try {
                 dispatch({ type: 'FETCH_REQUEST' });
-                const res = await fetch('/api/products?all=true', {
+                const res = await apiFetch('/api/products?all=true', {
                     headers: { Authorization: `Bearer ${userInfo.token}` },
                 });
                 const data = await res.json();
@@ -82,7 +83,7 @@ const ReviewsModerationScreen = () => {
             dispatch({ type: 'MODERATE_SUCCESS' });
             
             // Reload data
-            const productsRes = await fetch('/api/products?all=true', {
+            const productsRes = await apiFetch('/api/products?all=true', {
                 headers: { Authorization: `Bearer ${userInfo.token}` },
             });
             const productsData = await productsRes.json();

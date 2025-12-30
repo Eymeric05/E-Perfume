@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import Product from '../components/Product';
 import ProductSkeleton from '../components/ProductSkeleton';
 import RecentlyViewed from '../components/RecentlyViewed';
+import { apiFetch } from '../utils/api';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -56,7 +57,7 @@ const HomeScreen = () => {
     const fetchData = async () => {
       dispatch({ type: 'FETCH_REQUEST' });
       try {
-        const result = await fetch('/api/products');
+        const result = await apiFetch('/api/products');
         if (!result.ok) {
           throw new Error(`HTTP error! status: ${result.status}`);
         }

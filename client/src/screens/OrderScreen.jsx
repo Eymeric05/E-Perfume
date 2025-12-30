@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { loadStripe } from '@stripe/stripe-js';
+import { apiFetch } from '../utils/api';
 import {
     Elements,
     CardElement,
@@ -55,7 +56,7 @@ const CheckoutForm = ({ order, handlePaymentSuccess }) => {
             setProcessing(false);
         } else {
             // Create PaymentIntent on backend
-            const res = await fetch('/api/payment/create-payment-intent', {
+            const res = await apiFetch('/api/payment/create-payment-intent', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ amount: Math.round(order.totalPrice * 100) }),
@@ -115,7 +116,7 @@ const OrderScreen = () => {
 
     useEffect(() => {
         const fetchStripeKey = async () => {
-            const res = await fetch('/api/config/stripe');
+            const res = await apiFetch('/api/config/stripe');
             const key = await res.text();
             setStripePromise(loadStripe(key));
         };
@@ -126,7 +127,7 @@ const OrderScreen = () => {
         const fetchOrder = async () => {
             try {
                 dispatch({ type: 'FETCH_REQUEST' });
-                const res = await fetch(`/api/orders/${orderId}`, {
+                const res = await apiFetch(`/api/orders/${orderId}`, {
                     headers: { Authorization: `Bearer ${userInfo.token}` },
                 });
                 const data = await res.json();
@@ -154,7 +155,7 @@ const OrderScreen = () => {
     const handlePaymentSuccess = async (paymentResult) => {
         try {
             dispatch({ type: 'PAY_REQUEST' });
-            const res = await fetch(`/api/orders/${orderId}/pay`, {
+            const res = await apiFetch(`/api/orders/${orderId}/pay`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

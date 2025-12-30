@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
+import { apiFetch } from '../utils/api';
 
 const RegisterScreen = () => {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ const RegisterScreen = () => {
             return;
         }
         try {
-            const res = await fetch('/api/users', {
+            const res = await apiFetch('/api/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

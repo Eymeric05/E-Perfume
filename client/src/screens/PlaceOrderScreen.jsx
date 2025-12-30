@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
+import { apiFetch } from '../utils/api';
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -34,7 +35,7 @@ const PlaceOrderScreen = () => {
     const placeOrderHandler = async () => {
         try {
             dispatch({ type: 'CREATE_REQUEST' });
-            const res = await fetch('/api/orders', {
+            const res = await apiFetch('/api/orders', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

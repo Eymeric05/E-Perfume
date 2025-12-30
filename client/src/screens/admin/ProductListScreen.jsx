@@ -4,6 +4,7 @@ import { Store } from '../../context/StoreContext';
 import AdminLayout from '../../components/AdminLayout';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { FaEdit, FaTrash, FaPlus, FaSearch } from 'react-icons/fa';
+import { apiFetch } from '../../utils/api';
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -48,7 +49,7 @@ const ProductListScreen = () => {
             try {
                 dispatch({ type: 'FETCH_REQUEST' });
                 // Use 'all=true' to get all products including skincare for admin panel
-                const res = await fetch('/api/products?all=true');
+                const res = await apiFetch('/api/products?all=true');
                 const data = await res.json();
                 // Ensure data is an array
                 const productsArray = Array.isArray(data) ? data : [];
@@ -67,7 +68,7 @@ const ProductListScreen = () => {
     const createHandler = async () => {
         try {
             dispatch({ type: 'CREATE_REQUEST' });
-            const res = await fetch('/api/products', {
+            const res = await apiFetch('/api/products', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${userInfo.token}` },
             });
@@ -84,7 +85,7 @@ const ProductListScreen = () => {
         if (window.confirm(`Êtes-vous sûr de vouloir supprimer "${product.name}" ?`)) {
             try {
                 dispatch({ type: 'DELETE_REQUEST' });
-                await fetch(`/api/products/${product._id}`, {
+                await apiFetch(`/api/products/${product._id}`, {
                     method: 'DELETE',
                     headers: { Authorization: `Bearer ${userInfo.token}` },
                 });

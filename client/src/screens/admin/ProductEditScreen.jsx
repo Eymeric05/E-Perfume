@@ -4,6 +4,7 @@ import { Store } from '../../context/StoreContext';
 import AdminLayout from '../../components/AdminLayout';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { FaArrowLeft, FaUpload, FaPlus, FaTimes, FaSave } from 'react-icons/fa';
+import { apiFetch } from '../../utils/api';
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -141,7 +142,7 @@ const ProductEditScreen = () => {
         formData.append('image', file);
         try {
             dispatch({ type: 'UPLOAD_REQUEST' });
-            const res = await fetch('/api/upload', {
+            const res = await apiFetch('/api/upload', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${userInfo.token}`,

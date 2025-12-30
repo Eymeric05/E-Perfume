@@ -3,6 +3,7 @@ import { Store } from '../../context/StoreContext';
 import AdminLayout from '../../components/AdminLayout';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { FaSearch, FaUserShield, FaUser } from 'react-icons/fa';
+import { apiFetch } from '../../utils/api';
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -33,7 +34,7 @@ const UsersListScreen = () => {
             try {
                 dispatch({ type: 'FETCH_REQUEST' });
                 // Note: You'll need to create this endpoint in the backend
-                const res = await fetch('/api/users', {
+                const res = await apiFetch('/api/users', {
                     headers: {
                         Authorization: `Bearer ${userInfo.token}`,
                     },

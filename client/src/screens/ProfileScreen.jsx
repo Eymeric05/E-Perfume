@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { Helmet } from 'react-helmet-async';
+import { apiFetch } from '../utils/api';
 import { 
   FaSignOutAlt, 
   FaUser, 
@@ -42,7 +43,7 @@ const ProfileScreen = () => {
         const fetchOrders = async () => {
             try {
                 dispatch({ type: 'FETCH_REQUEST' });
-                const res = await fetch('/api/orders/myorders', {
+                const res = await apiFetch('/api/orders/myorders', {
                     headers: { Authorization: `Bearer ${userInfo.token}` },
                 });
                 const data = await res.json();

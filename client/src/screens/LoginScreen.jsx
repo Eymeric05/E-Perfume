@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { Helmet } from 'react-helmet-async';
 import { FaLock, FaEnvelope } from 'react-icons/fa';
+import { apiFetch } from '../utils/api';
 
 const LoginScreen = () => {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ const LoginScreen = () => {
         e.preventDefault();
         setError('');
         try {
-            const res = await fetch('/api/users/login', {
+            const res = await apiFetch('/api/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

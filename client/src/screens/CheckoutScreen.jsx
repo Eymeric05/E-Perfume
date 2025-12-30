@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { Helmet } from 'react-helmet-async';
 import { FaCheck, FaLock, FaCreditCard, FaTruck } from 'react-icons/fa';
+import { apiFetch } from '../utils/api';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -76,7 +77,7 @@ const CheckoutScreen = () => {
   const placeOrderHandler = async () => {
     try {
       dispatch({ type: 'CREATE_REQUEST' });
-      const res = await fetch('/api/orders', {
+      const res = await apiFetch('/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

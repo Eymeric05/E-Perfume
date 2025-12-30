@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { FaBox, FaShoppingCart, FaUsers, FaArrowRight } from 'react-icons/fa';
+import { apiFetch } from '../../utils/api';
 
 const DashboardScreen = () => {
     const [stats, setStats] = useState({
@@ -22,9 +23,9 @@ const DashboardScreen = () => {
                 const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
                 const [productsRes, ordersRes, usersRes] = await Promise.all([
-                    fetch('/api/products?all=true'), // Get all products including skincare for admin
-                    fetch('/api/orders', { headers }).catch(() => null),
-                    fetch('/api/users', { headers }).catch(() => null),
+                    apiFetch('/api/products?all=true'), // Get all products including skincare for admin
+                    apiFetch('/api/orders', { headers }).catch(() => null),
+                    apiFetch('/api/users', { headers }).catch(() => null),
                 ]);
 
                 const products = await productsRes.json();

@@ -155,7 +155,7 @@ const Header = () => {
                 className={`relative p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                   isSearchOpen
                     ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
-                    : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
+                    : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/50 dark:hover:bg-luxe-gold/20'
                 } active:scale-95 active:bg-luxe-gold/20`}
                 aria-label={isSearchOpen ? "Fermer la recherche" : "Ouvrir la recherche"}
                 aria-expanded={isSearchOpen}
@@ -170,7 +170,7 @@ const Header = () => {
                 className={`relative p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                   isActiveRoute('/wishlist')
                     ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
-                    : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
+                    : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/50 dark:hover:bg-luxe-gold/20'
                 } active:scale-95 active:bg-luxe-gold/20`}
                 aria-label={`Liste de souhaits${wishlistCount > 0 ? ` avec ${wishlistCount} produit${wishlistCount > 1 ? 's' : ''}` : ' (vide)'}`}
               >
@@ -188,7 +188,7 @@ const Header = () => {
                 className={`relative p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                   isActiveRoute('/cart')
                     ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
-                    : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
+                    : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/50 dark:hover:bg-luxe-gold/20'
                 } active:scale-95 active:bg-luxe-gold/20`}
                 aria-label={`Panier${cartItemsCount > 0 ? ` avec ${cartItemsCount} article${cartItemsCount > 1 ? 's' : ''}` : ' (vide)'}`}
               >
@@ -207,7 +207,7 @@ const Header = () => {
                   className={`p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                     isActiveRoute('/admin')
                       ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
-                      : 'text-luxe-gold hover:text-luxe-black hover:bg-luxe-champagne/50'
+                      : 'text-luxe-gold dark:text-luxe-gold hover:text-luxe-black dark:hover:text-luxe-black hover:bg-luxe-champagne/50 dark:hover:bg-luxe-gold/20'
                   } active:scale-95 active:bg-luxe-gold/20`}
                   title="Panel Administrateur"
                 >
@@ -222,7 +222,7 @@ const Header = () => {
                   className={`p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                     isActiveRoute('/profile')
                       ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
-                      : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
+                      : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/50 dark:hover:bg-luxe-gold/20'
                   } active:scale-95 active:bg-luxe-gold/20`}
                 >
                   <FaUser className="w-5 h-5" />
@@ -233,7 +233,7 @@ const Header = () => {
                   className={`p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                     isActiveRoute('/login')
                       ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
-                      : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
+                      : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/50 dark:hover:bg-luxe-gold/20'
                   } active:scale-95 active:bg-luxe-gold/20`}
                 >
                   <FaUser className="w-5 h-5" />
@@ -246,7 +246,7 @@ const Header = () => {
                 className={`md:hidden p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                   isMenuOpen
                     ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
-                    : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
+                    : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/50 dark:hover:bg-luxe-gold/20'
                 } active:scale-95 active:bg-luxe-gold/20`}
                 aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
                 aria-expanded={isMenuOpen}
@@ -331,7 +331,7 @@ const Header = () => {
             <h2 className="font-serif text-2xl font-light tracking-wider text-luxe-black dark:text-luxe-cream">Menu</h2>
             <button
               onClick={() => setIsMenuOpen(false)}
-              className="p-2 text-luxe-black hover:text-luxe-gold transition-colors duration-200 focus:outline-none rounded"
+              className="p-2 text-luxe-black dark:text-luxe-cream hover:text-luxe-gold transition-colors duration-200 focus:outline-none rounded"
               aria-label="Fermer le menu"
             >
               <FaTimes className="w-5 h-5" aria-hidden="true" />
@@ -356,7 +356,7 @@ const Header = () => {
               className={`block font-sans text-base font-semibold tracking-wider uppercase transition-all duration-200 py-3 px-4 rounded-lg border-b-2 ${
                 isActiveRoute('/products') && !location.search.includes('category=skincare')
                   ? 'text-luxe-gold bg-luxe-gold/10 border-luxe-gold'
-                  : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/30 border-transparent hover:border-luxe-gold/30'
+                  : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 border-transparent hover:border-luxe-gold/30'
               } active:scale-95 active:bg-luxe-gold/20`}
             >
               Tous les Parfums
@@ -367,7 +367,7 @@ const Header = () => {
               className={`block font-sans text-base font-semibold tracking-wider uppercase transition-all duration-200 py-3 px-4 rounded-lg border-b-2 ${
                 isActiveRoute('/products?category=skincare')
                   ? 'text-luxe-gold bg-luxe-gold/10 border-luxe-gold'
-                  : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/30 border-transparent hover:border-luxe-gold/30'
+                  : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 border-transparent hover:border-luxe-gold/30'
               } active:scale-95 active:bg-luxe-gold/20`}
             >
               Esthétique
@@ -378,7 +378,7 @@ const Header = () => {
               className={`block font-sans text-base font-semibold tracking-wider uppercase transition-all duration-200 py-3 px-4 rounded-lg border-b-2 flex items-center gap-2 ${
                 isActiveRoute('/wishlist')
                   ? 'text-luxe-gold bg-luxe-gold/10 border-luxe-gold'
-                  : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/30 border-transparent hover:border-luxe-gold/30'
+                  : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 border-transparent hover:border-luxe-gold/30'
               } active:scale-95 active:bg-luxe-gold/20`}
             >
               <FaHeart className="w-4 h-4" />
@@ -390,7 +390,7 @@ const Header = () => {
               className={`block font-sans text-base font-semibold tracking-wider uppercase transition-all duration-200 py-3 px-4 rounded-lg border-b-2 ${
                 isActiveRoute('/cart')
                   ? 'text-luxe-gold bg-luxe-gold/10 border-luxe-gold'
-                  : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/30 border-transparent hover:border-luxe-gold/30'
+                  : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 border-transparent hover:border-luxe-gold/30'
               } active:scale-95 active:bg-luxe-gold/20`}
             >
               Panier <span className={cartItemsCount > 0 ? 'text-luxe-gold' : ''}>({cartItemsCount})</span>
@@ -404,7 +404,7 @@ const Header = () => {
                     className={`block font-sans text-base font-semibold tracking-wider uppercase transition-all duration-200 py-3 px-4 rounded-lg border-b-2 flex items-center gap-2 ${
                       isActiveRoute('/admin')
                         ? 'text-luxe-gold bg-luxe-gold/10 border-luxe-gold'
-                        : 'text-luxe-gold hover:text-luxe-black hover:bg-luxe-champagne/30 border-transparent hover:border-luxe-gold/30'
+                        : 'text-luxe-gold dark:text-luxe-gold hover:text-luxe-black dark:hover:text-luxe-black hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 border-transparent hover:border-luxe-gold/30'
                     } active:scale-95 active:bg-luxe-gold/20`}
                   >
                     <FaUserShield className="w-4 h-4" />
@@ -417,7 +417,7 @@ const Header = () => {
                   className={`block font-sans text-base font-semibold tracking-wider uppercase transition-all duration-200 py-3 px-4 rounded-lg border-b-2 ${
                     isActiveRoute('/profile')
                       ? 'text-luxe-gold bg-luxe-gold/10 border-luxe-gold'
-                      : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/30 border-transparent hover:border-luxe-gold/30'
+                      : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 border-transparent hover:border-luxe-gold/30'
                   } active:scale-95 active:bg-luxe-gold/20`}
                 >
                   Mon Compte
@@ -425,7 +425,7 @@ const Header = () => {
                 <Link
                   to="/logout"
                   onClick={() => setIsMenuOpen(false)}
-                  className="block font-sans text-base font-semibold tracking-wider uppercase text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/30 transition-all duration-200 py-3 px-4 rounded-lg border-b-2 border-transparent hover:border-luxe-gold/30 active:scale-95 active:bg-luxe-gold/20"
+                  className="block font-sans text-base font-semibold tracking-wider uppercase text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 transition-all duration-200 py-3 px-4 rounded-lg border-b-2 border-transparent hover:border-luxe-gold/30 active:scale-95 active:bg-luxe-gold/20"
                 >
                   Déconnexion
                 </Link>
@@ -437,7 +437,7 @@ const Header = () => {
                 className={`block font-sans text-base font-semibold tracking-wider uppercase transition-all duration-200 py-3 px-4 rounded-lg border-b-2 ${
                   isActiveRoute('/login')
                     ? 'text-luxe-gold bg-luxe-gold/10 border-luxe-gold'
-                    : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/30 border-transparent hover:border-luxe-gold/30'
+                    : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 border-transparent hover:border-luxe-gold/30'
                 } active:scale-95 active:bg-luxe-gold/20`}
               >
                 Connexion

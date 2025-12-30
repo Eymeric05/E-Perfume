@@ -22,11 +22,11 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
   return (
     <Link
       to={`/product/${product._id}`}
-      className="group relative bg-luxe-warm-white rounded-lg overflow-hidden border border-luxe-charcoal/10 transition-all duration-500 ease-out hover:shadow-2xl hover:shadow-luxe-gold/10 hover:-translate-y-2 hover:border-luxe-gold/30 cursor-pointer block"
+      className="group relative bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg overflow-hidden border border-luxe-charcoal/10 dark:border-luxe-gold/20 transition-all duration-500 ease-out hover:shadow-2xl hover:shadow-luxe-gold/10 hover:-translate-y-2 hover:border-luxe-gold/30 cursor-pointer block"
       aria-label={`Voir ${product.name}`}
       style={{ animationDelay: `${index * 50}ms` }}
     >
-      <div className="relative aspect-square bg-gradient-to-br from-luxe-cream to-luxe-warm-white overflow-hidden">
+      <div className="relative aspect-square bg-gradient-to-br from-luxe-cream dark:from-luxe-charcoal to-luxe-warm-white dark:to-luxe-charcoal overflow-hidden">
         <ProductBadges product={product} />
         <div className="absolute inset-0 bg-gradient-to-t from-luxe-black/20 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <img
@@ -60,7 +60,7 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
         </div>
       </div>
 
-      <div className="p-5 bg-luxe-warm-white">
+      <div className="p-5 bg-luxe-warm-white dark:bg-luxe-charcoal">
         {product.brand && (
           <div className="flex items-center gap-2 mb-1.5">
             {product.brandLogo && (
@@ -73,12 +73,12 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
                 }}
               />
             )}
-            <p className="font-sans text-xs text-luxe-charcoal/60 uppercase tracking-widest font-medium">
+            <p className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/70 uppercase tracking-widest font-medium">
               {product.brand}
             </p>
           </div>
         )}
-        <h3 className="font-serif text-lg font-normal text-luxe-black mb-3 hover:text-luxe-gold transition-colors duration-200 line-clamp-2 leading-tight">
+        <h3 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-3 hover:text-luxe-gold transition-colors duration-200 line-clamp-2 leading-tight">
           {product.name || 'Sans nom'}
         </h3>
 
@@ -89,13 +89,13 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
           />
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-luxe-charcoal/10 gap-4">
+        <div className="flex items-center justify-between pt-3 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20 gap-4">
           <div className="flex flex-col gap-1 min-w-0 flex-1">
-            <span className="font-serif text-xl font-semibold text-luxe-black whitespace-nowrap">
+            <span className="font-serif text-xl font-semibold text-luxe-black dark:text-luxe-cream whitespace-nowrap">
               {formatPrice(displayPrice)}
             </span>
             {originalPrice && (
-              <span className="font-sans text-sm text-luxe-charcoal/50 line-through whitespace-nowrap">
+              <span className="font-sans text-sm text-luxe-charcoal/50 dark:text-luxe-cream/50 line-through whitespace-nowrap">
                 {formatPrice(originalPrice)}
               </span>
             )}
@@ -127,12 +127,12 @@ const Rating = ({ value = 0, text }) => {
           ) : numValue >= star - 0.5 ? (
             <FaStarHalfAlt className="w-3 h-3" />
           ) : (
-            <FaRegStar className="w-3 h-3 text-luxe-charcoal/30" />
+            <FaRegStar className="w-3 h-3 text-luxe-charcoal/30 dark:text-luxe-cream/30" />
           )}
         </span>
       ))}
       {text && (
-        <span className="font-sans text-xs text-luxe-charcoal/60 ml-2">
+        <span className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/70 ml-2">
           ({text})
         </span>
       )}

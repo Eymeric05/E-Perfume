@@ -50,15 +50,15 @@ const LoginScreen = () => {
     }, [navigate, redirect, userInfo]);
 
     return (
-        <div className="min-h-screen bg-luxe-cream flex items-center justify-center py-12 px-4">
+        <div className="min-h-screen bg-luxe-cream dark:bg-luxe-charcoal flex items-center justify-center py-12 px-4">
             <Helmet>
                 <title>Connexion - E-perfume</title>
             </Helmet>
 
             <div className="w-full max-w-md">
-                <div className="bg-luxe-warm-white rounded-lg shadow-lg border border-luxe-charcoal/10 p-8">
+                <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg shadow-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-8">
                     <div className="text-center mb-8">
-                        <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black mb-2">
+                        <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black dark:text-luxe-cream mb-2">
                             Connexion
                         </h1>
                         <p className="font-sans text-sm text-luxe-charcoal/70">
@@ -74,7 +74,7 @@ const LoginScreen = () => {
 
                     <form onSubmit={submitHandler} className="space-y-6">
                         <div>
-                            <label htmlFor="email" className="block font-sans text-sm font-medium text-luxe-black mb-2">
+                            <label htmlFor="email" className="block font-sans text-sm font-medium text-luxe-black dark:text-luxe-cream mb-2">
                                 Email
                             </label>
                             <div className="relative">

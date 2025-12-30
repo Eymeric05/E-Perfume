@@ -65,8 +65,8 @@ const FragranceNotes = ({ fragranceNotes }) => {
   };
 
   return (
-    <div className="py-6 border-t border-b border-luxe-charcoal/10">
-      <h3 className="font-serif text-xl font-normal text-luxe-black mb-6">
+    <div className="py-6 border-t border-b border-luxe-charcoal/10 dark:border-luxe-gold/20">
+      <h3 className="font-serif text-xl font-normal text-luxe-black dark:text-luxe-cream mb-6">
         Notes Olfactives
       </h3>
       <div className="space-y-6">
@@ -74,7 +74,7 @@ const FragranceNotes = ({ fragranceNotes }) => {
           <div key={index} className="space-y-3">
             <div className="flex items-center gap-3 mb-3">
               <div className={`w-1 h-8 ${noteTypeColors[noteGroup.type] || 'bg-luxe-gold'} rounded-full`} />
-              <p className="font-sans text-sm font-semibold uppercase tracking-wider text-luxe-black">
+              <p className="font-sans text-sm font-semibold uppercase tracking-wider text-luxe-black dark:text-luxe-cream">
                 {noteTypeLabels[noteGroup.type] || noteGroup.type}
               </p>
             </div>
@@ -82,7 +82,7 @@ const FragranceNotes = ({ fragranceNotes }) => {
               {noteGroup.notes && noteGroup.notes.map((note, noteIndex) => (
                 <span
                   key={noteIndex}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-luxe-champagne/30 border border-luxe-gold/20 rounded-full text-sm font-sans text-luxe-black hover:bg-luxe-gold/20 hover:border-luxe-gold transition-all duration-200 cursor-default"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-luxe-champagne/30 dark:bg-luxe-gold/20 border border-luxe-gold/20 rounded-full text-sm font-sans text-luxe-black dark:text-luxe-cream hover:bg-luxe-gold/20 hover:border-luxe-gold transition-all duration-200 cursor-default"
                 >
                   <span className="text-luxe-gold">
                     {getNoteIcon(note)}

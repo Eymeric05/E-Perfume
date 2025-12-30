@@ -92,7 +92,7 @@ const HomeScreen = () => {
     : [];
 
   return (
-    <div className="min-h-screen bg-luxe-cream">
+    <div className="min-h-screen bg-luxe-cream dark:bg-luxe-charcoal">
       <Helmet>
         <title>E-perfume - Parfums de Luxe & Esthétique Haut de Gamme</title>
       </Helmet>
@@ -165,13 +165,13 @@ const HomeScreen = () => {
       </section>
 
       {/* Featured Collections */}
-      <section className="section-spacing bg-luxe-warm-white">
+      <section className="section-spacing bg-luxe-warm-white dark:bg-luxe-charcoal">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="text-center mb-16">
             <p className="font-sans text-sm tracking-widest uppercase text-luxe-gold mb-4">
               Sélection Exclusive
             </p>
-            <h2 className="font-serif text-5xl md:text-6xl font-light text-luxe-black mb-6">
+            <h2 className="font-serif text-5xl md:text-6xl font-light text-luxe-black dark:text-luxe-cream mb-6">
               Collections Éphémères
             </h2>
             <p className="font-sans text-lg text-luxe-charcoal/70 max-w-2xl mx-auto">
@@ -221,7 +221,7 @@ const HomeScreen = () => {
 
       {/* All Products Preview */}
       {products.length > 0 && (
-        <section className="section-spacing bg-luxe-cream">
+        <section className="section-spacing bg-luxe-cream dark:bg-luxe-charcoal">
           <div className="max-w-7xl mx-auto px-4 md:px-8">
             <div className="flex justify-between items-end mb-12">
               <div>

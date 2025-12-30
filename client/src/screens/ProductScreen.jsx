@@ -65,13 +65,13 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
   };
 
   return (
-    <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 mb-8">
-      <h3 className="font-serif text-xl font-normal text-luxe-black mb-4">
+    <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-6 mb-8">
+      <h3 className="font-serif text-xl font-normal text-luxe-black dark:text-luxe-cream mb-4">
         Laisser un avis
       </h3>
       <form onSubmit={submitHandler}>
         <div className="mb-4">
-          <label className="block font-sans text-sm font-medium text-luxe-black mb-2">
+          <label className="block font-sans text-sm font-medium text-luxe-black dark:text-luxe-cream mb-2">
             Note
           </label>
           <div className="flex items-center gap-2">
@@ -88,13 +88,13 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
                   {(hoveredRating || rating) >= star ? (
                     <FaStar className="w-6 h-6" />
                   ) : (
-                    <FaRegStar className="w-6 h-6 text-luxe-charcoal/30" />
+                    <FaRegStar className="w-6 h-6 text-luxe-charcoal/30 dark:text-luxe-cream/30" />
                   )}
                 </span>
               </button>
             ))}
             {rating > 0 && (
-              <span className="font-sans text-sm text-luxe-charcoal/70 ml-2">
+              <span className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 ml-2">
                 {rating}/5
               </span>
             )}
@@ -102,7 +102,7 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block font-sans text-sm font-medium text-luxe-black mb-2">
+          <label className="block font-sans text-sm font-medium text-luxe-black dark:text-luxe-cream mb-2">
             Commentaire
           </label>
           <textarea
@@ -271,12 +271,12 @@ const ProductScreen = () => {
             ) : numValue >= star - 0.5 ? (
               <FaStarHalfAlt className="w-4 h-4" />
             ) : (
-              <FaRegStar className="w-4 h-4 text-luxe-charcoal/30" />
+              <FaRegStar className="w-4 h-4 text-luxe-charcoal/30 dark:text-luxe-cream/30" />
             )}
           </span>
         ))}
         {text && (
-          <span className="font-sans text-sm text-luxe-charcoal/60 ml-3">
+          <span className="font-sans text-sm text-luxe-charcoal/60 dark:text-luxe-cream/70 ml-3">
             {text}
           </span>
         )}
@@ -286,12 +286,12 @@ const ProductScreen = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-luxe-cream flex items-center justify-center">
+      <div className="min-h-screen bg-luxe-cream dark:bg-luxe-charcoal flex items-center justify-center">
         <div className="text-center space-y-6">
           <div className="spinner-luxe w-12 h-12 mx-auto"></div>
           <div className="space-y-2">
-            <p className="font-serif text-lg text-luxe-black">Chargement...</p>
-            <p className="font-sans text-sm text-luxe-charcoal/60">Préparation de votre expérience</p>
+            <p className="font-serif text-lg text-luxe-black dark:text-luxe-cream">Chargement...</p>
+            <p className="font-sans text-sm text-luxe-charcoal/60 dark:text-luxe-cream/70">Préparation de votre expérience</p>
           </div>
         </div>
       </div>
@@ -300,20 +300,20 @@ const ProductScreen = () => {
 
   if (error || !product) {
     return (
-      <div className="min-h-screen bg-luxe-cream">
+      <div className="min-h-screen bg-luxe-cream dark:bg-luxe-charcoal">
         <Helmet>
           <title>Produit non trouvé - E-perfume</title>
         </Helmet>
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
           <Link
             to="/products"
-            className="inline-flex items-center gap-2 font-sans text-sm text-luxe-charcoal/70 hover:text-luxe-gold transition-colors duration-200 mb-8"
+            className="inline-flex items-center gap-2 font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 hover:text-luxe-gold transition-colors duration-200 mb-8"
           >
             <FaArrowLeft className="w-4 h-4" />
             Retour aux collections
           </Link>
           <div className="text-center py-20">
-            <p className="font-sans text-lg text-luxe-charcoal/70 mb-4">
+            <p className="font-sans text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-4">
               {error || 'Produit non trouvé'}
             </p>
             <Link to="/products" className="btn-luxe-gold">
@@ -326,7 +326,7 @@ const ProductScreen = () => {
   }
 
   return (
-    <div className="min-h-screen bg-luxe-cream">
+    <div className="min-h-screen bg-luxe-cream dark:bg-luxe-charcoal">
       <Helmet>
         <title>{product?.name || 'Produit'} - E-perfume</title>
       </Helmet>
@@ -335,7 +335,7 @@ const ProductScreen = () => {
         {/* Back Button */}
         <Link
           to="/products"
-          className="inline-flex items-center gap-2 font-sans text-sm text-luxe-charcoal/70 hover:text-luxe-gold transition-all duration-300 mb-8 group hover:gap-3"
+          className="inline-flex items-center gap-2 font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 hover:text-luxe-gold transition-all duration-300 mb-8 group hover:gap-3"
         >
           <FaArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
           Retour aux collections
@@ -345,7 +345,7 @@ const ProductScreen = () => {
           {/* Image Gallery */}
           <div className="space-y-4">
             {/* Main Image */}
-            <div className="relative aspect-square bg-luxe-warm-white overflow-hidden group">
+            <div className="relative aspect-square bg-luxe-warm-white dark:bg-luxe-charcoal overflow-hidden group">
               <ProductBadges product={product} />
               <img
                 src={
@@ -382,7 +382,7 @@ const ProductScreen = () => {
                     onClick={() => setSelectedImage(index)}
                     className={`aspect-square overflow-hidden border-2 transition-all duration-200 rounded ${selectedImage === index
                         ? 'border-luxe-gold ring-2 ring-luxe-gold/30'
-                        : 'border-luxe-charcoal/10 hover:border-luxe-charcoal/30'
+                        : 'border-luxe-charcoal/10 dark:border-luxe-gold/20 hover:border-luxe-charcoal/30 dark:hover:border-luxe-gold/40'
                       }`}
                   >
                     <img
@@ -417,7 +417,7 @@ const ProductScreen = () => {
               </p>
             )}
 
-            <h1 className="font-serif text-4xl md:text-6xl font-light text-luxe-black">
+            <h1 className="font-serif text-4xl md:text-6xl font-light text-luxe-black dark:text-luxe-cream">
               {product?.name || 'Chargement...'}
             </h1>
 
@@ -426,13 +426,13 @@ const ProductScreen = () => {
             )}
 
             {product?.price !== undefined && (
-              <div className="pt-4 border-t border-luxe-charcoal/10 flex items-center justify-between">
+              <div className="pt-4 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20 flex items-center justify-between">
                 <div>
-                  <span className="font-serif text-3xl md:text-4xl font-normal text-luxe-black">
+                  <span className="font-serif text-3xl md:text-4xl font-normal text-luxe-black dark:text-luxe-cream">
                     {formatPrice(product.onSale && product.salePrice ? product.salePrice : product.price)}
                   </span>
                   {product.onSale && product.salePrice && (
-                    <span className="font-sans text-lg text-luxe-charcoal/50 line-through ml-3">
+                    <span className="font-sans text-lg text-luxe-charcoal/50 dark:text-luxe-cream/50 line-through ml-3">
                       {formatPrice(product.price)}
                     </span>
                   )}
@@ -448,8 +448,8 @@ const ProductScreen = () => {
 
             {/* Benefits for Skincare */}
             {isSkincare && benefits && benefits.length > 0 && (
-              <div className="py-6 border-t border-b border-luxe-charcoal/10">
-                <h3 className="font-serif text-xl font-normal text-luxe-black mb-4">
+              <div className="py-6 border-t border-b border-luxe-charcoal/10 dark:border-luxe-gold/20">
+                <h3 className="font-serif text-xl font-normal text-luxe-black dark:text-luxe-cream mb-4">
                   Bienfaits
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -467,8 +467,8 @@ const ProductScreen = () => {
 
             {/* Ingredients for Skincare */}
             {isSkincare && product?.ingredients && (
-              <div className="py-6 border-t border-b border-luxe-charcoal/10">
-                <h3 className="font-serif text-xl font-normal text-luxe-black mb-4">
+              <div className="py-6 border-t border-b border-luxe-charcoal/10 dark:border-luxe-gold/20">
+                <h3 className="font-serif text-xl font-normal text-luxe-black dark:text-luxe-cream mb-4">
                   Ingrédients
                 </h3>
                 <p className="font-sans text-sm text-luxe-charcoal/70 leading-relaxed">
@@ -479,8 +479,8 @@ const ProductScreen = () => {
 
             {/* Skin Type for Skincare */}
             {isSkincare && product?.skinType && (
-              <div className="py-6 border-t border-b border-luxe-charcoal/10">
-                <h3 className="font-serif text-xl font-normal text-luxe-black mb-4">
+              <div className="py-6 border-t border-b border-luxe-charcoal/10 dark:border-luxe-gold/20">
+                <h3 className="font-serif text-xl font-normal text-luxe-black dark:text-luxe-cream mb-4">
                   Type de Peau
                 </h3>
                 <span className="tag-filter">
@@ -492,8 +492,8 @@ const ProductScreen = () => {
             {/* Description */}
             {product?.description && (
               <div className="space-y-4">
-                <h3 className="font-serif text-xl font-normal text-luxe-black">Description</h3>
-                <div className="font-sans text-base text-luxe-charcoal/70 leading-relaxed">
+                <h3 className="font-serif text-xl font-normal text-luxe-black dark:text-luxe-cream">Description</h3>
+                <div className="font-sans text-base text-luxe-charcoal/70 dark:text-luxe-cream/70 leading-relaxed">
                   {product.description.split(/\n\s*\n/).map((paragraph, index) => {
                     const trimmedParagraph = paragraph.trim();
                     if (!trimmedParagraph) return null;
@@ -507,7 +507,7 @@ const ProductScreen = () => {
                     
                     if (isTitle) {
                       return (
-                        <h4 key={index} className="font-serif text-lg font-medium text-luxe-black mt-6 mb-3 first:mt-0">
+                        <h4 key={index} className="font-serif text-lg font-medium text-luxe-black dark:text-luxe-cream mt-6 mb-3 first:mt-0">
                           {trimmedParagraph}
                         </h4>
                       );
@@ -526,14 +526,14 @@ const ProductScreen = () => {
 
             {/* Add to Cart */}
             {product?._id && (
-              <div className="pt-6 border-t border-luxe-charcoal/10 space-y-4">
+              <div className="pt-6 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20 space-y-4">
                 {product.countInStock > 0 ? (
                 <>
                   <div className="flex items-center gap-4">
-                    <span className="font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70">
+                    <span className="font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70">
                       Quantité
                     </span>
-                    <div className="flex items-center gap-3 border border-luxe-charcoal/20">
+                    <div className="flex items-center gap-3 border border-luxe-charcoal/20 dark:border-luxe-gold/30">
                       <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                         className="p-2 hover:bg-luxe-champagne/30 transition-colors"
@@ -541,7 +541,7 @@ const ProductScreen = () => {
                       >
                         <FaMinus className="w-3 h-3" />
                       </button>
-                      <span className="font-sans text-base w-12 text-center">{quantity}</span>
+                      <span className="font-sans text-base w-12 text-center text-luxe-black dark:text-luxe-cream">{quantity}</span>
                       <button
                         onClick={() => setQuantity(Math.min(product.countInStock, quantity + 1))}
                         className="p-2 hover:bg-luxe-champagne/30 transition-colors"
@@ -564,8 +564,8 @@ const ProductScreen = () => {
                   </button>
                 </>
               ) : (
-                <div className="p-4 bg-luxe-charcoal/5 border border-luxe-charcoal/20 text-center">
-                  <p className="font-sans text-sm text-luxe-charcoal/70">
+                <div className="p-4 bg-luxe-charcoal/5 dark:bg-luxe-gold/10 border border-luxe-charcoal/20 dark:border-luxe-gold/30 text-center">
+                  <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                     Ce produit est actuellement épuisé
                   </p>
                 </div>
@@ -576,22 +576,22 @@ const ProductScreen = () => {
         </div>
 
         {/* Additional Info Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-luxe-charcoal/10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20">
           <div>
-            <h4 className="font-serif text-lg font-normal text-luxe-black mb-2">Livraison</h4>
-            <p className="font-sans text-sm text-luxe-charcoal/70">
+            <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-2">Livraison</h4>
+            <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
               Livraison gratuite à partir de 100€
             </p>
           </div>
           <div>
-            <h4 className="font-serif text-lg font-normal text-luxe-black mb-2">Retours</h4>
-            <p className="font-sans text-sm text-luxe-charcoal/70">
+            <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-2">Retours</h4>
+            <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
               Retours gratuits sous 30 jours
             </p>
           </div>
           <div>
-            <h4 className="font-serif text-lg font-normal text-luxe-black mb-2">Garantie</h4>
-            <p className="font-sans text-sm text-luxe-charcoal/70">
+            <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-2">Garantie</h4>
+            <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
               Produits authentiques garantis
             </p>
           </div>
@@ -599,7 +599,7 @@ const ProductScreen = () => {
 
         {/* Reviews Section */}
         <div className="pt-16 border-t border-luxe-charcoal/10 mt-16">
-          <h2 className="font-serif text-3xl md:text-4xl font-light text-luxe-black mb-8">
+          <h2 className="font-serif text-3xl md:text-4xl font-light text-luxe-black dark:text-luxe-cream mb-8">
             Avis clients
           </h2>
 
@@ -613,8 +613,8 @@ const ProductScreen = () => {
                 .catch(err => console.error('Error reloading product:', err));
             }} />
           ) : (
-            <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 mb-8">
-              <p className="font-sans text-sm text-luxe-charcoal/70 mb-4">
+            <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-6 mb-8">
+              <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-4">
                 Connectez-vous pour laisser un avis
               </p>
               <Link to="/login" className="btn-luxe-secondary">
@@ -629,11 +629,11 @@ const ProductScreen = () => {
               product.reviews.map((review) => (
                 <div
                   key={review._id}
-                  className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6"
+                  className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-6"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h4 className="font-serif text-lg font-normal text-luxe-black mb-1">
+                      <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-1">
                         {review.name}
                       </h4>
                       <Rating value={review.rating} />
@@ -646,14 +646,14 @@ const ProductScreen = () => {
                       })}
                     </span>
                   </div>
-                  <p className="font-sans text-sm text-luxe-charcoal/70 leading-relaxed">
+                  <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 leading-relaxed">
                     {review.comment}
                   </p>
                 </div>
               ))
             ) : (
-              <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-12 text-center">
-                <p className="font-sans text-sm text-luxe-charcoal/70">
+              <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-12 text-center">
+                <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                   Aucun avis pour le moment. Soyez le premier à laisser un avis !
                 </p>
               </div>

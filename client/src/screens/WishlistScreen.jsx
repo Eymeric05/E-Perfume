@@ -114,11 +114,15 @@ const WishlistScreen = () => {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product, index) => (
-              <div key={product._id} className="relative">
-                <Product product={product} index={index} />
+              <div key={product._id} className="relative group">
+                <Product product={product} index={index} hideWishlistButton={true} />
                 <button
-                  onClick={() => removeFromWishlist(product._id)}
-                  className="absolute top-4 right-4 z-10 p-2 bg-white/90 rounded-full text-red-500 hover:bg-white transition-all shadow-lg"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    removeFromWishlist(product._id);
+                  }}
+                  className="absolute top-3 right-3 z-30 p-2 bg-white/95 backdrop-blur-md rounded-full text-red-500 hover:bg-white hover:scale-110 transition-all duration-300 shadow-xl opacity-0 group-hover:opacity-100"
                   aria-label="Retirer de la liste de souhaits"
                 >
                   <FaTrash className="w-4 h-4" />

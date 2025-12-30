@@ -101,7 +101,7 @@ const Header = () => {
             <nav className="hidden md:flex items-center space-x-6" role="navigation" aria-label="Navigation principale">
               <Link 
                 to="/" 
-                className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
+                className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none ${
                   isActiveRoute('/') 
                     ? 'text-luxe-gold' 
                     : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
@@ -115,7 +115,7 @@ const Header = () => {
               </Link>
               <Link 
                 to="/products" 
-                className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
+                className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none ${
                   isActiveRoute('/products') && !location.search.includes('category=skincare')
                     ? 'text-luxe-gold' 
                     : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
@@ -129,7 +129,7 @@ const Header = () => {
               </Link>
               <Link 
                 to="/products?category=skincare" 
-                className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
+                className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none ${
                   isActiveRoute('/products?category=skincare')
                     ? 'text-luxe-gold' 
                     : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
@@ -148,7 +148,7 @@ const Header = () => {
               {/* Search Button */}
               <button
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className={`relative p-2.5 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
+                className={`relative p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                   isSearchOpen
                     ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
                     : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
@@ -163,7 +163,7 @@ const Header = () => {
               {/* Wishlist */}
               <Link
                 to="/wishlist"
-                className={`relative p-2.5 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
+                className={`relative p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                   isActiveRoute('/wishlist')
                     ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
                     : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
@@ -181,7 +181,7 @@ const Header = () => {
               {/* Cart */}
               <Link
                 to="/cart"
-                className={`relative p-2.5 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
+                className={`relative p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                   isActiveRoute('/cart')
                     ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
                     : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
@@ -200,7 +200,7 @@ const Header = () => {
               {userInfo?.isAdmin && (
                 <Link
                   to="/admin"
-                  className={`p-2.5 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
+                  className={`p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                     isActiveRoute('/admin')
                       ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
                       : 'text-luxe-gold hover:text-luxe-black hover:bg-luxe-champagne/50'
@@ -215,7 +215,7 @@ const Header = () => {
               {userInfo ? (
                 <Link
                   to="/profile"
-                  className={`p-2.5 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
+                  className={`p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                     isActiveRoute('/profile')
                       ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
                       : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
@@ -226,7 +226,7 @@ const Header = () => {
               ) : (
                 <Link
                   to="/login"
-                  className={`p-2.5 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
+                  className={`p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                     isActiveRoute('/login')
                       ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
                       : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
@@ -239,7 +239,7 @@ const Header = () => {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`md:hidden p-2.5 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 ${
+                className={`md:hidden p-2.5 rounded-lg transition-all duration-200 focus:outline-none ${
                   isMenuOpen
                     ? 'text-luxe-gold bg-luxe-gold/10 shadow-md'
                     : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
@@ -271,14 +271,14 @@ const Header = () => {
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                   placeholder="Rechercher un parfum, une note olfactive..."
-                  className="w-full px-6 py-4 bg-luxe-warm-white border border-luxe-charcoal/20 text-luxe-black font-sans text-lg focus:outline-none focus:border-luxe-gold focus:ring-2 focus:ring-luxe-gold transition-all duration-200"
+                  className="w-full px-6 py-4 bg-luxe-warm-white border border-luxe-charcoal/20 text-luxe-black font-sans text-lg focus:outline-none focus:border-luxe-gold transition-all duration-200"
                   autoFocus
                   aria-label="Rechercher un produit"
                   aria-describedby={searchResults.length > 0 ? "search-results" : undefined}
                 />
                 <button
                   type="submit"
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-luxe-gold hover:text-luxe-black transition-colors focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 rounded p-1"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-luxe-gold hover:text-luxe-black transition-colors focus:outline-none rounded p-1"
                   aria-label="Lancer la recherche"
                 >
                   <FaSearch className="w-5 h-5" aria-hidden="true" />
@@ -296,7 +296,7 @@ const Header = () => {
                         setIsSearchOpen(false);
                         setSearchQuery('');
                       }}
-                      className="block p-3 bg-luxe-warm-white border border-luxe-charcoal/10 hover:border-luxe-gold hover:bg-luxe-champagne/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2"
+                      className="block p-3 bg-luxe-warm-white border border-luxe-charcoal/10 hover:border-luxe-gold hover:bg-luxe-champagne/30 transition-all duration-200 focus:outline-none"
                       role="option"
                       aria-label={`${product.name} par ${product.brand}`}
                       tabIndex={0}
@@ -327,7 +327,7 @@ const Header = () => {
             <h2 className="font-serif text-2xl font-light tracking-wider text-luxe-black">Menu</h2>
             <button
               onClick={() => setIsMenuOpen(false)}
-              className="p-2 text-luxe-black hover:text-luxe-gold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2 rounded"
+              className="p-2 text-luxe-black hover:text-luxe-gold transition-colors duration-200 focus:outline-none rounded"
               aria-label="Fermer le menu"
             >
               <FaTimes className="w-5 h-5" aria-hidden="true" />

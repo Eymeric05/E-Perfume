@@ -4,7 +4,7 @@ import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 import ProductBadges from './ProductBadges';
 import WishlistButton from './WishlistButton';
 
-const Product = ({ product, index = 0 }) => {
+const Product = ({ product, index = 0, hideWishlistButton = false }) => {
   if (!product || !product._id) {
     return null;
   }
@@ -42,12 +42,14 @@ const Product = ({ product, index = 0 }) => {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-luxe-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div 
-          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex gap-2 z-20"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <WishlistButton product={product} className="w-10 h-10 bg-white/95 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl hover:bg-white hover:scale-110 transition-all duration-300" />
-        </div>
+        {!hideWishlistButton && (
+          <div 
+            className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex gap-2 z-20"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <WishlistButton product={product} className="w-10 h-10 bg-white/95 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl hover:bg-white hover:scale-110 transition-all duration-300" />
+          </div>
+        )}
         <div 
           className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-20"
           onClick={(e) => e.stopPropagation()}

@@ -43,13 +43,13 @@ const AdminLayout = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-luxe-cream">
+    <div className="min-h-screen bg-luxe-cream dark:bg-luxe-charcoal">
       {/* Mobile Header */}
-      <div className="lg:hidden bg-luxe-warm-white border-b border-luxe-charcoal/10 px-4 py-3 flex items-center justify-between">
-        <h1 className="font-serif text-xl text-luxe-black">Administration</h1>
+      <div className="lg:hidden bg-luxe-warm-white dark:bg-luxe-charcoal border-b border-luxe-charcoal/10 dark:border-luxe-gold/20 px-4 py-3 flex items-center justify-between">
+        <h1 className="font-serif text-xl text-luxe-black dark:text-luxe-cream">Administration</h1>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 text-luxe-charcoal/70 hover:text-luxe-gold transition-colors"
+          className="p-2 text-luxe-charcoal/70 dark:text-luxe-cream/70 hover:text-luxe-gold transition-colors"
         >
           {sidebarOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
         </button>
@@ -60,7 +60,7 @@ const AdminLayout = ({ children }) => {
         <aside
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 fixed lg:sticky top-0 left-0 h-screen w-64 bg-luxe-warm-white border-r border-luxe-charcoal/10 z-50 transition-transform duration-300 ease-in-out`}
+          } lg:translate-x-0 fixed lg:sticky top-0 left-0 h-screen w-64 bg-luxe-warm-white dark:bg-luxe-charcoal border-r border-luxe-charcoal/10 dark:border-luxe-gold/20 z-50 transition-transform duration-300 ease-in-out`}
         >
           <div className="p-6 h-full flex flex-col">
             {/* Logo/Title */}
@@ -70,13 +70,13 @@ const AdminLayout = ({ children }) => {
                 className="flex items-center gap-2 mb-6"
               >
                 <FaHome className="w-4 h-4 text-luxe-gold" />
-                <span className="font-sans text-sm text-luxe-charcoal/70 hover:text-luxe-gold transition-colors">
+                <span className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 hover:text-luxe-gold transition-colors">
                   Retour au site
                 </span>
               </Link>
-              <h1 className="font-serif text-2xl text-luxe-black">Administration</h1>
+              <h1 className="font-serif text-2xl text-luxe-black dark:text-luxe-cream">Administration</h1>
               {userInfo && (
-                <p className="font-sans text-xs text-luxe-charcoal/60 mt-1">
+                <p className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/70 mt-1">
                   {userInfo.name}
                 </p>
               )}
@@ -96,7 +96,7 @@ const AdminLayout = ({ children }) => {
                         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                           active
                             ? 'bg-luxe-gold text-luxe-black'
-                            : 'text-luxe-charcoal/70 hover:bg-luxe-champagne/30 hover:text-luxe-gold'
+                            : 'text-luxe-charcoal/70 dark:text-luxe-cream/70 hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 hover:text-luxe-gold'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -109,10 +109,10 @@ const AdminLayout = ({ children }) => {
             </nav>
 
             {/* Sign Out */}
-            <div className="pt-4 border-t border-luxe-charcoal/10">
+            <div className="pt-4 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20">
               <button
                 onClick={signoutHandler}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-luxe-charcoal/70 hover:bg-luxe-champagne/30 hover:text-luxe-gold transition-all duration-200"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-luxe-charcoal/70 dark:text-luxe-cream/70 hover:bg-luxe-champagne/30 dark:hover:bg-luxe-gold/20 hover:text-luxe-gold transition-all duration-200"
               >
                 <FaSignOutAlt className="w-4 h-4" />
                 <span className="font-sans text-sm">Déconnexion</span>
@@ -124,7 +124,7 @@ const AdminLayout = ({ children }) => {
         {/* Overlay for mobile */}
         {sidebarOpen && (
           <div
-            className="lg:hidden fixed inset-0 bg-luxe-black/50 z-40"
+            className="lg:hidden fixed inset-0 bg-luxe-black/50 dark:bg-luxe-black/70 z-40"
             onClick={() => setSidebarOpen(false)}
           />
         )}

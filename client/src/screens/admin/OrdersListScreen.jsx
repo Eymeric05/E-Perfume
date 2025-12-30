@@ -121,7 +121,7 @@ const OrdersListScreen = () => {
             <div className="space-y-6">
                 {/* Header */}
                 <div>
-                    <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black mb-2">
+                    <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black dark:text-luxe-cream mb-2">
                         Commandes
                     </h1>
                     <p className="font-sans text-sm text-luxe-charcoal/70">
@@ -175,7 +175,7 @@ const OrdersListScreen = () => {
                         </p>
                     </div>
                 ) : (
-                    <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 overflow-hidden">
+                    <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead className="bg-luxe-champagne/20">
@@ -212,7 +212,7 @@ const OrdersListScreen = () => {
                                                 </p>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="font-sans text-sm text-luxe-black">
+                                                <p className="font-sans text-sm text-luxe-black dark:text-luxe-cream">
                                                     {order.user?.name || 'N/A'}
                                                 </p>
                                                 <p className="font-sans text-xs text-luxe-charcoal/60">

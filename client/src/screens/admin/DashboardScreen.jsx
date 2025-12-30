@@ -75,10 +75,10 @@ const DashboardScreen = () => {
         <AdminLayout>
             <div className="space-y-6">
                 <div>
-                    <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black mb-2">
+                    <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black dark:text-luxe-cream mb-2">
                         Tableau de bord
                     </h1>
-                    <p className="font-sans text-sm text-luxe-charcoal/70">
+                    <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                         Vue d'ensemble de votre boutique
                     </p>
                 </div>
@@ -91,21 +91,21 @@ const DashboardScreen = () => {
                             <Link
                                 key={index}
                                 to={stat.link}
-                                className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 hover:shadow-lg transition-shadow duration-200"
+                                className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-6 hover:shadow-lg transition-shadow duration-200"
                             >
                                 <div className="flex items-center justify-between mb-4">
                                     <div className={`${stat.color} p-3 rounded-lg`}>
                                         <Icon className="w-6 h-6 text-white" />
                                     </div>
-                                    <FaArrowRight className="w-4 h-4 text-luxe-charcoal/40" />
+                                    <FaArrowRight className="w-4 h-4 text-luxe-charcoal/40 dark:text-luxe-cream/40" />
                                 </div>
-                                <h3 className="font-sans text-sm text-luxe-charcoal/70 mb-1">
+                                <h3 className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-1">
                                     {stat.title}
                                 </h3>
                                 {stats.loading ? (
-                                    <div className="w-16 h-10 bg-luxe-charcoal/5 skeleton rounded"></div>
+                                    <div className="w-16 h-10 bg-luxe-charcoal/5 dark:bg-luxe-cream/10 skeleton rounded"></div>
                                 ) : (
-                                    <p className="font-serif text-3xl font-light text-luxe-black fade-in">
+                                    <p className="font-serif text-3xl font-light text-luxe-black dark:text-luxe-cream fade-in">
                                         {stat.value}
                                     </p>
                                 )}
@@ -115,8 +115,8 @@ const DashboardScreen = () => {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6">
-                    <h2 className="font-serif text-2xl font-light text-luxe-black mb-4">
+                <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-6">
+                    <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream mb-4">
                         Actions rapides
                     </h2>
                     <div className="flex flex-wrap gap-4">

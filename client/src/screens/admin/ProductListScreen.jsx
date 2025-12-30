@@ -120,7 +120,7 @@ const ProductListScreen = () => {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
-                        <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black mb-2">
+                        <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black dark:text-luxe-cream mb-2">
                             Produits
                         </h1>
                         <p className="font-sans text-sm text-luxe-charcoal/70">
@@ -175,7 +175,7 @@ const ProductListScreen = () => {
                         )}
                     </div>
                 ) : (
-                    <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 overflow-hidden">
+                    <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead className="bg-luxe-champagne/20">
@@ -214,7 +214,7 @@ const ProductListScreen = () => {
                                                 />
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="font-serif text-base text-luxe-black">{product.name}</p>
+                                                <p className="font-serif text-base text-luxe-black dark:text-luxe-cream">{product.name}</p>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <p className="font-sans text-sm text-luxe-charcoal/70">{product.brand}</p>
@@ -225,7 +225,7 @@ const ProductListScreen = () => {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="font-serif text-base text-luxe-black">{formatPrice(product.price)}</p>
+                                                <p className="font-serif text-base text-luxe-black dark:text-luxe-cream">{formatPrice(product.price)}</p>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className={`font-sans text-sm ${

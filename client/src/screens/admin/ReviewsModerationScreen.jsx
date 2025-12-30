@@ -67,7 +67,7 @@ const ReviewsModerationScreen = () => {
     const moderateReview = async (productId, reviewId, action) => {
         try {
             dispatch({ type: 'MODERATE_REQUEST' });
-            const res = await fetch(`/api/products/${productId}/reviews/${reviewId}`, {
+            const res = await apiFetch(`/api/products/${productId}/reviews/${reviewId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -77,7 +77,8 @@ const ReviewsModerationScreen = () => {
             });
 
             if (!res.ok) {
-                throw new Error('Erreur lors de la modération');
+                const errorData = await res.json().catch(() => ({ message: 'Erreur lors de la modération' }));
+                throw new Error(errorData.message || 'Erreur lors de la modération');
             }
 
             dispatch({ type: 'MODERATE_SUCCESS' });
@@ -98,7 +99,7 @@ const ReviewsModerationScreen = () => {
             }
         } catch (err) {
             dispatch({ type: 'MODERATE_FAIL' });
-            alert('Erreur lors de la modération de l\'avis');
+            alert(err.message || 'Erreur lors de la modération de l\'avis');
         }
     };
 
@@ -118,10 +119,10 @@ const ReviewsModerationScreen = () => {
         <AdminLayout>
             <div className="space-y-6">
                 <div>
-                    <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black mb-2">
+                    <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black dark:text-luxe-cream mb-2">
                         Modération des Avis
                     </h1>
-                    <p className="font-sans text-sm text-luxe-charcoal/70">
+                    <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                         Gérez et modérez les avis clients
                     </p>
                 </div>
@@ -136,7 +137,7 @@ const ReviewsModerationScreen = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Products List */}
                         <div className="lg:col-span-1">
-                            <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-4 mb-4">
+                            <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-4 mb-4">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
                                         type="checkbox"
@@ -144,7 +145,7 @@ const ReviewsModerationScreen = () => {
                                         onChange={(e) => setUnmoderatedOnly(e.target.checked)}
                                         className="rounded"
                                     />
-                                    <span className="font-sans text-sm text-luxe-black">
+                                    <span className="font-sans text-sm text-luxe-black dark:text-luxe-cream">
                                         Afficher uniquement les avis non modérés
                                     </span>
                                 </label>
@@ -160,14 +161,14 @@ const ReviewsModerationScreen = () => {
                                             onClick={() => setSelectedProduct(product)}
                                             className={`w-full text-left p-4 rounded-lg border transition-all ${
                                                 selectedProduct?._id === product._id
-                                                    ? 'border-luxe-gold bg-luxe-champagne/20'
-                                                    : 'border-luxe-charcoal/10 bg-luxe-warm-white hover:border-luxe-gold/50'
+                                                    ? 'border-luxe-gold bg-luxe-champagne/20 dark:bg-luxe-gold/20'
+                                                    : 'border-luxe-charcoal/10 dark:border-luxe-gold/20 bg-luxe-warm-white dark:bg-luxe-charcoal hover:border-luxe-gold/50'
                                             }`}
                                         >
-                                            <h3 className="font-serif text-lg font-normal text-luxe-black mb-1">
+                                            <h3 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-1">
                                                 {product.name}
                                             </h3>
-                                            <p className="font-sans text-xs text-luxe-charcoal/60 mb-2">
+                                            <p className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/70 mb-2">
                                                 {product.brand}
                                             </p>
                                             {unmoderatedCount > 0 && (
@@ -185,11 +186,11 @@ const ReviewsModerationScreen = () => {
                         <div className="lg:col-span-2">
                             {selectedProduct ? (
                                 <div className="space-y-4">
-                                    <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6">
-                                        <h2 className="font-serif text-2xl font-light text-luxe-black mb-2">
+                                    <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-6">
+                                        <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream mb-2">
                                             {selectedProduct.name}
                                         </h2>
-                                        <p className="font-sans text-sm text-luxe-charcoal/70">
+                                        <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                             {selectedProduct.brand}
                                         </p>
                                     </div>
@@ -199,16 +200,16 @@ const ReviewsModerationScreen = () => {
                                             {reviewsToShow.map((review) => (
                                                 <div
                                                     key={review._id}
-                                                    className={`bg-luxe-warm-white rounded-lg border p-6 ${
+                                                    className={`bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border p-6 ${
                                                         review.isModerated
-                                                            ? 'border-green-200 bg-green-50/30'
-                                                            : 'border-yellow-200 bg-yellow-50/30'
+                                                            ? 'border-green-200 dark:border-green-500/30 bg-green-50/30 dark:bg-green-900/20'
+                                                            : 'border-yellow-200 dark:border-yellow-500/30 bg-yellow-50/30 dark:bg-yellow-900/20'
                                                     }`}
                                                 >
                                                     <div className="flex items-start justify-between mb-3">
                                                         <div className="flex-1">
                                                             <div className="flex items-center gap-3 mb-2">
-                                                                <h4 className="font-serif text-lg font-normal text-luxe-black">
+                                                                <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream">
                                                                     {review.name}
                                                                 </h4>
                                                                 <div className="flex items-center gap-1">
@@ -218,13 +219,13 @@ const ReviewsModerationScreen = () => {
                                                                             className={`w-4 h-4 ${
                                                                                 star <= review.rating
                                                                                     ? 'text-luxe-gold'
-                                                                                    : 'text-luxe-charcoal/20'
+                                                                                    : 'text-luxe-charcoal/20 dark:text-luxe-cream/30'
                                                                             }`}
                                                                         />
                                                                     ))}
                                                                 </div>
                                                             </div>
-                                                            <p className="font-sans text-xs text-luxe-charcoal/60 mb-3">
+                                                            <p className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/70 mb-3">
                                                                 {new Date(review.createdAt).toLocaleDateString('fr-FR', {
                                                                     year: 'numeric',
                                                                     month: 'long',
@@ -233,7 +234,7 @@ const ReviewsModerationScreen = () => {
                                                                     minute: '2-digit',
                                                                 })}
                                                             </p>
-                                                            <p className="font-sans text-sm text-luxe-charcoal/70 leading-relaxed">
+                                                            <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 leading-relaxed">
                                                                 {review.comment}
                                                             </p>
                                                         </div>
@@ -245,7 +246,7 @@ const ReviewsModerationScreen = () => {
                                                     </div>
 
                                                     {!review.isModerated && (
-                                                        <div className="flex items-center gap-3 mt-4 pt-4 border-t border-luxe-charcoal/10">
+                                                        <div className="flex items-center gap-3 mt-4 pt-4 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20">
                                                             <button
                                                                 onClick={() => moderateReview(selectedProduct._id, review._id, 'approve')}
                                                                 disabled={moderating}
@@ -268,8 +269,8 @@ const ReviewsModerationScreen = () => {
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-12 text-center">
-                                            <p className="font-sans text-sm text-luxe-charcoal/70">
+                                        <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-12 text-center">
+                                            <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                                 {unmoderatedOnly
                                                     ? 'Aucun avis non modéré pour ce produit'
                                                     : 'Aucun avis pour ce produit'}
@@ -279,8 +280,8 @@ const ReviewsModerationScreen = () => {
                                 </div>
                             ) : (
                                 <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-12 text-center">
-                                    <FaEye className="w-12 h-12 text-luxe-charcoal/20 mx-auto mb-4" />
-                                    <p className="font-sans text-sm text-luxe-charcoal/70">
+                                    <FaEye className="w-12 h-12 text-luxe-charcoal/20 dark:text-luxe-cream/30 mx-auto mb-4" />
+                                    <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                         Sélectionnez un produit pour voir ses avis
                                     </p>
                                 </div>

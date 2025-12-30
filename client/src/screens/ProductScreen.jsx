@@ -407,7 +407,7 @@ const ProductScreen = () => {
                   <img
                     src={product.brandLogo}
                     alt={product.brand}
-                    className="h-5 w-auto object-contain mr-2 opacity-80"
+                    className="h-5 w-auto object-contain mr-2 opacity-80 dark:brightness-0 dark:invert dark:opacity-90"
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}

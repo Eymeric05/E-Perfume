@@ -67,7 +67,7 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
               <img
                 src={product.brandLogo}
                 alt={product.brand}
-                className="h-4 w-auto object-contain opacity-70"
+                className="h-4 w-auto object-contain opacity-70 dark:brightness-0 dark:invert dark:opacity-90"
                 onError={(e) => {
                   e.target.style.display = 'none';
                 }}
@@ -88,11 +88,11 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
             text={`${product.numReviews || 0}`}
           />
           {product.countInStock === 0 ? (
-            <span className="font-sans text-xs text-red-500/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
+            <span className="font-sans text-[10px] text-red-500/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
               Épuisé
             </span>
           ) : (
-            <span className="font-sans text-xs text-green-600/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
+            <span className="font-sans text-[10px] text-green-600/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
               En stock
             </span>
           )}

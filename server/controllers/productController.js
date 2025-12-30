@@ -101,6 +101,7 @@ const createProduct = asyncHandler(async (req, res) => {
         description,
         image,
         brand,
+        brandLogo,
         category,
         countInStock,
         fragranceNotes,
@@ -116,6 +117,7 @@ const createProduct = asyncHandler(async (req, res) => {
         user: req.user._id,
         image: image || '/images/sample.jpg',
         brand: brand || 'Sample brand',
+        brandLogo: brandLogo || '',
         category: category || 'Sample category',
         countInStock: countInStock || 0,
         numReviews: 0,
@@ -141,6 +143,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         description,
         image,
         brand,
+        brandLogo,
         category,
         countInStock,
         fragranceNotes,
@@ -158,6 +161,9 @@ const updateProduct = asyncHandler(async (req, res) => {
         product.description = description;
         product.image = image;
         product.brand = brand;
+        if (brandLogo !== undefined) {
+            product.brandLogo = brandLogo;
+        }
         product.category = category;
         product.countInStock = countInStock;
         

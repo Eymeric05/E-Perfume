@@ -60,9 +60,21 @@ const Product = ({ product, index = 0 }) => {
 
       <div className="p-5 bg-luxe-warm-white">
         {product.brand && (
-          <p className="font-sans text-xs text-luxe-charcoal/60 mb-1.5 uppercase tracking-widest font-medium">
-            {product.brand}
-          </p>
+          <div className="flex items-center gap-2 mb-1.5">
+            {product.brandLogo && (
+              <img
+                src={product.brandLogo}
+                alt={product.brand}
+                className="h-4 w-auto object-contain opacity-70"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            )}
+            <p className="font-sans text-xs text-luxe-charcoal/60 uppercase tracking-widest font-medium">
+              {product.brand}
+            </p>
+          </div>
         )}
         <h3 className="font-serif text-lg font-normal text-luxe-black mb-3 hover:text-luxe-gold transition-colors duration-200 line-clamp-2 leading-tight">
           {product.name || 'Sans nom'}

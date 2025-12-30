@@ -28,6 +28,7 @@ const productSchema = new mongoose.Schema({
     name: { type: String, required: true },
     image: { type: String, required: true },
     brand: { type: String, required: true },
+    brandLogo: { type: String }, // Logo de la marque
     category: { type: String, required: true },
     fragranceFamily: { type: String }, // Floral, Oriental, Boisé, etc.
     skinType: { type: String }, // Pour les produits skincare: sèche, grasse, mixte, sensible

@@ -51,6 +51,7 @@ const ProductEditScreen = () => {
     const [gender, setGender] = useState(''); // 'Homme' or 'Femme' for perfumes
     const [countInStock, setCountInStock] = useState('');
     const [brand, setBrand] = useState('');
+    const [brandLogo, setBrandLogo] = useState('');
     const [description, setDescription] = useState('');
     const [fragranceNotes, setFragranceNotes] = useState([]);
     const [benefits, setBenefits] = useState([]);
@@ -93,6 +94,7 @@ const ProductEditScreen = () => {
                 }
                 setCountInStock(data.countInStock || '');
                 setBrand(data.brand || '');
+                setBrandLogo(data.brandLogo || '');
                 setDescription(data.description || '');
                 setFragranceNotes(data.fragranceNotes || []);
                 setBenefits(data.benefits || []);
@@ -131,6 +133,7 @@ const ProductEditScreen = () => {
                     image,
                     category: finalCategory,
                     brand,
+                    brandLogo,
                     countInStock: parseInt(countInStock),
                     description,
                     fragranceNotes: isSkincare ? [] : fragranceNotes,
@@ -305,6 +308,68 @@ const ProductEditScreen = () => {
                                             required
                                         />
                                     </div>
+
+                                    <div>
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                            Logo de la marque
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={brandLogo}
+                                            onChange={(e) => setBrandLogo(e.target.value)}
+                                            className="input-luxe w-full"
+                                            placeholder="URL du logo de la marque"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                            Ou télécharger un logo
+                                        </label>
+                                        <label className="flex items-center gap-2 btn-luxe-secondary cursor-pointer">
+                                            <FaUpload className="w-4 h-4" />
+                                            {loadingUpload ? 'Téléchargement...' : 'Choisir un fichier logo'}
+                                            <input
+                                                type="file"
+                                                onChange={async (e) => {
+                                                    const file = e.target.files[0];
+                                                    if (!file) return;
+
+                                                    const formData = new FormData();
+                                                    formData.append('image', file);
+                                                    try {
+                                                        dispatch({ type: 'UPLOAD_REQUEST' });
+                                                        const res = await apiFetch('/api/upload', {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                Authorization: `Bearer ${userInfo.token}`,
+                                                            },
+                                                            body: formData,
+                                                        });
+                                                        const data = await res.text();
+                                                        dispatch({ type: 'UPLOAD_SUCCESS' });
+                                                        setBrandLogo(data);
+                                                        alert('Logo téléchargé avec succès');
+                                                    } catch (err) {
+                                                        dispatch({ type: 'UPLOAD_FAIL' });
+                                                        alert('Erreur lors du téléchargement du logo');
+                                                    }
+                                                }}
+                                                className="hidden"
+                                                accept="image/*"
+                                            />
+                                        </label>
+                                    </div>
+
+                                    {brandLogo && (
+                                        <div className="mt-4">
+                                            <img
+                                                src={brandLogo}
+                                                alt="Logo de la marque"
+                                                className="h-16 w-auto object-contain rounded-lg border border-luxe-charcoal/10"
+                                            />
+                                        </div>
+                                    )}
 
                                     <div>
                                         <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">

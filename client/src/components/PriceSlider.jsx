@@ -4,9 +4,7 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
   const [minValue, setMinValue] = useState(initialMin !== undefined ? initialMin : min);
   const [maxValue, setMaxValue] = useState(initialMax !== undefined ? initialMax : max);
   const [isDragging, setIsDragging] = useState(null);
-  const [hasMoved, setHasMoved] = useState(false);
   const sliderRef = useRef(null);
-  const startPosRef = useRef(null);
 
   const percentage = (value) => ((value - min) / (max - min)) * 100;
 
@@ -44,32 +42,24 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
   useEffect(() => {
     if (isDragging) {
       const handleMove = (e) => {
-        if (!hasMoved) {
-          setHasMoved(true);
-        }
+        e.preventDefault();
         updateValue(e.clientX, isDragging);
       };
 
-      const handleUp = (e) => {
-        // If we didn't move, it was a click - update position
-        if (!hasMoved && startPosRef.current !== null) {
-          updateValue(startPosRef.current, isDragging);
-        }
+      const handleUp = () => {
         setIsDragging(null);
-        setHasMoved(false);
-        startPosRef.current = null;
       };
 
       document.addEventListener('mousemove', handleMove);
       document.addEventListener('mouseup', handleUp);
-      document.addEventListener('mouseleave', handleUp); // Stop dragging if mouse leaves window
+      document.addEventListener('mouseleave', handleUp);
       return () => {
         document.removeEventListener('mousemove', handleMove);
         document.removeEventListener('mouseup', handleUp);
         document.removeEventListener('mouseleave', handleUp);
       };
     }
-  }, [isDragging, hasMoved, minValue, maxValue, min, max, onRangeChange]);
+  }, [isDragging, minValue, maxValue, min, max, onRangeChange]);
 
   return (
     <div className="space-y-4">
@@ -99,41 +89,41 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
             const distToMax = Math.abs(value - maxValue);
             
             if (distToMin < distToMax) {
-              startPosRef.current = e.clientX;
-              setHasMoved(false);
               setIsDragging('min');
+              updateValue(e.clientX, 'min');
             } else {
-              startPosRef.current = e.clientX;
-              setHasMoved(false);
               setIsDragging('max');
+              updateValue(e.clientX, 'max');
             }
           }
         }}
       >
         <div
-          className="absolute h-2 bg-luxe-gold rounded-full transition-all duration-200 slider-range pointer-events-none"
+          className="absolute h-2 bg-luxe-gold rounded-full transition-all duration-300 ease-out slider-range pointer-events-none"
           style={{
             left: `${percentage(minValue)}%`,
             width: `${percentage(maxValue) - percentage(minValue)}%`,
           }}
         />
         <div
-          className="absolute w-4 h-4 bg-luxe-gold rounded-full shadow-lg cursor-grab active:cursor-grabbing transform -translate-y-1 transition-all duration-200 hover:scale-110 hover:shadow-xl z-10 slider-handle"
-          style={{ left: `calc(${percentage(minValue)}% - 8px)` }}
+          className={`absolute w-5 h-5 bg-luxe-gold rounded-full shadow-lg cursor-grab active:cursor-grabbing transform -translate-y-1.5 transition-all duration-300 hover:scale-125 hover:shadow-xl z-10 slider-handle ${
+            isDragging === 'min' ? 'scale-125 shadow-2xl' : ''
+          }`}
+          style={{ left: `calc(${percentage(minValue)}% - 10px)` }}
           onMouseDown={(e) => {
             e.stopPropagation();
-            startPosRef.current = e.clientX;
-            setHasMoved(false);
+            e.preventDefault();
             setIsDragging('min');
           }}
         />
         <div
-          className="absolute w-4 h-4 bg-luxe-gold rounded-full shadow-lg cursor-grab active:cursor-grabbing transform -translate-y-1 transition-all duration-200 hover:scale-110 hover:shadow-xl z-10 slider-handle"
-          style={{ left: `calc(${percentage(maxValue)}% - 8px)` }}
+          className={`absolute w-5 h-5 bg-luxe-gold rounded-full shadow-lg cursor-grab active:cursor-grabbing transform -translate-y-1.5 transition-all duration-300 hover:scale-125 hover:shadow-xl z-10 slider-handle ${
+            isDragging === 'max' ? 'scale-125 shadow-2xl' : ''
+          }`}
+          style={{ left: `calc(${percentage(maxValue)}% - 10px)` }}
           onMouseDown={(e) => {
             e.stopPropagation();
-            startPosRef.current = e.clientX;
-            setHasMoved(false);
+            e.preventDefault();
             setIsDragging('max');
           }}
         />

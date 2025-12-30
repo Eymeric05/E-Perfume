@@ -403,6 +403,16 @@ const ProductScreen = () => {
           <div className="space-y-6">
             {product?.brand && (
               <p className="font-sans text-sm tracking-widest uppercase text-luxe-gold">
+                {product.brandLogo && (
+                  <img
+                    src={product.brandLogo}
+                    alt={product.brand}
+                    className="h-5 w-auto object-contain mr-2 opacity-80"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                )}
                 {product.brand}
               </p>
             )}

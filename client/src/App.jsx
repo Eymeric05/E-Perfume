@@ -23,6 +23,7 @@ const CheckoutScreen = lazy(() => import('./screens/CheckoutScreen'));
 const OrderScreen = lazy(() => import('./screens/OrderScreen'));
 const ProfileScreen = lazy(() => import('./screens/ProfileScreen'));
 const WishlistScreen = lazy(() => import('./screens/WishlistScreen'));
+const LegalScreen = lazy(() => import('./screens/LegalScreen'));
 
 // Lazy loading des écrans admin
 const ProductListScreen = lazy(() => import('./screens/admin/ProductListScreen'));
@@ -59,6 +60,7 @@ const AppContent = () => {
             <Route path="/order/:id" element={<OrderScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
             <Route path="/wishlist" element={<WishlistScreen />} />
+            <Route path="/legal" element={<LegalScreen />} />
 
             {/* Admin Routes - Wrapped in Suspense for lazy loading */}
             <Route

@@ -54,9 +54,17 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-luxe-cream/10 pt-8">
-          <p className="font-sans text-xs text-luxe-cream/50 text-center">
-            &copy; {new Date().getFullYear()} E-perfume. Tous droits réservés.
-          </p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="font-sans text-xs text-luxe-cream/50 text-center md:text-left">
+              &copy; {new Date().getFullYear()} E-perfume. Tous droits réservés.
+            </p>
+            <Link
+              to="/legal"
+              className="font-sans text-xs text-luxe-cream/50 hover:text-luxe-gold transition-colors duration-200"
+            >
+              Mentions légales
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

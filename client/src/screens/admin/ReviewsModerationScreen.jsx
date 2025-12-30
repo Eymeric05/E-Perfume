@@ -279,7 +279,7 @@ const ReviewsModerationScreen = () => {
                                     )}
                                 </div>
                             ) : (
-                                <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-12 text-center">
+                                <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-12 text-center">
                                     <FaEye className="w-12 h-12 text-luxe-charcoal/20 dark:text-luxe-cream/30 mx-auto mb-4" />
                                     <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                         Sélectionnez un produit pour voir ses avis

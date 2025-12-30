@@ -118,13 +118,13 @@ const ProfileScreen = () => {
                                 <FaUser className="w-10 h-10 text-luxe-black" />
                             </div>
                             <div className="flex-1">
-                                <h2 className="font-serif text-2xl font-normal text-luxe-black mb-2">
+                                <h2 className="font-serif text-2xl font-normal text-luxe-black mb-2 dark:text-luxe-cream">
                                     {userInfo?.name}
                                 </h2>
                                 <div className="flex flex-col gap-2">
-                                    <div className="flex items-center gap-3 text-luxe-charcoal/70">
+                                    <div className="flex items-center gap-3 text-luxe-charcoal/70 dark:text-luxe-cream">
                                         <FaEnvelope className="w-4 h-4" />
-                                        <span className="font-sans text-sm">{userInfo?.email}</span>
+                                        <span className="font-sans text-sm dark:text-luxe-cream">{userInfo?.email}</span>
                                     </div>
                                     {userInfo?.isAdmin && (
                                         <span className="inline-block px-4 py-1 rounded-full bg-luxe-gold text-luxe-black text-xs font-medium tracking-wider uppercase w-fit mt-2">

@@ -326,8 +326,8 @@ const ProductEditScreen = () => {
                                         <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
                                             Ou télécharger un logo
                                         </label>
-                                        <label className="flex items-center gap-2 btn-luxe-secondary cursor-pointer">
-                                            <FaUpload className="w-4 h-4" />
+                                        <label className="flex items-center gap-2 btn-luxe-secondary cursor-pointer dark:text-luxe-cream">
+                                            <FaUpload className="w-4 h-4 dark:text-luxe-cream" />
                                             {loadingUpload ? 'Téléchargement...' : 'Choisir un fichier logo'}
                                             <input
                                                 type="file"
@@ -534,7 +534,7 @@ const ProductEditScreen = () => {
                                         <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
                                             Ou télécharger une image
                                         </label>
-                                        <label className="flex items-center gap-2 btn-luxe-secondary cursor-pointer">
+                                        <label className="flex items-center gap-2 btn-luxe-secondary cursor-pointer dark:text-luxe-cream">
                                             <FaUpload className="w-4 h-4" />
                                             {loadingUpload ? 'Téléchargement...' : 'Choisir un fichier'}
                                             <input

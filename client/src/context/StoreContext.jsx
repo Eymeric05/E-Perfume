@@ -109,13 +109,36 @@ function reducer(state, action) {
 
         case 'ADD_VIEWED_PRODUCT': {
             const product = action.payload;
+            // Vérifier que le produit a un ID valide avant de l'ajouter
+            if (!product || !product._id || product._id.length !== 24) {
+                return state;
+            }
             const viewedProducts = state.viewedProducts.filter(
-                (p) => p._id !== product._id
+                (p) => p._id && p._id !== product._id
             );
             viewedProducts.unshift({ ...product, viewedAt: new Date().toISOString() });
             const limited = viewedProducts.slice(0, 12);
             localStorage.setItem('viewedProducts', JSON.stringify(limited));
             return { ...state, viewedProducts: limited };
+        }
+        
+        case 'CLEAN_VIEWED_PRODUCTS': {
+            // Nettoyer les produits invalides du localStorage
+            const viewedProducts = state.viewedProducts.filter(
+                (p) => p && p._id && typeof p._id === 'string' && p._id.length === 24
+            );
+            localStorage.setItem('viewedProducts', JSON.stringify(viewedProducts));
+            return { ...state, viewedProducts };
+        }
+        
+        case 'REMOVE_VIEWED_PRODUCT': {
+            // Supprimer un produit spécifique de la liste
+            const productId = action.payload;
+            const viewedProducts = state.viewedProducts.filter(
+                (p) => p && p._id && p._id !== productId
+            );
+            localStorage.setItem('viewedProducts', JSON.stringify(viewedProducts));
+            return { ...state, viewedProducts };
         }
 
         default:

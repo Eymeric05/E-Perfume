@@ -4,14 +4,17 @@ import { Store } from '../context/StoreContext';
 import Product from './Product';
 
 const RecentlyViewed = () => {
-  const { state } = useContext(Store);
+  const { state, dispatch } = useContext(Store);
   const { viewedProducts } = state;
 
   if (!viewedProducts || viewedProducts.length === 0) return null;
 
-  const recentProducts = Array.isArray(viewedProducts)
-    ? viewedProducts.slice(0, 6)
+  // Filtrer uniquement les produits avec un ID valide (format MongoDB ObjectId = 24 caractères)
+  const validProducts = Array.isArray(viewedProducts)
+    ? viewedProducts.filter((p) => p && p._id && typeof p._id === 'string' && p._id.length === 24)
     : [];
+
+  const recentProducts = validProducts.slice(0, 6);
 
   if (recentProducts.length === 0) return null;
 

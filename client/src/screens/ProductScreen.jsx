@@ -160,11 +160,34 @@ const ProductScreen = () => {
       try {
         setLoading(true);
         setError(null);
+        
+        // Vérifier que l'ID est valide (format MongoDB ObjectId)
+        if (!id || id.length !== 24) {
+          throw new Error('ID de produit invalide');
+        }
+        
         const res = await apiFetch(`/api/products/${id}`);
+        
         if (!res.ok) {
+          // Si le produit n'existe pas, le supprimer de la liste des produits consultés
+          if (res.status === 404) {
+            ctxDispatch({ type: 'REMOVE_VIEWED_PRODUCT', payload: id });
+          }
           throw new Error('Produit non trouvé');
         }
+        
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await res.text();
+          throw new Error(`Réponse invalide du serveur: ${text.substring(0, 100)}`);
+        }
+        
         const data = await res.json();
+        
+        if (!data || !data._id) {
+          throw new Error('Données de produit invalides');
+        }
+        
         setProduct(data);
         
         // Initialize image selection - use images array if available, otherwise use single image
@@ -188,7 +211,7 @@ const ProductScreen = () => {
     if (id) {
       fetchProduct();
     }
-  }, [id]);
+  }, [id, ctxDispatch]);
 
   const addToCartHandler = async () => {
     if (!product?._id) return;

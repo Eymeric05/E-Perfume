@@ -394,7 +394,7 @@ const ProductsListScreen = () => {
                 {/* Price Range - Slider */}
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-sans text-sm font-medium uppercase tracking-wider text-luxe-black">
+                    <h3 className="font-sans text-sm font-medium uppercase tracking-wider text-luxe-black dark:text-luxe-cream">
                       Prix
                     </h3>
                     {(selectedFilters.priceRange || selectedFilters.priceMin !== null || selectedFilters.priceMax !== null) && (

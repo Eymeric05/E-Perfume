@@ -326,7 +326,7 @@ const ProductEditScreen = () => {
                                         <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
                                             Ou télécharger un logo
                                         </label>
-                                        <label className="flex items-center gap-2 px-8 py-3 bg-transparent border-2 border-luxe-black dark:border-luxe-gold text-luxe-black dark:text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out hover:bg-luxe-black dark:hover:bg-luxe-black hover:text-luxe-cream hover:scale-105 cursor-pointer">
+                                        <label className="flex items-center gap-2 px-8 py-3 bg-luxe-cream dark:bg-luxe-charcoal border-2 border-luxe-black dark:border-luxe-gold text-luxe-black dark:text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out hover:bg-luxe-black dark:hover:bg-luxe-black hover:text-luxe-cream hover:scale-105 cursor-pointer">
                                             <FaUpload className="w-4 h-4" />
                                             {loadingUpload ? 'Téléchargement...' : 'Choisir un fichier logo'}
                                             <input
@@ -534,7 +534,7 @@ const ProductEditScreen = () => {
                                         <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
                                             Ou télécharger une image
                                         </label>
-                                        <label className="flex items-center gap-2 px-8 py-3 bg-transparent border-2 border-luxe-black dark:border-luxe-gold text-luxe-black dark:text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out hover:bg-luxe-black dark:hover:bg-luxe-black hover:text-luxe-cream hover:scale-105 cursor-pointer">
+                                        <label className="flex items-center gap-2 px-8 py-3 bg-luxe-cream dark:bg-luxe-charcoal border-2 border-luxe-black dark:border-luxe-gold text-luxe-black dark:text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out hover:bg-luxe-black dark:hover:bg-luxe-black hover:text-luxe-cream hover:scale-105 cursor-pointer">
                                             <FaUpload className="w-4 h-4" />
                                             {loadingUpload ? 'Téléchargement...' : 'Choisir un fichier'}
                                             <input

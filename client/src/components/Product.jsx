@@ -89,7 +89,7 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
           />
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20 gap-4">
+        <div className="flex items-start justify-between pt-3 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20 gap-3">
           <div className="flex flex-col gap-1 min-w-0 flex-1">
             <span className="font-serif text-xl font-semibold text-luxe-black dark:text-luxe-cream whitespace-nowrap">
               {formatPrice(displayPrice)}
@@ -101,11 +101,11 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
             )}
           </div>
           {product.countInStock === 0 ? (
-            <span className="font-sans text-xs text-red-500/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
+            <span className="font-sans text-xs text-red-500/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0 mt-0.5">
               Épuisé
             </span>
           ) : (
-            <span className="font-sans text-xs text-green-600/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
+            <span className="font-sans text-xs text-green-600/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0 mt-0.5">
               En stock
             </span>
           )}

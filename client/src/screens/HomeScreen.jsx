@@ -225,10 +225,10 @@ const HomeScreen = () => {
           <div className="max-w-7xl mx-auto px-4 md:px-8">
             <div className="flex justify-between items-end mb-12">
               <div>
-                <h2 className="font-serif text-5xl md:text-6xl font-light text-luxe-black mb-4">
+                <h2 className="font-serif text-5xl md:text-6xl font-light text-luxe-black dark:text-luxe-cream mb-4">
                   Nos Collections les plus vendues
                 </h2>
-                <p className="font-sans text-lg text-luxe-charcoal/70">
+                <p className="font-sans text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70">
                   Découvrez nos collections les plus populaires
                 </p>
               </div>

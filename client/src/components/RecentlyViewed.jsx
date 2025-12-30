@@ -19,14 +19,14 @@ const RecentlyViewed = () => {
   if (recentProducts.length === 0) return null;
 
   return (
-    <section className="section-spacing bg-luxe-cream">
+    <section className="section-spacing bg-luxe-cream dark:bg-luxe-charcoal">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between mb-12">
           <div>
-            <h2 className="font-serif text-4xl md:text-5xl font-light text-luxe-black mb-4">
+            <h2 className="font-serif text-4xl md:text-5xl font-light text-luxe-black dark:text-luxe-cream mb-4">
               Récemment consultés
             </h2>
-            <p className="font-sans text-lg text-luxe-charcoal/70">
+            <p className="font-sans text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70">
               Vos dernières visites
             </p>
           </div>

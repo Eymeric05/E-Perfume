@@ -82,15 +82,24 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
           {product.name || 'Sans nom'}
         </h3>
 
-        <div className="mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <Rating
             value={product.rating || 0}
             text={`${product.numReviews || 0}`}
           />
+          {product.countInStock === 0 ? (
+            <span className="font-sans text-xs text-red-500/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
+              Épuisé
+            </span>
+          ) : (
+            <span className="font-sans text-xs text-green-600/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
+              En stock
+            </span>
+          )}
         </div>
 
-        <div className="flex items-start justify-between pt-3 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20 gap-3">
-          <div className="flex flex-col gap-1 min-w-0 flex-1">
+        <div className="pt-3 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20">
+          <div className="flex flex-col gap-1">
             <span className="font-serif text-xl font-semibold text-luxe-black dark:text-luxe-cream whitespace-nowrap">
               {formatPrice(displayPrice)}
             </span>
@@ -100,15 +109,6 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
               </span>
             )}
           </div>
-          {product.countInStock === 0 ? (
-            <span className="font-sans text-xs text-red-500/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0 mt-0.5">
-              Épuisé
-            </span>
-          ) : (
-            <span className="font-sans text-xs text-green-600/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0 mt-0.5">
-              En stock
-            </span>
-          )}
         </div>
       </div>
     </Link>

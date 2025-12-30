@@ -94,7 +94,7 @@ const Header = () => {
               <img 
                 src="/images/E-perfume-logo.png" 
                 alt="E-perfume" 
-                className="h-10 md:h-12 w-auto drop-shadow-sm"
+                className="h-10 md:h-12 w-auto drop-shadow-sm dark:brightness-0 dark:invert"
               />
             </Link>
 
@@ -119,7 +119,7 @@ const Header = () => {
                 className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none ${
                   isActiveRoute('/products') && !location.search.includes('category=skincare')
                     ? 'text-luxe-gold' 
-                    : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
+                    : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/50 dark:hover:bg-luxe-gold/20'
                 } active:scale-95 active:bg-luxe-gold/20`}
                 aria-label="Voir tous les parfums"
               >
@@ -133,7 +133,7 @@ const Header = () => {
                 className={`relative px-4 py-2 font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-200 rounded-lg focus:outline-none ${
                   isActiveRoute('/products?category=skincare')
                     ? 'text-luxe-gold' 
-                    : 'text-luxe-black hover:text-luxe-gold hover:bg-luxe-champagne/50'
+                    : 'text-luxe-black dark:text-luxe-cream hover:text-luxe-gold hover:bg-luxe-champagne/50 dark:hover:bg-luxe-gold/20'
                 } active:scale-95 active:bg-luxe-gold/20`}
                 aria-label="Voir les produits esthétique et soins"
               >

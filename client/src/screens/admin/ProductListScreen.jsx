@@ -180,30 +180,30 @@ const ProductListScreen = () => {
                             <table className="w-full">
                                 <thead className="bg-luxe-champagne/20">
                                     <tr>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream">
                                             Image
                                         </th>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream">
                                             Nom
                                         </th>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream">
                                             Marque
                                         </th>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream">
                                             Catégorie
                                         </th>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream">
                                             Prix
                                         </th>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
-                                            Stock
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream    dark:text-luxe-cream">
+                                            dark:text-luxe-cream
                                         </th>
-                                        <th className="text-right px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
-                                            Actions
+                                        <th className="text-right px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream">
+                                            dark:text-luxe-cream
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-luxe-charcoal/10">
+                                <tbody className="divide-y divide-luxe-charcoal/10 dark:divide-luxe-gold/20 dark:text-luxe-cream">
                                     {filteredProducts.map((product) => (
                                         <tr key={product._id} className="hover:bg-luxe-champagne/10 transition-colors">
                                             <td className="px-6 py-4">

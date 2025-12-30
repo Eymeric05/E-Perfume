@@ -257,7 +257,7 @@ const ProductEditScreen = () => {
                         <FaArrowLeft className="w-5 h-5" />
                     </Link>
                     <div>
-                        <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black">
+                        <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black dark:text-luxe-cream">
                             {productId === 'new' ? 'Nouveau Produit' : 'Modifier le Produit'}
                         </h1>
                         <p className="font-sans text-sm text-luxe-charcoal/70 mt-1">

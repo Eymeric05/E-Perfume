@@ -1,0 +1,382 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-luxe-cream text-luxe-black font-sans antialiased;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+    letter-spacing: 0.02em;
+  }
+
+  h1 {
+    @apply text-5xl md:text-7xl font-light;
+    letter-spacing: 0.05em;
+  }
+
+  h2 {
+    @apply text-4xl md:text-6xl font-normal;
+  }
+
+  h3 {
+    @apply text-3xl md:text-5xl font-normal;
+  }
+}
+
+@layer components {
+  .btn-luxe {
+    @apply px-8 py-3 bg-luxe-black text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out;
+    @apply hover:bg-luxe-gold hover:text-luxe-black hover:shadow-lg hover:shadow-luxe-gold/20;
+    @apply focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2;
+    @apply active:scale-95;
+    min-height: 44px; /* Taille minimale pour accessibilité tactile */
+  }
+  
+  /* Screen reader only class */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .btn-luxe-secondary {
+    @apply px-8 py-3 bg-transparent border-2 border-luxe-black text-luxe-black font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out;
+    @apply hover:bg-luxe-black hover:text-luxe-cream hover:scale-105;
+    @apply focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2;
+    @apply active:scale-95;
+  }
+
+  .btn-luxe-gold {
+    @apply px-8 py-3 bg-luxe-gold text-luxe-black font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out;
+    @apply hover:bg-luxe-champagne hover:shadow-lg hover:shadow-luxe-gold/20 hover:scale-105;
+    @apply focus:outline-none focus:ring-2 focus:ring-luxe-gold focus:ring-offset-2;
+    @apply active:scale-95;
+  }
+
+  .tag-filter {
+    @apply px-4 py-2 bg-luxe-cream border border-luxe-charcoal/20 text-luxe-black font-sans text-sm tracking-wide transition-all duration-200;
+    @apply hover:border-luxe-gold hover:bg-luxe-champagne/30 cursor-pointer;
+  }
+
+  .tag-filter-active {
+    @apply bg-luxe-gold border-luxe-gold text-luxe-black;
+  }
+
+  .product-card {
+    @apply bg-luxe-warm-white border border-luxe-charcoal/10 transition-all duration-500 ease-out rounded-lg overflow-hidden;
+    @apply hover:shadow-2xl hover:border-luxe-gold/30 hover:-translate-y-2;
+    @apply cursor-pointer;
+  }
+
+  .input-luxe {
+    @apply w-full px-4 py-3 bg-luxe-cream border border-luxe-charcoal/20 text-luxe-black font-sans;
+    @apply focus:outline-none focus:border-luxe-gold focus:ring-1 focus:ring-luxe-gold transition-all duration-200;
+  }
+
+  .section-spacing {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .parallax-slow {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Premium Loading Animations */
+  .skeleton {
+    @apply bg-luxe-charcoal/5 animate-pulse rounded;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.05) 0%,
+      rgba(0, 0, 0, 0.1) 50%,
+      rgba(0, 0, 0, 0.05) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  /* Premium Spinner */
+  .spinner-luxe {
+    @apply border-2 border-luxe-gold border-t-transparent rounded-full;
+    animation: spin-luxe 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+  }
+
+  @keyframes spin-luxe {
+    0% {
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(180deg) scale(1.1);
+    }
+    100% {
+      transform: rotate(360deg) scale(1);
+    }
+  }
+
+  /* Fade In Animation */
+  .fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Slide In Animation */
+  .slide-in {
+    animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Premium Hover Effects */
+  .hover-lift {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Click Ripple Effect */
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .ripple:active::after {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Stagger Animation for Lists */
+  .stagger-item {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Pulse animation for icons */
+  @keyframes pulse-gentle {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+  }
+
+  .animate-pulse-gentle {
+    animation: pulse-gentle 2s ease-in-out infinite;
+  }
+
+  /* Slide in from left */
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .slide-in-left {
+    animation: slideInLeft 0.5s ease-out;
+  }
+
+  /* Bounce gentle */
+  @keyframes bounce-gentle {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  .bounce-gentle {
+    animation: bounce-gentle 1s ease-in-out infinite;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-luxe-cream;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-luxe-charcoal/30;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-luxe-gold/50;
+}
+
+/* Thin scrollbar for sidebars */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  @apply bg-luxe-charcoal/20;
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.scrollbar-thin:hover::-webkit-scrollbar-thumb {
+  @apply bg-luxe-gold/40;
+}
+
+/* Selection */
+::selection {
+  @apply bg-luxe-gold/30 text-luxe-black;
+}
+
+/* Page Transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.page-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+}
+
+/* Smooth Image Loading */
+img {
+  transition: opacity 0.3s ease-in-out;
+}
+
+img[loading="lazy"] {
+  opacity: 0;
+}
+
+img[loading="lazy"].loaded {
+  opacity: 1;
+}
+
+/* Premium Button Click Effect */
+.btn-luxe,
+.btn-luxe-secondary,
+.btn-luxe-gold {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-luxe::before,
+.btn-luxe-secondary::before,
+.btn-luxe-gold::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-luxe:active::before,
+.btn-luxe-secondary:active::before,
+.btn-luxe-gold:active::before {
+  width: 300px;
+  height: 300px;
+}

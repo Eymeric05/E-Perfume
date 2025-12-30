@@ -1,0 +1,51 @@
+.footer {
+  background: linear-gradient(180deg, rgba(37, 21, 30, 0.95) 0%, rgba(26, 10, 20, 0.98) 100%);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  text-align: center;
+  padding: var(--spacing-md) 0;
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-amber), transparent);
+  opacity: 0.3;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.footer-text {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.footer-text::before {
+  content: '✦';
+  margin-right: 0.5rem;
+  color: var(--accent-amber);
+  opacity: 0.6;
+}
+
+.footer-text::after {
+  content: '✦';
+  margin-left: 0.5rem;
+  color: var(--accent-amber);
+  opacity: 0.6;
+}
+
+

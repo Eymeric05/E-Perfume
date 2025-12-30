@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build outputs
+dist/
+build/
+client/dist/
+client/dist-ssr/
+
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+CLES_CLOUDINARY.txt
+*.key
+*.pem
+
+# Uploads (images uploaded by users)
+server/uploads/
+!server/uploads/.gitkeep
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+

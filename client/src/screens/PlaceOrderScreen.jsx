@@ -1,0 +1,187 @@
+import React, { useContext, useEffect, useReducer } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Store } from '../context/StoreContext';
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'CREATE_REQUEST':
+            return { ...state, loading: true };
+        case 'CREATE_SUCCESS':
+            return { ...state, loading: false };
+        case 'CREATE_FAIL':
+            return { ...state, loading: false };
+        default:
+            return state;
+    }
+};
+
+const PlaceOrderScreen = () => {
+    const navigate = useNavigate();
+    const [{ loading }, dispatch] = useReducer(reducer, {
+        loading: false,
+    });
+    const { state, dispatch: ctxDispatch } = useContext(Store);
+    const { cart, userInfo } = state;
+
+    const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
+    cart.itemsPrice = round2(
+        cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
+    );
+    cart.shippingPrice = cart.itemsPrice > 100 ? round2(0) : round2(10);
+    cart.taxPrice = round2(0.15 * cart.itemsPrice);
+    cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
+
+    const placeOrderHandler = async () => {
+        try {
+            dispatch({ type: 'CREATE_REQUEST' });
+            const res = await fetch('/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${userInfo.token}`,
+                },
+                body: JSON.stringify({
+                    orderItems: cart.cartItems,
+                    shippingAddress: cart.shippingAddress,
+                    paymentMethod: cart.paymentMethod,
+                    itemsPrice: cart.itemsPrice,
+                    shippingPrice: cart.shippingPrice,
+                    taxPrice: cart.taxPrice,
+                    totalPrice: cart.totalPrice,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                ctxDispatch({ type: 'CART_CLEAR' });
+                dispatch({ type: 'CREATE_SUCCESS' });
+                localStorage.removeItem('cartItems');
+                navigate(`/order/${data._id}`);
+            } else {
+                dispatch({ type: 'CREATE_FAIL' });
+                alert('Error placing order');
+            }
+
+        } catch (err) {
+            dispatch({ type: 'CREATE_FAIL' });
+            alert('Error placing order');
+        }
+    };
+
+    useEffect(() => {
+        if (!cart.paymentMethod) {
+            navigate('/payment');
+        }
+    }, [cart, navigate]);
+
+    return (
+        <div style={{ padding: '2rem 0' }}>
+            <h1 style={{ marginBottom: '2rem' }}>Récapitulatif de la Commande</h1>
+            <div style={gridStyle}>
+                <div style={{ flex: 2 }}>
+                    <div style={cardStyle}>
+                        <h2>Livraison</h2>
+                        <p>
+                            <strong>Nom:</strong> {userInfo.name} <br />
+                            <strong>Adresse:</strong> {cart.shippingAddress.address},{' '}
+                            {cart.shippingAddress.city}, {cart.shippingAddress.postalCode},{' '}
+                            {cart.shippingAddress.country}
+                        </p>
+                        <Link to="/shipping">Modifier</Link>
+                    </div>
+
+                    <div style={cardStyle}>
+                        <h2>Paiement</h2>
+                        <p>
+                            <strong>Méthode:</strong> {cart.paymentMethod}
+                        </p>
+                        <Link to="/payment">Modifier</Link>
+                    </div>
+
+                    <div style={cardStyle}>
+                        <h2>Articles</h2>
+                        <ul style={{ listStyle: 'none', padding: 0 }}>
+                            {cart.cartItems.map((item) => (
+                                <li key={item._id} style={itemStyle}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                        <img
+                                            src={item.image}
+                                            alt={item.name}
+                                            style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }}
+                                        />
+                                        <Link to={`/product/${item._id}`}>{item.name}</Link>
+                                    </div>
+                                    <div>
+                                        {item.quantity} x {item.price} € = {item.quantity * item.price} €
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                        <Link to="/cart">Modifier</Link>
+                    </div>
+                </div>
+
+                <div style={{ flex: 1 }}>
+                    <div style={cardStyle}>
+                        <h2>Résumé</h2>
+                        <div style={rowStyle}>
+                            <span>Articles</span>
+                            <span>{cart.itemsPrice.toFixed(2)} €</span>
+                        </div>
+                        <div style={rowStyle}>
+                            <span>Livraison</span>
+                            <span>{cart.shippingPrice.toFixed(2)} €</span>
+                        </div>
+                        <div style={rowStyle}>
+                            <span>TVA</span>
+                            <span>{cart.taxPrice.toFixed(2)} €</span>
+                        </div>
+                        <div style={rowStyle}>
+                            <strong>Total</strong>
+                            <strong>{cart.totalPrice.toFixed(2)} €</strong>
+                        </div>
+                        <button
+                            type="button"
+                            className="btn btn-block"
+                            onClick={placeOrderHandler}
+                            disabled={cart.cartItems.length === 0 || loading}
+                        >
+                            {loading ? 'Chargement...' : 'Commander'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const gridStyle = {
+    display: 'flex',
+    gap: '2rem',
+    flexWrap: 'wrap',
+};
+
+const cardStyle = {
+    border: '1px solid #e0e0e0',
+    borderRadius: '4px',
+    padding: '1.5rem',
+    background: '#fff',
+    marginBottom: '1rem',
+};
+
+const itemStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0.5rem 0',
+    borderBottom: '1px solid #eee',
+};
+
+const rowStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '0.5rem',
+};
+
+export default PlaceOrderScreen;

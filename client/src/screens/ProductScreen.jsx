@@ -1,0 +1,621 @@
+import React, { useContext, useEffect, useState } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Store } from '../context/StoreContext';
+import { Helmet } from 'react-helmet-async';
+import { FaArrowLeft, FaStar, FaStarHalfAlt, FaRegStar, FaShoppingCart, FaPlus, FaMinus, FaExpand } from 'react-icons/fa';
+import ImageZoom from '../components/ImageZoom';
+import WishlistButton from '../components/WishlistButton';
+import SimilarProducts from '../components/SimilarProducts';
+import ProductBadges from '../components/ProductBadges';
+import FragranceNotes from '../components/FragranceNotes';
+
+const ReviewForm = ({ productId, onReviewAdded }) => {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+  const [hoveredRating, setHoveredRating] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    if (!rating || !comment.trim()) {
+      setError('Veuillez remplir tous les champs');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setSuccess(false);
+
+    try {
+      const res = await fetch(`/api/products/${productId}/reviews`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+        body: JSON.stringify({ rating, comment }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Erreur lors de l\'ajout de l\'avis');
+      }
+
+      setSuccess(true);
+      setRating(0);
+      setComment('');
+      setHoveredRating(0);
+      
+      if (onReviewAdded) {
+        onReviewAdded();
+      }
+
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      setError(err.message || 'Erreur lors de l\'ajout de l\'avis');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 mb-8">
+      <h3 className="font-serif text-xl font-normal text-luxe-black mb-4">
+        Laisser un avis
+      </h3>
+      <form onSubmit={submitHandler}>
+        <div className="mb-4">
+          <label className="block font-sans text-sm font-medium text-luxe-black mb-2">
+            Note
+          </label>
+          <div className="flex items-center gap-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setRating(star)}
+                onMouseEnter={() => setHoveredRating(star)}
+                onMouseLeave={() => setHoveredRating(0)}
+                className="focus:outline-none"
+              >
+                <span className="text-luxe-gold">
+                  {(hoveredRating || rating) >= star ? (
+                    <FaStar className="w-6 h-6" />
+                  ) : (
+                    <FaRegStar className="w-6 h-6 text-luxe-charcoal/30" />
+                  )}
+                </span>
+              </button>
+            ))}
+            {rating > 0 && (
+              <span className="font-sans text-sm text-luxe-charcoal/70 ml-2">
+                {rating}/5
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <label className="block font-sans text-sm font-medium text-luxe-black mb-2">
+            Commentaire
+          </label>
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            rows="4"
+            className="input-luxe w-full"
+            placeholder="Partagez votre expérience avec ce produit..."
+          />
+        </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded text-green-700 text-sm">
+            Votre avis a été soumis et sera publié après modération.
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading || !rating || !comment.trim()}
+          className="btn-luxe-gold disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? 'Envoi...' : 'Publier l\'avis'}
+        </button>
+      </form>
+    </div>
+  );
+};
+
+const ProductScreen = () => {
+  const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const { id } = useParams();
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { cart, userInfo } = state;
+
+  useEffect(() => {
+    // Scroll to top immediately when component mounts or product ID changes
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [id]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch(`/api/products/${id}`);
+        if (!res.ok) {
+          throw new Error('Produit non trouvé');
+        }
+        const data = await res.json();
+        setProduct(data);
+        
+        // Initialize image selection - use images array if available, otherwise use single image
+        if (data.images && Array.isArray(data.images) && data.images.length > 0 && data.images.some(img => img)) {
+          setSelectedImage(0);
+        } else {
+          setSelectedImage(0); // Always reset to first image
+        }
+        
+        ctxDispatch({ type: 'ADD_VIEWED_PRODUCT', payload: data });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        setError(error.message || 'Erreur lors du chargement du produit');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchProduct();
+    }
+  }, [id]);
+
+  const addToCartHandler = async () => {
+    if (!product?._id) return;
+    
+    const existItem = cart.cartItems.find((x) => x._id === product._id);
+    const newQuantity = existItem ? existItem.quantity + quantity : quantity;
+
+    if (product.countInStock < newQuantity) {
+      window.alert('Désolé, le produit est en rupture de stock');
+      return;
+    }
+
+    ctxDispatch({
+      type: 'CART_ADD_ITEM',
+      payload: { ...product, quantity },
+    });
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR',
+    }).format(price || 0);
+  };
+
+  // Determine if product is skincare or perfume
+  const isSkincare = product?.category === 'skincare';
+  
+  // Extract fragrance notes for perfumes (handle both array and undefined)
+  const fragranceNotes = product?.fragranceNotes && Array.isArray(product.fragranceNotes) && product.fragranceNotes.length > 0 
+    ? product.fragranceNotes 
+    : [];
+  
+  // Extract benefits for skincare (handle both array and undefined)
+  const benefits = product?.benefits && Array.isArray(product.benefits) && product.benefits.length > 0 
+    ? product.benefits 
+    : [];
+
+  // Handle images: use images array if available, otherwise fallback to single image
+  // Always ensure we have at least the main image
+  const mainImage = product?.image || '';
+  const imagesArray = (product?.images && Array.isArray(product.images) && product.images.length > 0)
+    ? product.images.filter(img => img && img.trim() !== '')
+    : [];
+  
+  // Combine: use images array if valid, otherwise use main image
+  const images = imagesArray.length > 0 ? imagesArray : (mainImage ? [mainImage] : []);
+
+  const Rating = ({ value, text }) => {
+    const numValue = Number(value) || 0;
+    return (
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span key={star} className="text-luxe-gold">
+            {numValue >= star ? (
+              <FaStar className="w-4 h-4" />
+            ) : numValue >= star - 0.5 ? (
+              <FaStarHalfAlt className="w-4 h-4" />
+            ) : (
+              <FaRegStar className="w-4 h-4 text-luxe-charcoal/30" />
+            )}
+          </span>
+        ))}
+        {text && (
+          <span className="font-sans text-sm text-luxe-charcoal/60 ml-3">
+            {text}
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-luxe-cream flex items-center justify-center">
+        <div className="text-center space-y-6">
+          <div className="spinner-luxe w-12 h-12 mx-auto"></div>
+          <div className="space-y-2">
+            <p className="font-serif text-lg text-luxe-black">Chargement...</p>
+            <p className="font-sans text-sm text-luxe-charcoal/60">Préparation de votre expérience</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="min-h-screen bg-luxe-cream">
+        <Helmet>
+          <title>Produit non trouvé - E-perfume</title>
+        </Helmet>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-2 font-sans text-sm text-luxe-charcoal/70 hover:text-luxe-gold transition-colors duration-200 mb-8"
+          >
+            <FaArrowLeft className="w-4 h-4" />
+            Retour aux collections
+          </Link>
+          <div className="text-center py-20">
+            <p className="font-sans text-lg text-luxe-charcoal/70 mb-4">
+              {error || 'Produit non trouvé'}
+            </p>
+            <Link to="/products" className="btn-luxe-gold">
+              Retour aux produits
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-luxe-cream">
+      <Helmet>
+        <title>{product?.name || 'Produit'} - E-perfume</title>
+      </Helmet>
+
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 fade-in">
+        {/* Back Button */}
+        <Link
+          to="/products"
+          className="inline-flex items-center gap-2 font-sans text-sm text-luxe-charcoal/70 hover:text-luxe-gold transition-all duration-300 mb-8 group hover:gap-3"
+        >
+          <FaArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
+          Retour aux collections
+        </Link>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-16">
+          {/* Image Gallery */}
+          <div className="space-y-4">
+            {/* Main Image */}
+            <div className="relative aspect-square bg-luxe-warm-white overflow-hidden group">
+              <ProductBadges product={product} />
+              <img
+                src={
+                  images.length > 0 && images[selectedImage] && images[selectedImage].trim() !== ''
+                    ? images[selectedImage]
+                    : (product?.image || 'https://via.placeholder.com/800')
+                }
+                alt={product?.name || 'Produit'}
+                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 cursor-zoom-in"
+                onClick={() => setIsZoomOpen(true)}
+                onError={(e) => {
+                  const fallbackImage = product?.image || 'https://via.placeholder.com/800';
+                  if (e.target.src !== fallbackImage) {
+                    e.target.src = fallbackImage;
+                  }
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-luxe-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <button
+                onClick={() => setIsZoomOpen(true)}
+                className="absolute bottom-4 right-4 p-3 bg-luxe-black/70 text-luxe-cream hover:bg-luxe-gold hover:text-luxe-black transition-all duration-300 opacity-0 group-hover:opacity-100"
+                aria-label="Agrandir l'image"
+              >
+                <FaExpand className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Thumbnail Images */}
+            {images.length > 1 && (
+              <div className="grid grid-cols-4 gap-4">
+                {images.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    className={`aspect-square overflow-hidden border-2 transition-all duration-200 rounded ${selectedImage === index
+                        ? 'border-luxe-gold ring-2 ring-luxe-gold/30'
+                        : 'border-luxe-charcoal/10 hover:border-luxe-charcoal/30'
+                      }`}
+                  >
+                    <img
+                      src={img || product?.image}
+                      alt={`${product?.name || 'Produit'} - Vue ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = product?.image || 'https://via.placeholder.com/200';
+                      }}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Product Info */}
+          <div className="space-y-6">
+            {product?.brand && (
+              <p className="font-sans text-sm tracking-widest uppercase text-luxe-gold">
+                {product.brand}
+              </p>
+            )}
+
+            <h1 className="font-serif text-4xl md:text-6xl font-light text-luxe-black">
+              {product?.name || 'Chargement...'}
+            </h1>
+
+            {product?.rating !== undefined && (
+              <Rating value={product.rating} text={`${product.numReviews || 0} avis`} />
+            )}
+
+            {product?.price !== undefined && (
+              <div className="pt-4 border-t border-luxe-charcoal/10 flex items-center justify-between">
+                <div>
+                  <span className="font-serif text-3xl md:text-4xl font-normal text-luxe-black">
+                    {formatPrice(product.onSale && product.salePrice ? product.salePrice : product.price)}
+                  </span>
+                  {product.onSale && product.salePrice && (
+                    <span className="font-sans text-lg text-luxe-charcoal/50 line-through ml-3">
+                      {formatPrice(product.price)}
+                    </span>
+                  )}
+                </div>
+                <div className="flex gap-3">
+                  <WishlistButton product={product} />
+                </div>
+              </div>
+            )}
+
+            {/* Fragrance Notes for Perfumes */}
+            {!isSkincare && <FragranceNotes fragranceNotes={fragranceNotes} />}
+
+            {/* Benefits for Skincare */}
+            {isSkincare && benefits && benefits.length > 0 && (
+              <div className="py-6 border-t border-b border-luxe-charcoal/10">
+                <h3 className="font-serif text-xl font-normal text-luxe-black mb-4">
+                  Bienfaits
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {benefits.map((benefit, index) => (
+                    <span
+                      key={index}
+                      className="tag-filter"
+                    >
+                      {benefit}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Ingredients for Skincare */}
+            {isSkincare && product?.ingredients && (
+              <div className="py-6 border-t border-b border-luxe-charcoal/10">
+                <h3 className="font-serif text-xl font-normal text-luxe-black mb-4">
+                  Ingrédients
+                </h3>
+                <p className="font-sans text-sm text-luxe-charcoal/70 leading-relaxed">
+                  {product.ingredients}
+                </p>
+              </div>
+            )}
+
+            {/* Skin Type for Skincare */}
+            {isSkincare && product?.skinType && (
+              <div className="py-6 border-t border-b border-luxe-charcoal/10">
+                <h3 className="font-serif text-xl font-normal text-luxe-black mb-4">
+                  Type de Peau
+                </h3>
+                <span className="tag-filter">
+                  {product.skinType}
+                </span>
+              </div>
+            )}
+
+            {/* Description */}
+            {product?.description && (
+              <div className="space-y-2">
+                <h3 className="font-serif text-xl font-normal text-luxe-black">Description</h3>
+                <p className="font-sans text-base text-luxe-charcoal/70 leading-relaxed">
+                  {product.description}
+                </p>
+              </div>
+            )}
+
+            {/* Add to Cart */}
+            {product?._id && (
+              <div className="pt-6 border-t border-luxe-charcoal/10 space-y-4">
+                {product.countInStock > 0 ? (
+                <>
+                  <div className="flex items-center gap-4">
+                    <span className="font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70">
+                      Quantité
+                    </span>
+                    <div className="flex items-center gap-3 border border-luxe-charcoal/20">
+                      <button
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="p-2 hover:bg-luxe-champagne/30 transition-colors"
+                        disabled={quantity <= 1}
+                      >
+                        <FaMinus className="w-3 h-3" />
+                      </button>
+                      <span className="font-sans text-base w-12 text-center">{quantity}</span>
+                      <button
+                        onClick={() => setQuantity(Math.min(product.countInStock, quantity + 1))}
+                        className="p-2 hover:bg-luxe-champagne/30 transition-colors"
+                        disabled={quantity >= product.countInStock}
+                      >
+                        <FaPlus className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <span className="font-sans text-xs text-luxe-charcoal/60">
+                      {product.countInStock} en stock
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={addToCartHandler}
+                    className="w-full btn-luxe-gold flex items-center justify-center gap-2 ripple hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200 group"
+                  >
+                    <FaShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
+                    Ajouter au Panier
+                  </button>
+                </>
+              ) : (
+                <div className="p-4 bg-luxe-charcoal/5 border border-luxe-charcoal/20 text-center">
+                  <p className="font-sans text-sm text-luxe-charcoal/70">
+                    Ce produit est actuellement épuisé
+                  </p>
+                </div>
+              )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Additional Info Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-luxe-charcoal/10">
+          <div>
+            <h4 className="font-serif text-lg font-normal text-luxe-black mb-2">Livraison</h4>
+            <p className="font-sans text-sm text-luxe-charcoal/70">
+              Livraison gratuite à partir de 100€
+            </p>
+          </div>
+          <div>
+            <h4 className="font-serif text-lg font-normal text-luxe-black mb-2">Retours</h4>
+            <p className="font-sans text-sm text-luxe-charcoal/70">
+              Retours gratuits sous 30 jours
+            </p>
+          </div>
+          <div>
+            <h4 className="font-serif text-lg font-normal text-luxe-black mb-2">Garantie</h4>
+            <p className="font-sans text-sm text-luxe-charcoal/70">
+              Produits authentiques garantis
+            </p>
+          </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="pt-16 border-t border-luxe-charcoal/10 mt-16">
+          <h2 className="font-serif text-3xl md:text-4xl font-light text-luxe-black mb-8">
+            Avis clients
+          </h2>
+
+          {/* Review Form */}
+          {userInfo ? (
+            <ReviewForm productId={id} onReviewAdded={() => {
+              // Reload product data
+              fetch(`/api/products/${id}`)
+                .then(res => res.json())
+                .then(data => setProduct(data))
+                .catch(err => console.error('Error reloading product:', err));
+            }} />
+          ) : (
+            <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 mb-8">
+              <p className="font-sans text-sm text-luxe-charcoal/70 mb-4">
+                Connectez-vous pour laisser un avis
+              </p>
+              <Link to="/login" className="btn-luxe-secondary">
+                Se connecter
+              </Link>
+            </div>
+          )}
+
+          {/* Reviews List */}
+          <div className="space-y-6 mt-8">
+            {product?.reviews && product.reviews.length > 0 ? (
+              product.reviews.map((review) => (
+                <div
+                  key={review._id}
+                  className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h4 className="font-serif text-lg font-normal text-luxe-black mb-1">
+                        {review.name}
+                      </h4>
+                      <Rating value={review.rating} />
+                    </div>
+                    <span className="font-sans text-xs text-luxe-charcoal/60">
+                      {new Date(review.createdAt).toLocaleDateString('fr-FR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                  <p className="font-sans text-sm text-luxe-charcoal/70 leading-relaxed">
+                    {review.comment}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-12 text-center">
+                <p className="font-sans text-sm text-luxe-charcoal/70">
+                  Aucun avis pour le moment. Soyez le premier à laisser un avis !
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Similar Products */}
+        <SimilarProducts product={product} />
+      </div>
+
+      {/* Image Zoom Modal */}
+      <ImageZoom
+        images={images}
+        currentIndex={selectedImage}
+        isOpen={isZoomOpen}
+        onClose={() => setIsZoomOpen(false)}
+        productName={product?.name}
+      />
+    </div>
+  );
+};
+
+export default ProductScreen;

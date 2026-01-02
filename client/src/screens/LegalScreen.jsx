@@ -153,3 +153,6 @@ const LegalScreen = () => {
 
 export default LegalScreen;
 
+
+
+

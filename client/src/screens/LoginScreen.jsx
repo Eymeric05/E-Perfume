@@ -94,7 +94,7 @@ const LoginScreen = () => {
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block font-sans text-sm font-medium text-luxe-black mb-2">
+                            <label htmlFor="password" className="block font-sans text-sm font-medium text-luxe-black mb-2 dark:text-luxe-cream">
                                 Mot de passe
                             </label>
                             <div className="relative">
@@ -119,7 +119,7 @@ const LoginScreen = () => {
                     </form>
 
                     <div className="mt-6 text-center">
-                        <p className="font-sans text-sm text-luxe-charcoal/70">
+                        <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                             Nouveau client ?{' '}
                             <Link 
                                 to={`/register?redirect=${redirect}`}

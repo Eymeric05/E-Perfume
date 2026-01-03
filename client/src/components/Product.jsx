@@ -82,17 +82,17 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
           {product.name || 'Sans nom'}
         </h3>
 
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex flex-col gap-1.5">
           <Rating
             value={product.rating || 0}
             text={`${product.numReviews || 0}`}
           />
           {product.countInStock === 0 ? (
-            <span className="font-sans text-[10px] text-red-500/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
+            <span className="font-sans text-xs text-red-600 dark:text-red-400 uppercase tracking-wide font-medium px-2 py-0.5 rounded bg-red-50 dark:bg-red-900/20 self-start">
               Épuisé
             </span>
           ) : (
-            <span className="font-sans text-[10px] text-green-600/70 uppercase tracking-wider font-medium whitespace-nowrap flex-shrink-0">
+            <span className="font-sans text-xs text-green-700 dark:text-green-400 uppercase tracking-wide font-medium px-2 py-0.5 rounded bg-green-50 dark:bg-green-900/20 self-start">
               En stock
             </span>
           )}

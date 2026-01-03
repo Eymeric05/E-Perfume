@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import Product from './Product';
 
 const SimilarProducts = ({ product }) => {
@@ -66,9 +65,6 @@ const SimilarProducts = ({ product }) => {
 };
 
 export default SimilarProducts;
-
-
-
 
 
 

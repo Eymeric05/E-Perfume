@@ -12,7 +12,7 @@ const LoadingSpinner = ({ size = 'md', text = 'Chargement...' }) => {
       <div className={`spinner-luxe ${sizeClasses[size]} mx-auto`}></div>
       {text && (
         <div className="space-y-2 text-center">
-          <p className="font-serif text-lg text-luxe-black">{text}</p>
+          <p className="font-serif text-lg text-luxe-black dark:text-luxe-cream">{text}</p>
           <div className="flex gap-1 justify-center">
             <div className="w-1 h-1 bg-luxe-gold rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
             <div className="w-1 h-1 bg-luxe-gold rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>

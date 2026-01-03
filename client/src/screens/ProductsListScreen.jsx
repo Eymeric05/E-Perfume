@@ -261,7 +261,7 @@ const ProductsListScreen = () => {
                 {hasActiveFilters && (
                   <button
                     onClick={clearFilters}
-                    className="p-1.5 text-luxe-charcoal/50 hover:text-luxe-gold transition-all duration-300 hover:rotate-180 hover:scale-110 group"
+                    className="p-1.5 text-luxe-charcoal/50 dark:text-luxe-cream/50 hover:text-luxe-gold transition-all duration-300 hover:rotate-180 hover:scale-110 group"
                     title="Réinitialiser tous les filtres"
                   >
                     <FaSyncAlt className="w-3.5 h-3.5 group-hover:animate-spin" />
@@ -280,7 +280,7 @@ const ProductsListScreen = () => {
                       {selectedFilters.fragranceFamilies.length > 0 && (
                         <button
                           onClick={() => setSelectedFilters(prev => ({ ...prev, fragranceFamilies: [] }))}
-                          className="p-1 text-luxe-charcoal/40 hover:text-luxe-gold transition-all duration-300 hover:rotate-180 hover:scale-110 group"
+                          className="p-1 text-luxe-charcoal/40 dark:text-luxe-cream/40 hover:text-luxe-gold transition-all duration-300 hover:rotate-180 hover:scale-110 group"
                           title="Réinitialiser les familles"
                         >
                           <FaUndo className="w-3 h-3 group-hover:animate-spin" />
@@ -320,7 +320,7 @@ const ProductsListScreen = () => {
                       {selectedFilters.skinTypes.length > 0 && (
                         <button
                           onClick={() => setSelectedFilters(prev => ({ ...prev, skinTypes: [] }))}
-                          className="p-1 text-luxe-charcoal/40 hover:text-luxe-gold transition-all duration-300 hover:rotate-180 hover:scale-110 group"
+                          className="p-1 text-luxe-charcoal/40 dark:text-luxe-cream/40 hover:text-luxe-gold transition-all duration-300 hover:rotate-180 hover:scale-110 group"
                           title="Réinitialiser les types"
                         >
                           <FaUndo className="w-3 h-3 group-hover:animate-spin" />
@@ -354,7 +354,7 @@ const ProductsListScreen = () => {
                       {selectedFilters.brands.length > 0 && (
                         <button
                           onClick={clearBrandFilter}
-                          className="p-1 text-luxe-charcoal/40 hover:text-luxe-gold transition-all duration-300 hover:rotate-180 hover:scale-110 group"
+                          className="p-1 text-luxe-charcoal/40 dark:text-luxe-cream/40 hover:text-luxe-gold transition-all duration-300 hover:rotate-180 hover:scale-110 group"
                           title="Réinitialiser les marques"
                         >
                           <FaUndo className="w-3 h-3 group-hover:animate-spin" />
@@ -451,7 +451,7 @@ const ProductsListScreen = () => {
           {/* Products Grid */}
           <main className="flex-1">
             {/* Sort Controls */}
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-luxe-charcoal/10">
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-luxe-charcoal/10 dark:border-luxe-cream/10">
               <div className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                 Trier par
               </div>
@@ -483,7 +483,7 @@ const ProductsListScreen = () => {
               </div>
             ) : (
               <div className="text-center py-20">
-                <p className="font-sans text-lg text-luxe-charcoal/70 mb-4">
+                <p className="font-sans text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-4">
                   Aucun produit ne correspond à vos critères
                 </p>
                 {hasActiveFilters && (

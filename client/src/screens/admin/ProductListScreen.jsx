@@ -123,7 +123,7 @@ const ProductListScreen = () => {
                         <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black dark:text-luxe-cream mb-2">
                             Produits
                         </h1>
-                        <p className="font-sans text-sm text-luxe-charcoal/70">
+                        <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                             {filteredProducts.length} {filteredProducts.length === 1 ? 'produit' : 'produits'}
                         </p>
                     </div>
@@ -139,7 +139,7 @@ const ProductListScreen = () => {
 
                 {/* Search Bar */}
                 <div className="relative">
-                    <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-luxe-charcoal/40 w-4 h-4" />
+                    <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-luxe-charcoal/40 dark:text-luxe-cream/40 w-4 h-4" />
                     <input
                         type="text"
                         placeholder="Rechercher un produit..."
@@ -152,7 +152,7 @@ const ProductListScreen = () => {
                 {/* Loading States */}
                 {loadingDelete && (
                     <div className="p-4 bg-luxe-champagne/30 border border-luxe-gold/30 rounded-lg">
-                        <p className="font-sans text-sm text-luxe-black">Suppression en cours...</p>
+                        <p className="font-sans text-sm text-luxe-black dark:text-luxe-cream">Suppression en cours...</p>
                     </div>
                 )}
 
@@ -160,12 +160,12 @@ const ProductListScreen = () => {
                 {loading ? (
                     <LoadingSpinner text="Chargement des produits..." />
                 ) : error ? (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="font-sans text-sm text-red-700">{error}</p>
+                    <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                        <p className="font-sans text-sm text-red-700 dark:text-red-400">{error}</p>
                     </div>
                 ) : filteredProducts.length === 0 ? (
                     <div className="text-center py-20">
-                        <p className="font-sans text-lg text-luxe-charcoal/70 mb-4">
+                        <p className="font-sans text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-4">
                             {searchTerm ? 'Aucun produit ne correspond à votre recherche' : 'Aucun produit'}
                         </p>
                         {!searchTerm && (
@@ -178,7 +178,7 @@ const ProductListScreen = () => {
                     <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full">
-                                <thead className="bg-luxe-champagne/20">
+                                <thead className="bg-luxe-champagne/20 dark:bg-luxe-gold/10">
                                     <tr>
                                         <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream">
                                             Image

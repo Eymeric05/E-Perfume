@@ -1,4 +1,5 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useEffect, useRef } from 'react';
+import { cleanViewedProductsOptimized } from '../utils/cleanViewedProducts';
 
 export const Store = createContext();
 
@@ -123,12 +124,11 @@ function reducer(state, action) {
         }
         
         case 'CLEAN_VIEWED_PRODUCTS': {
-            // Nettoyer les produits invalides du localStorage
-            const viewedProducts = state.viewedProducts.filter(
-                (p) => p && p._id && typeof p._id === 'string' && p._id.length === 24
-            );
-            localStorage.setItem('viewedProducts', JSON.stringify(viewedProducts));
-            return { ...state, viewedProducts };
+            // Recharger les produits depuis le localStorage après nettoyage
+            const cleanedProducts = localStorage.getItem('viewedProducts')
+                ? JSON.parse(localStorage.getItem('viewedProducts'))
+                : [];
+            return { ...state, viewedProducts: cleanedProducts };
         }
         
         case 'REMOVE_VIEWED_PRODUCT': {
@@ -148,6 +148,36 @@ function reducer(state, action) {
 
 export function StoreProvider(props) {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const cleanupIntervalRef = useRef(null);
+    const lastCleanupRef = useRef(null);
+
+    useEffect(() => {
+        const performCleanup = async () => {
+            const now = Date.now();
+            const lastCleanup = lastCleanupRef.current;
+            
+            // Nettoyer immédiatement au démarrage si jamais nettoyé ou si plus d'1 heure s'est écoulée
+            if (!lastCleanup || (now - lastCleanup) > 60 * 60 * 1000) {
+                await cleanViewedProductsOptimized(dispatch, 5);
+                lastCleanupRef.current = now;
+            }
+
+            // Mettre en place un nettoyage périodique toutes les heures
+            cleanupIntervalRef.current = setInterval(async () => {
+                await cleanViewedProductsOptimized(dispatch, 5);
+                lastCleanupRef.current = Date.now();
+            }, 60 * 60 * 1000);
+        };
+
+        performCleanup();
+
+        return () => {
+            if (cleanupIntervalRef.current) {
+                clearInterval(cleanupIntervalRef.current);
+            }
+        };
+    }, [dispatch]);
+
     const value = { state, dispatch };
     return <Store.Provider value={value}>{props.children}</Store.Provider>;
 }

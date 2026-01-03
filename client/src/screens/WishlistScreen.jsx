@@ -79,7 +79,7 @@ const WishlistScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-luxe-cream">
+    <div className="min-h-screen bg-luxe-cream dark:bg-luxe-charcoal">
       <Helmet>
         <title>Ma Liste de Souhaits - E-perfume</title>
       </Helmet>
@@ -87,10 +87,10 @@ const WishlistScreen = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
         <div className="flex items-center justify-between mb-12">
           <div>
-            <h1 className="font-serif text-5xl md:text-6xl font-light text-luxe-black mb-4">
+            <h1 className="font-serif text-5xl md:text-6xl font-light text-luxe-black dark:text-luxe-cream mb-4">
               Ma Liste de Souhaits
             </h1>
-            <p className="font-sans text-lg text-luxe-charcoal/70">
+            <p className="font-sans text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70">
               {products.length} {products.length === 1 ? 'produit' : 'produits'} sauvegardé{products.length > 1 ? 's' : ''}
             </p>
           </div>
@@ -100,11 +100,11 @@ const WishlistScreen = () => {
           <ProductSkeleton count={6} />
         ) : products.length === 0 ? (
           <div className="text-center py-20">
-            <FaHeart className="w-20 h-20 text-luxe-charcoal/20 mx-auto mb-6" />
-            <p className="font-serif text-2xl text-luxe-black mb-4">
+            <FaHeart className="w-20 h-20 text-luxe-charcoal/20 dark:text-luxe-cream/20 mx-auto mb-6" />
+            <p className="font-serif text-2xl text-luxe-black dark:text-luxe-cream mb-4">
               Votre liste de souhaits est vide
             </p>
-            <p className="font-sans text-lg text-luxe-charcoal/70 mb-8">
+            <p className="font-sans text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-8">
               Ajoutez des produits à votre liste de souhaits pour les retrouver facilement
             </p>
             <Link to="/products" className="btn-luxe-gold">
@@ -122,7 +122,7 @@ const WishlistScreen = () => {
                     e.stopPropagation();
                     removeFromWishlist(product._id);
                   }}
-                  className="absolute top-3 right-3 z-30 p-2 bg-white/95 backdrop-blur-md rounded-full text-red-500 hover:bg-white hover:scale-110 transition-all duration-300 shadow-xl opacity-0 group-hover:opacity-100"
+                  className="absolute top-3 right-3 z-30 p-2 bg-white/95 dark:bg-luxe-charcoal/95 backdrop-blur-md rounded-full text-red-500 hover:bg-white dark:hover:bg-luxe-charcoal hover:scale-110 transition-all duration-300 shadow-xl opacity-0 group-hover:opacity-100"
                   aria-label="Retirer de la liste de souhaits"
                 >
                   <FaTrash className="w-4 h-4" />

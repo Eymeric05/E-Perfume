@@ -64,13 +64,13 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-2">
-        <span className="font-sans text-sm text-luxe-charcoal/70">
+        <span className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
           {minValue}€ - {maxValue}€
         </span>
       </div>
       <div
         ref={sliderRef}
-        className="relative h-2 bg-luxe-charcoal/10 rounded-full cursor-pointer"
+        className="relative h-2 bg-luxe-charcoal/10 dark:bg-luxe-cream/10 rounded-full cursor-pointer"
         onMouseDown={(e) => {
           // Only handle click on the bar itself, not on handles or active range
           const target = e.target;
@@ -128,7 +128,7 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
           }}
         />
       </div>
-      <div className="flex items-center justify-between text-xs text-luxe-charcoal/50">
+      <div className="flex items-center justify-between text-xs text-luxe-charcoal/50 dark:text-luxe-cream/50">
         <span>{min}€</span>
         <span>{max}€</span>
       </div>

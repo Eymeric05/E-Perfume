@@ -99,4 +99,3 @@ const FragranceNotes = ({ fragranceNotes }) => {
 };
 
 export default FragranceNotes;
-

@@ -260,7 +260,7 @@ const ProductEditScreen = () => {
                         <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black dark:text-luxe-cream">
                             {productId === 'new' ? 'Nouveau Produit' : 'Modifier le Produit'}
                         </h1>
-                        <p className="font-sans text-sm text-luxe-charcoal/70 mt-1">
+                        <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 mt-1">
                             {productId === 'new' ? 'Créer un nouveau produit' : `ID: ${productId.substring(0, 8)}...`}
                         </p>
                     </div>
@@ -279,12 +279,12 @@ const ProductEditScreen = () => {
                             <div className="space-y-6">
                                 {/* Basic Information */}
                                 <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 space-y-4">
-                                    <h2 className="font-serif text-2xl font-light text-luxe-black mb-4">
+                                    <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream mb-4">
                                         Informations de base
                                     </h2>
 
                                     <div>
-                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                             Nom du produit *
                                         </label>
                                         <input
@@ -297,7 +297,7 @@ const ProductEditScreen = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                             Marque *
                                         </label>
                                         <input
@@ -310,7 +310,7 @@ const ProductEditScreen = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                             Logo de la marque
                                         </label>
                                         <input
@@ -323,7 +323,7 @@ const ProductEditScreen = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                             Ou télécharger un logo
                                         </label>
                                         <label className="flex items-center gap-2 px-8 py-3 bg-luxe-cream dark:bg-luxe-charcoal border-2 border-luxe-black dark:border-luxe-gold text-luxe-black dark:text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out hover:bg-luxe-black dark:hover:bg-luxe-black hover:text-luxe-cream hover:scale-105 cursor-pointer">
@@ -372,7 +372,7 @@ const ProductEditScreen = () => {
                                     )}
 
                                     <div>
-                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                             Type de produit *
                                         </label>
                                         <select
@@ -395,7 +395,7 @@ const ProductEditScreen = () => {
 
                                     {productType === 'parfum' && (
                                         <div>
-                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                                 Genre *
                                             </label>
                                             <select
@@ -413,7 +413,7 @@ const ProductEditScreen = () => {
 
                                     {!isSkincare && (
                                         <div>
-                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                                 Famille Olfactive
                                             </label>
                                             <select
@@ -435,7 +435,7 @@ const ProductEditScreen = () => {
 
                                     {isSkincare && (
                                         <div>
-                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                                 Type de Peau
                                             </label>
                                             <select
@@ -456,7 +456,7 @@ const ProductEditScreen = () => {
 
                                     {isSkincare && (
                                         <div>
-                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                                 Ingrédients
                                             </label>
                                             <textarea
@@ -471,7 +471,7 @@ const ProductEditScreen = () => {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                                 Prix (€) *
                                             </label>
                                             <input
@@ -484,7 +484,7 @@ const ProductEditScreen = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                            <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                                 Stock *
                                             </label>
                                             <input
@@ -498,7 +498,7 @@ const ProductEditScreen = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                             Description *
                                         </label>
                                         <textarea
@@ -513,12 +513,12 @@ const ProductEditScreen = () => {
 
                                 {/* Image Upload */}
                                 <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 space-y-4">
-                                    <h2 className="font-serif text-2xl font-light text-luxe-black mb-4">
+                                    <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream mb-4">
                                         Image
                                     </h2>
 
                                     <div>
-                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                             URL de l'image *
                                         </label>
                                         <input
@@ -531,7 +531,7 @@ const ProductEditScreen = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 mb-2">
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                                             Ou télécharger une image
                                         </label>
                                         <label className="flex items-center gap-2 px-8 py-3 bg-luxe-cream dark:bg-luxe-charcoal border-2 border-luxe-black dark:border-luxe-gold text-luxe-black dark:text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out hover:bg-luxe-black dark:hover:bg-luxe-black hover:text-luxe-cream hover:scale-105 cursor-pointer">
@@ -564,7 +564,7 @@ const ProductEditScreen = () => {
                                 {!isSkincare && (
                                     <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 space-y-4">
                                         <div className="flex items-center justify-between mb-4">
-                                            <h2 className="font-serif text-2xl font-light text-luxe-black">
+                                            <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream">
                                                 Notes Olfactives
                                             </h2>
                                             <button
@@ -640,7 +640,7 @@ const ProductEditScreen = () => {
                                 {isSkincare && (
                                     <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 space-y-4">
                                         <div className="flex items-center justify-between mb-4">
-                                            <h2 className="font-serif text-2xl font-light text-luxe-black">
+                                            <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream">
                                                 Bienfaits
                                             </h2>
                                             <button

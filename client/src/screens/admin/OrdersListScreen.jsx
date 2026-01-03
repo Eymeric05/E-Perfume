@@ -124,7 +124,7 @@ const OrdersListScreen = () => {
                     <h1 className="font-serif text-4xl md:text-5xl font-light text-luxe-black dark:text-luxe-cream mb-2">
                         Commandes
                     </h1>
-                    <p className="font-sans text-sm text-luxe-charcoal/70">
+                    <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                         {filteredOrders.length} {filteredOrders.length === 1 ? 'commande' : 'commandes'}
                     </p>
                 </div>
@@ -132,7 +132,7 @@ const OrdersListScreen = () => {
                 {/* Filters */}
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="relative flex-1">
-                        <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-luxe-charcoal/40 w-4 h-4" />
+                        <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-luxe-charcoal/40 dark:text-luxe-cream/40 w-4 h-4" />
                         <input
                             type="text"
                             placeholder="Rechercher une commande..."
@@ -157,7 +157,7 @@ const OrdersListScreen = () => {
                 {/* Loading States */}
                 {loadingUpdate && (
                     <div className="p-4 bg-luxe-champagne/30 border border-luxe-gold/30 rounded-lg">
-                        <p className="font-sans text-sm text-luxe-black">Mise à jour en cours...</p>
+                        <p className="font-sans text-sm text-luxe-black dark:text-luxe-cream">Mise à jour en cours...</p>
                     </div>
                 )}
 
@@ -170,7 +170,7 @@ const OrdersListScreen = () => {
                     </div>
                 ) : filteredOrders.length === 0 ? (
                     <div className="text-center py-20">
-                        <p className="font-sans text-lg text-luxe-charcoal/70">
+                        <p className="font-sans text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70">
                             Aucune commande trouvée
                         </p>
                     </div>
@@ -180,22 +180,22 @@ const OrdersListScreen = () => {
                             <table className="w-full">
                                 <thead className="bg-luxe-champagne/20">
                                     <tr>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                             ID
                                         </th>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                             Client
                                         </th>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                             Date
                                         </th>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                             Total
                                         </th>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                             Payé
                                         </th>
-                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                             Livré
                                         </th>
                                         <th className="text-right px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
@@ -207,7 +207,7 @@ const OrdersListScreen = () => {
                                     {filteredOrders.map((order) => (
                                         <tr key={order._id} className="hover:bg-luxe-champagne/10 transition-colors">
                                             <td className="px-6 py-4">
-                                                <p className="font-mono text-xs text-luxe-charcoal/70">
+                                                <p className="font-mono text-xs text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                                     {order._id.substring(0, 8)}...
                                                 </p>
                                             </td>
@@ -215,17 +215,17 @@ const OrdersListScreen = () => {
                                                 <p className="font-sans text-sm text-luxe-black dark:text-luxe-cream">
                                                     {order.user?.name || 'N/A'}
                                                 </p>
-                                                <p className="font-sans text-xs text-luxe-charcoal/60">
+                                                <p className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/60">
                                                     {order.user?.email || 'N/A'}
                                                 </p>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="font-sans text-sm text-luxe-charcoal/70">
+                                                <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                                     {formatDate(order.createdAt)}
                                                 </p>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="font-serif text-base text-luxe-black">
+                                                <p className="font-serif text-base text-luxe-black dark:text-luxe-cream">
                                                     {formatPrice(order.totalPrice)}
                                                 </p>
                                             </td>

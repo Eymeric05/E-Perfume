@@ -346,7 +346,7 @@ const ProductsListScreen = () => {
 
                 {/* Brands */}
                 {allBrands.length > 0 && (
-                  <div>
+                  <div className="group">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-sans text-sm font-medium uppercase tracking-wider text-luxe-black dark:text-luxe-cream">
                         Marques
@@ -365,26 +365,37 @@ const ProductsListScreen = () => {
                       {allBrands.map((brand, idx) => {
                         const brandLogo = getBrandLogo(brand);
                         return (
-                          <button
-                            key={brand}
-                            onClick={() => toggleFilter('brands', brand)}
-                            className={`tag-filter transition-all duration-300 flex items-center gap-2 ${
-                              selectedFilters.brands.includes(brand) ? 'tag-filter-active' : ''
-                            }`}
-                            style={{ animationDelay: `${idx * 30}ms` }}
-                          >
-                            {brandLogo && (
-                              <img
-                                src={brandLogo}
-                                alt={brand}
-                                className="h-4 w-4 object-contain opacity-80"
-                                onError={(e) => {
-                                  e.target.style.display = 'none';
-                                }}
-                              />
-                            )}
-                            <span>{brand}</span>
-                          </button>
+                          <div key={brand} className="flex items-center gap-1">
+                            <button
+                              onClick={() => toggleFilter('brands', brand)}
+                              className={`tag-filter transition-all duration-300 flex items-center gap-2 ${
+                                selectedFilters.brands.includes(brand) ? 'tag-filter-active' : ''
+                              }`}
+                              style={{ animationDelay: `${idx * 30}ms` }}
+                            >
+                              {brandLogo && (
+                                <img
+                                  src={brandLogo}
+                                  alt={brand}
+                                  className="h-4 w-4 object-contain opacity-80"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              )}
+                              <span>{brand}</span>
+                            </button>
+                            <Link
+                              to={`/brand/${encodeURIComponent(brand)}`}
+                              className="p-1.5 text-luxe-charcoal/40 dark:text-luxe-cream/40 hover:text-luxe-gold transition-all duration-200 opacity-0 group-hover:opacity-100"
+                              title={`Voir la page ${brand}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}
+                            >
+                              <span className="text-xs">→</span>
+                            </Link>
+                          </div>
                         );
                       })}
                     </div>

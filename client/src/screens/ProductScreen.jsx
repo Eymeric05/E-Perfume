@@ -407,19 +407,23 @@ const ProductScreen = () => {
           {/* Product Info */}
           <div className="space-y-6">
             {product?.brand && (
-              <p className="font-sans text-sm tracking-widest uppercase text-luxe-gold">
+              <Link
+                to={`/brand/${encodeURIComponent(product.brand)}`}
+                className="inline-flex items-center gap-2 font-sans text-sm tracking-widest uppercase text-luxe-gold hover:text-luxe-gold/80 transition-colors duration-200 group"
+              >
                 {product.brandLogo && (
                   <img
                     src={product.brandLogo}
                     alt={product.brand}
-                    className="h-5 w-auto object-contain mr-2 opacity-80 dark:brightness-0 dark:invert dark:opacity-90"
+                    className="h-5 w-auto object-contain opacity-80 dark:brightness-0 dark:invert dark:opacity-90 group-hover:opacity-100 transition-opacity duration-200"
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
                   />
                 )}
-                {product.brand}
-              </p>
+                <span>{product.brand}</span>
+                <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200">→</span>
+              </Link>
             )}
 
             <h1 className="font-serif text-4xl md:text-6xl font-light text-luxe-black dark:text-luxe-cream">

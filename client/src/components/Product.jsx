@@ -62,21 +62,25 @@ const Product = ({ product, index = 0, hideWishlistButton = false }) => {
 
       <div className="p-5 bg-luxe-warm-white dark:bg-luxe-charcoal">
         {product.brand && (
-          <div className="flex items-center gap-2 mb-1.5">
+          <Link
+            to={`/brand/${encodeURIComponent(product.brand)}`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-2 mb-1.5 hover:opacity-80 transition-opacity duration-200 group"
+          >
             {product.brandLogo && (
               <img
                 src={product.brandLogo}
                 alt={product.brand}
-                className="h-4 w-auto object-contain opacity-70 dark:brightness-0 dark:invert dark:opacity-90"
+                className="h-4 w-auto object-contain opacity-70 dark:brightness-0 dark:invert dark:opacity-90 group-hover:opacity-100 transition-opacity duration-200"
                 onError={(e) => {
                   e.target.style.display = 'none';
                 }}
               />
             )}
-            <p className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/70 uppercase tracking-widest font-medium">
+            <p className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/70 uppercase tracking-widest font-medium group-hover:text-luxe-gold transition-colors duration-200">
               {product.brand}
             </p>
-          </div>
+          </Link>
         )}
         <h3 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-3 hover:text-luxe-gold transition-colors duration-200 line-clamp-2 leading-tight">
           {product.name || 'Sans nom'}

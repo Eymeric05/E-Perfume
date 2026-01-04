@@ -1,5 +1,4 @@
 const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 const express = require('express');
 const router = express.Router();
@@ -11,43 +10,58 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: async (req, file) => {
-        // Pour les SVG, utiliser resource_type: 'raw' car Cloudinary les traite comme des fichiers bruts
-        const isSvg = file.mimetype === 'image/svg+xml' || file.originalname.toLowerCase().endsWith('.svg');
-        
-        if (isSvg) {
-            return {
-                folder: 'e-perfume',
-                resource_type: 'raw',
-                format: 'svg',
-            };
-        }
-        
-        // Pour les autres images
-        return {
-            folder: 'e-perfume',
-            allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-        };
-    },
+// Utiliser multer memoryStorage pour gérer manuellement l'upload vers Cloudinary
+const storage = multer.memoryStorage();
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 } // 10MB max
 });
 
-const upload = multer({ storage: storage });
-
 // Route pour uploader une image
-router.post('/', upload.single('image'), (req, res, next) => {
-    if (!req.file) {
-        return res.status(400).json({ message: 'Aucun fichier téléchargé' });
+router.post('/', upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'Aucun fichier téléchargé' });
+        }
+
+        const isSvg = req.file.mimetype === 'image/svg+xml' || req.file.originalname.toLowerCase().endsWith('.svg');
+        
+        // Convertir le buffer en string base64 pour Cloudinary
+        const uploadStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+        
+        let result;
+        if (isSvg) {
+            // Pour les SVG, utiliser upload_stream avec resource_type: 'raw'
+            result = await new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    {
+                        resource_type: 'raw',
+                        folder: 'e-perfume',
+                    },
+                    (error, result) => {
+                        if (error) {
+                            console.error('Erreur upload SVG:', error);
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+                uploadStream.end(req.file.buffer);
+            });
+        } else {
+            // Pour les autres images
+            result = await cloudinary.uploader.upload(uploadStr, {
+                folder: 'e-perfume',
+                allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+            });
+        }
+
+        res.send(result.secure_url || result.url);
+    } catch (error) {
+        console.error('Erreur upload Cloudinary:', error);
+        res.status(400).json({ message: error.message || 'Erreur lors de l\'upload du fichier' });
     }
-    res.send(req.file.path); // Renvoie l'URL Cloudinary de l'image
-}, (error, req, res, next) => {
-    // Gestion des erreurs Multer
-    if (error) {
-        console.error('Erreur upload:', error);
-        return res.status(400).json({ message: error.message || 'Erreur lors de l\'upload du fichier' });
-    }
-    next();
 });
 
 module.exports = router;

@@ -104,9 +104,11 @@ const RegisterScreen = () => {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-block">
-                    S'inscrire
-                </button>
+                <div className="register-form-group" style={{ marginTop: '1.5rem' }}>
+                    <button type="submit" className="btn-luxe-gold w-full">
+                        S'inscrire
+                    </button>
+                </div>
             </form>
             <div className="register-footer">
                 Déjà un compte ?{' '}

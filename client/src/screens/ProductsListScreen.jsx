@@ -238,23 +238,23 @@ const ProductsListScreen = () => {
         <title>Collections - E-perfume</title>
       </Helmet>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-12">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="font-serif text-5xl md:text-7xl font-light text-luxe-black dark:text-luxe-cream mb-4">
+        <div className="mb-6 md:mb-12">
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-light text-luxe-black dark:text-luxe-cream mb-3 md:mb-4">
             {category === 'skincare' ? 'Esthétique' : 'Parfums'}
           </h1>
-          <p className="font-sans text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70">
+          <p className="font-sans text-base md:text-lg text-luxe-charcoal/70 dark:text-luxe-cream/70">
             {filteredProducts.length} {filteredProducts.length === 1 ? 'produit' : 'produits'}
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
           {/* Filters Sidebar */}
           <aside className="lg:w-64 flex-shrink-0">
-            <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-luxe-gold/30 scrollbar-track-transparent hover:scrollbar-thumb-luxe-gold/50">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream flex items-center gap-2">
+            <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-2 scrollbar-thin scrollbar-thumb-luxe-gold/30 scrollbar-track-transparent hover:scrollbar-thumb-luxe-gold/50">
+              <div className="flex items-center justify-between mb-4 md:mb-6">
+                <h2 className="font-serif text-xl md:text-2xl font-light text-luxe-black dark:text-luxe-cream flex items-center gap-2">
                   <FaFilter className="w-4 h-4 animate-pulse" />
                   Filtres
                 </h2>

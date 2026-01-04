@@ -59,7 +59,7 @@ const HomeScreen = () => {
       title: 'Collection Éphémère',
       subtitle: 'Parfums d\'exception',
       description: 'Découvrez notre sélection limitée de fragrances rares',
-      image: '/videos/video-accueil-collection-ephemere.mp4',
+      image: '/videos/collection-ephemere.gif',
       link: '/products?featured=true',
     },
   ];
@@ -98,12 +98,13 @@ const HomeScreen = () => {
   useEffect(() => {
     const currentVideo = videoRefs.current[heroSlides[currentSlide]?.id];
     if (currentVideo) {
+      // Ne remettre à 0 que lors du changement de slide, pas lors du scroll
       currentVideo.currentTime = 0;
       currentVideo.play().catch(() => {
         // Ignore autoplay errors
       });
     }
-  }, [currentSlide, heroSlides]);
+  }, [currentSlide]);
 
   const featuredProducts = React.useMemo(() => {
     if (products.length === 0) return [];
@@ -122,7 +123,7 @@ const HomeScreen = () => {
           ref={(el) => {
             if (el) videoRefs.current[slide.id] = el;
           }}
-          key={`${slide.id}-${slide.image}`}
+          key={slide.id}
           className="absolute inset-0 w-full h-full object-cover parallax-slow"
           autoPlay={isActive}
           loop

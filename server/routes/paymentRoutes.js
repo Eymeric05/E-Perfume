@@ -99,6 +99,53 @@ router.post('/verify-payment', protect, async (req, res) => {
     }
 });
 
+// Route webhook pour Stripe
+// IMPORTANT: Cette route doit être montée AVANT express.json() dans index.js
+// car Stripe envoie le body brut pour la vérification de signature
+router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    if (!stripe) {
+        return res.status(503).json({ error: 'Stripe is not configured' });
+    }
+
+    const sig = req.headers['stripe-signature'];
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+        console.error('Webhook signature verification failed:', err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Gérer l'événement checkout.session.completed
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        const orderId = session.metadata.orderId;
+
+        if (orderId) {
+            const Order = require('../models/Order');
+            const order = await Order.findById(orderId);
+            
+            if (order && !order.isPaid) {
+                order.isPaid = true;
+                order.paidAt = Date.now();
+                order.paymentResult = {
+                    id: session.id,
+                    status: session.payment_status,
+                    update_time: new Date().toISOString(),
+                    email_address: session.customer_details?.email,
+                };
+                await order.save();
+                console.log(`Order ${orderId} marked as paid via webhook`);
+            }
+        }
+    }
+
+    res.json({ received: true });
+});
+
 // Route pour créer un PaymentIntent (gardée pour compatibilité)
 router.post('/create-payment-intent', async (req, res) => {
     if (!stripe) {

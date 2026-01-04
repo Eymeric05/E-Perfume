@@ -10,6 +10,55 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// IMPORTANT: Webhook Stripe doit être monté AVANT express.json()
+// car Stripe envoie le body brut pour la vérification de signature
+app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const Stripe = require('stripe');
+  const stripe = process.env.STRIPE_SECRET_KEY ? Stripe(process.env.STRIPE_SECRET_KEY) : null;
+  const Order = require('./models/Order');
+
+  if (!stripe) {
+    return res.status(503).json({ error: 'Stripe is not configured' });
+  }
+
+  const sig = req.headers['stripe-signature'];
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Gérer l'événement checkout.session.completed
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    const orderId = session.metadata.orderId;
+
+    if (orderId) {
+      const order = await Order.findById(orderId);
+      
+      if (order && !order.isPaid) {
+        order.isPaid = true;
+        order.paidAt = Date.now();
+        order.paymentResult = {
+          id: session.id,
+          status: session.payment_status,
+          update_time: new Date().toISOString(),
+          email_address: session.customer_details?.email,
+        };
+        await order.save();
+        console.log(`Order ${orderId} marked as paid via webhook`);
+      }
+    }
+  }
+
+  res.json({ received: true });
+});
+
 // Middleware
 app.use(express.json());
 

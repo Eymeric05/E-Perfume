@@ -1,0 +1,123 @@
+// ============================================
+// PLACE ORDER SCREEN
+// ============================================
+
+@use '../abstracts' as *;
+
+.place-order-container {
+  padding: $spacing-lg 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: $spacing-sm;
+  padding-right: $spacing-sm;
+
+  h1 {
+    margin-bottom: $spacing-lg;
+  }
+}
+
+.place-order-grid {
+  display: flex;
+  gap: $spacing-lg;
+  flex-wrap: wrap;
+}
+
+.place-order-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+
+  h2 {
+    margin-bottom: $spacing-sm;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+
+  a {
+    color: $accent-amber;
+    text-decoration: underline;
+
+    &:hover {
+      color: $accent-rose;
+    }
+  }
+}
+
+.place-order-summary {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  position: sticky;
+  top: $spacing-lg;
+
+  h2 {
+    margin-bottom: $spacing-sm;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+}
+
+.place-order-summary-item {
+  @include flex-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+
+  &:last-child {
+    border-bottom: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+}
+
+.place-order-items-list {
+  list-style: none;
+  padding: 0;
+}
+
+.place-order-item {
+  @include flex-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.place-order-item-content {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.place-order-item-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: $border-radius-sm;
+}
+
+.place-order-main {
+  flex: 2;
+}
+
+.place-order-sidebar {
+  flex: 1;
+}
+
+// Mobile
+@include mobile {
+  .place-order-grid {
+    flex-direction: column;
+  }
+  
+  .place-order-summary {
+    position: static;
+  }
+}

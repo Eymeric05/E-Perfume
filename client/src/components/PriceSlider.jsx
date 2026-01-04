@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import '../styles/components/PriceSlider.css';
+import '../styles/components/_price-slider.scss';
 
 const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax }) => {
   const [minValue, setMinValue] = useState(initialMin !== undefined ? initialMin : min);

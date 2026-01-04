@@ -1,0 +1,147 @@
+// ============================================
+// ORDER SCREEN
+// ============================================
+
+@use '../abstracts' as *;
+
+.order-container {
+  padding: $spacing-lg;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  h1 {
+    margin-bottom: $spacing-lg;
+  }
+}
+
+.order-grid {
+  display: flex;
+  gap: $spacing-lg;
+  flex-wrap: wrap;
+}
+
+.order-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+
+  h2 {
+    margin-bottom: $spacing-sm;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+}
+
+.order-summary {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  position: sticky;
+  top: $spacing-lg;
+
+  h2 {
+    margin-bottom: $spacing-sm;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+}
+
+.order-summary-item {
+  @include flex-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+
+  &:last-child {
+    border-bottom: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+}
+
+.checkout-form {
+  margin-top: $spacing-sm;
+}
+
+.checkout-error {
+  color: red;
+  margin-top: 0.5rem;
+}
+
+.checkout-button {
+  margin-top: $spacing-sm;
+}
+
+.order-items-list {
+  list-style: none;
+  padding: 0;
+}
+
+.order-item {
+  @include flex-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.order-item-content {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.order-item-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: $border-radius-sm;
+}
+
+.order-status-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: $spacing-sm;
+  border-radius: $border-radius-sm;
+}
+
+.order-status-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: $spacing-sm;
+  border-radius: $border-radius-sm;
+}
+
+.order-error {
+  color: red;
+}
+
+.order-main {
+  flex: 2;
+}
+
+.order-sidebar {
+  flex: 1;
+}
+
+// Mobile
+@include mobile {
+  .order-grid {
+    flex-direction: column;
+  }
+  
+  .order-summary {
+    position: static;
+  }
+}

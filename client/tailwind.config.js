@@ -16,8 +16,9 @@ export default {
         'luxe-warm-white': '#FEFCF8',
       },
       fontFamily: {
-        'serif': ['Georgia', 'Times New Roman', 'Times', 'serif'],
-        'sans': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'sans-serif'],
+        'serif': ['Cormorant Garamond', 'Georgia', 'Times New Roman', 'Times', 'serif'],
+        'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'sans-serif'],
+        'display': ['Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
       },
       spacing: {
         '128': '32rem',

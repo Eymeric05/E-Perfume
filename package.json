@@ -10,5 +10,8 @@
   "dependencies": {
     "concurrently": "^8.2.2",
     "stripe": "^20.1.0"
+  },
+  "devDependencies": {
+    "sass": "^1.97.1"
   }
 }

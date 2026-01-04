@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/components/ProductBadges.css';
+import '../styles/components/_product-badges.scss';
 
 const ProductBadges = ({ product }) => {
   if (!product) return null;

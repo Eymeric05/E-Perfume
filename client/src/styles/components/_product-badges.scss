@@ -1,0 +1,43 @@
+// ============================================
+// PRODUCT BADGES COMPONENT
+// ============================================
+
+@use '../abstracts' as *;
+
+.product-badges-container {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: $z-base * 10;
+}
+
+.product-badge {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-family: $font-sans;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: $shadow-soft;
+  animation: fadeIn 0.5s ease-out backwards;
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{($i - 1) * 100}ms;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

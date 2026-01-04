@@ -350,7 +350,7 @@ const ProductScreen = () => {
           {/* Image Gallery */}
           <div className="space-y-4">
             {/* Main Image */}
-            <div className="relative aspect-square bg-luxe-warm-white dark:bg-luxe-charcoal overflow-hidden group">
+            <figure className="relative aspect-square bg-luxe-warm-white dark:bg-luxe-charcoal overflow-hidden group">
               <ProductBadges product={product} />
               <img
                 src={
@@ -361,6 +361,7 @@ const ProductScreen = () => {
                 alt={product?.name || 'Produit'}
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 cursor-zoom-in"
                 onClick={() => setIsZoomOpen(true)}
+                itemProp="image"
                 onError={(e) => {
                   const fallbackImage = product?.image || 'https://via.placeholder.com/800';
                   if (e.target.src !== fallbackImage) {
@@ -368,6 +369,7 @@ const ProductScreen = () => {
                   }
                 }}
               />
+              <figcaption className="sr-only">{product?.name || 'Produit'}</figcaption>
               <div className="absolute inset-0 bg-gradient-to-t from-luxe-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <button
                 onClick={() => setIsZoomOpen(true)}
@@ -376,7 +378,7 @@ const ProductScreen = () => {
               >
                 <FaExpand className="w-5 h-5" />
               </button>
-            </div>
+            </figure>
 
             {/* Thumbnail Images */}
             {images.length > 1 && (
@@ -636,9 +638,11 @@ const ProductScreen = () => {
           <div className="space-y-6 mt-8">
             {product?.reviews && product.reviews.length > 0 ? (
               product.reviews.map((review) => (
-                <div
+                <article
                   key={review._id}
                   className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-6"
+                  itemScope
+                  itemType="http://schema.org/Review"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -655,10 +659,10 @@ const ProductScreen = () => {
                       })}
                     </span>
                   </div>
-                  <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 leading-relaxed">
+                  <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 leading-relaxed" itemProp="reviewBody">
                     {review.comment}
                   </p>
-                </div>
+                </article>
               ))
             ) : (
               <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 p-12 text-center">

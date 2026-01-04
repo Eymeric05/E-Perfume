@@ -1,0 +1,23 @@
+// ============================================
+// FUNCTIONS SASS - E-Parfume
+// ============================================
+
+// Convert px to rem
+@function rem($pixels, $base: 16) {
+  @return ($pixels / $base) * 1rem;
+}
+
+// Convert px to em
+@function em($pixels, $base: 16) {
+  @return ($pixels / $base) * 1em;
+}
+
+// Strip unit
+@function strip-unit($value) {
+  @return $value / ($value * 0 + 1);
+}
+
+// Calculate percentage
+@function percentage-of($part, $whole) {
+  @return percentage($part / $whole);
+}

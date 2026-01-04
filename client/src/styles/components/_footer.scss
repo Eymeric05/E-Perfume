@@ -1,0 +1,54 @@
+// ============================================
+// FOOTER COMPONENT
+// ============================================
+
+@use '../abstracts' as *;
+
+.footer {
+  background: linear-gradient(180deg, rgba(37, 21, 30, 0.95) 0%, rgba(26, 10, 20, 0.98) 100%);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid $border-subtle;
+  color: $text-secondary;
+  text-align: center;
+  padding: $spacing-md 0;
+  margin-top: auto;
+  position: relative;
+  z-index: $z-base;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $accent-amber, transparent);
+    opacity: 0.3;
+  }
+}
+
+.footer-container {
+  @include flex-center;
+  gap: $spacing-sm;
+}
+
+.footer-text {
+  font-size: 0.875rem;
+  color: $text-muted;
+  letter-spacing: 0.05em;
+
+  &::before,
+  &::after {
+    content: '✦';
+    color: $accent-amber;
+    opacity: 0.6;
+  }
+
+  &::before {
+    margin-right: 0.5rem;
+  }
+
+  &::after {
+    margin-left: 0.5rem;
+  }
+}

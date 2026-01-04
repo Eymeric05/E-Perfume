@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
-import '../styles/screens/PaymentScreen.css';
+import '../styles/screens/_payment.scss';
 
 const PaymentScreen = () => {
     const navigate = useNavigate();

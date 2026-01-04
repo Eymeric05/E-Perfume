@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { apiFetch } from '../utils/api';
-import '../styles/screens/RegisterScreen.css';
+import '../styles/screens/_register.scss';
 
 const RegisterScreen = () => {
     const navigate = useNavigate();

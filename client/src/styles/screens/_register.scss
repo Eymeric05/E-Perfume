@@ -1,0 +1,45 @@
+// ============================================
+// REGISTER SCREEN
+// ============================================
+
+@use '../abstracts' as *;
+
+.register-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 0 $spacing-sm;
+
+  h1 {
+    margin-bottom: $spacing-sm;
+  }
+}
+
+.register-form-group {
+  margin-bottom: $spacing-sm;
+}
+
+.register-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: $text-primary;
+}
+
+.register-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: $border-radius-sm;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $accent-amber;
+  }
+}
+
+.register-footer {
+  margin-top: $spacing-sm;
+  text-align: center;
+}

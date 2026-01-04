@@ -1,0 +1,63 @@
+// ============================================
+// HOME SCREEN
+// ============================================
+
+@use '../abstracts' as *;
+
+.home-screen {
+  padding: $spacing-lg 0;
+  position: relative;
+  z-index: $z-base;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: $spacing-lg;
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+
+  h1 {
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    @include gradient-text;
+    margin-bottom: $spacing-sm;
+    text-transform: lowercase;
+    font-style: italic;
+  }
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $spacing-md;
+  padding: $spacing-md 0;
+}
+
+.loading-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: $spacing-xl 0;
+  color: $text-secondary;
+  font-size: 1.1rem;
+}
+
+.error-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: $spacing-xl 0;
+  color: #d4897e;
+  font-size: 1.1rem;
+  background: rgba(212, 137, 126, 0.1);
+  border: 1px solid rgba(212, 137, 126, 0.3);
+  border-radius: $border-radius;
+  padding: $spacing-md;
+}
+
+// Mobile
+@include mobile {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: $spacing-sm;
+  }
+}

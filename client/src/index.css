@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import SASS main stylesheet after Tailwind */
+@import './styles/main.scss';
+
 @layer base {
   html {
     scroll-behavior: smooth;

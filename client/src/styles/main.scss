@@ -1,0 +1,19 @@
+// ============================================
+// MAIN STYLESHEET - E-Parfume
+// ============================================
+
+// Abstracts (variables, mixins, functions)
+@use 'abstracts' as *;
+
+// Components
+@use 'components' as *;
+
+// Screens
+@use 'screens' as *;
+
+// Base styles (si nécessaire)
+body {
+  &.overflow-hidden {
+    overflow: hidden;
+  }
+}

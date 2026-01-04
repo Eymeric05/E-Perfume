@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
-import '../styles/screens/ShippingScreen.css';
+import '../styles/screens/_shipping.scss';
 
 const ShippingScreen = () => {
     const navigate = useNavigate();

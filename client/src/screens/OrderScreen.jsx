@@ -9,7 +9,7 @@ import {
     useStripe,
     useElements,
 } from '@stripe/react-stripe-js';
-import '../styles/screens/OrderScreen.css';
+import '../styles/screens/_order.scss';
 
 function reducer(state, action) {
     switch (action.type) {

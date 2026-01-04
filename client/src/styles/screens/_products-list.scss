@@ -1,0 +1,15 @@
+// ============================================
+// PRODUCTS LIST SCREEN
+// ============================================
+
+@use '../abstracts' as *;
+
+.tag-filter-animated {
+  transition: all 0.3s;
+
+  @for $i from 0 through 5 {
+    &[data-delay="#{$i * 30}"] {
+      animation-delay: #{$i * 30}ms;
+    }
+  }
+}

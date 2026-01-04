@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaTimes, FaChevronLeft, FaChevronRight, FaExpand } from 'react-icons/fa';
-import '../styles/components/ImageZoom.css';
+import '../styles/components/_image-zoom.scss';
 
 const ImageZoom = ({ images, currentIndex = 0, isOpen, onClose, productName }) => {
   const [activeIndex, setActiveIndex] = useState(currentIndex);
@@ -18,12 +18,12 @@ const ImageZoom = ({ images, currentIndex = 0, isOpen, onClose, productName }) =
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.classList.add('overflow-hidden');
     } else {
-      document.body.style.overflow = '';
+      document.body.classList.remove('overflow-hidden');
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.classList.remove('overflow-hidden');
     };
   }, [isOpen]);
 

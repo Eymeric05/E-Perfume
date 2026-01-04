@@ -1,0 +1,137 @@
+// ============================================
+// HEADER COMPONENT
+// ============================================
+
+@use '../abstracts' as *;
+
+.header {
+  background: linear-gradient(180deg, rgba(26, 10, 20, 0.95) 0%, rgba(45, 27, 36, 0.9) 100%);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid $border-accent;
+  padding: $spacing-sm 0;
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  box-shadow: $shadow-soft;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header-container {
+  @include flex-between;
+  gap: $spacing-md;
+}
+
+.logo {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  font-family: $font-heading;
+  color: $accent-rose;
+  letter-spacing: 0.05em;
+  position: relative;
+  transition: $transition-base;
+  text-transform: lowercase;
+  font-style: italic;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, $accent-amber, $accent-rose);
+    transition: width 0.4s ease;
+  }
+
+  &:hover {
+    color: $accent-amber;
+    transform: translateY(-2px);
+    text-shadow: 0 0 20px rgba(212, 165, 116, 0.3);
+
+    &::after {
+      width: 100%;
+    }
+  }
+}
+
+.header-nav {
+  display: flex;
+  gap: $spacing-md;
+  align-items: center;
+}
+
+.header-nav-item {
+  position: relative;
+}
+
+.header-link {
+  @include flex-center;
+  gap: 0.5rem;
+  color: $text-secondary;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: $border-radius-sm;
+  transition: $transition-base;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(232, 201, 160, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &:hover {
+    color: $accent-amber;
+    transform: translateY(-2px);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  svg {
+    font-size: 1.1rem;
+    transition: $transition-base;
+  }
+
+  &:hover svg {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 4px rgba(212, 165, 116, 0.5));
+  }
+}
+
+// Mobile
+@include mobile {
+  .header-container {
+    flex-wrap: wrap;
+  }
+  
+  .header-nav {
+    gap: $spacing-sm;
+  }
+  
+  .header-link {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+
+    span {
+      display: none;
+    }
+  }
+}

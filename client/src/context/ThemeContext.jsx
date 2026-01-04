@@ -19,10 +19,12 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     const root = document.documentElement;
     if (isDark) {
-      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+      root.classList.add('dark'); // Keep for Tailwind compatibility
       localStorage.setItem('theme', 'dark');
     } else {
-      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+      root.classList.remove('dark'); // Keep for Tailwind compatibility
       localStorage.setItem('theme', 'light');
     }
   }, [isDark]);

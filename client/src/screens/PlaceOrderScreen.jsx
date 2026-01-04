@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useReducer } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { apiFetch } from '../utils/api';
-import '../styles/screens/PlaceOrderScreen.css';
+import '../styles/screens/_place-order.scss';
 
 const reducer = (state, action) => {
     switch (action.type) {

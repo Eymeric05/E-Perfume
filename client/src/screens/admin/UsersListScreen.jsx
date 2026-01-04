@@ -130,9 +130,9 @@ const UsersListScreen = () => {
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
                                                     {user.isAdmin ? (
-                                                        <FaUserShield className="w-4 h-4 text-luxe-gold" />
+                                                        <FaUserShield className="w-4 h-4 text-luxe-gold dark:text-luxe-gold" />
                                                     ) : (
-                                                        <FaUser className="w-4 h-4 text-luxe-charcoal/40" />
+                                                        <FaUser className="w-4 h-4 text-luxe-charcoal/40 dark:text-luxe-cream/40" />
                                                     )}
                                                     <p className="font-sans text-sm text-luxe-black dark:text-luxe-cream">
                                                         {user.name}
@@ -140,7 +140,7 @@ const UsersListScreen = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="font-sans text-sm text-luxe-charcoal/70">
+                                                <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                                     {user.email}
                                                 </p>
                                             </td>
@@ -156,7 +156,7 @@ const UsersListScreen = () => {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="font-sans text-sm text-luxe-charcoal/70">
+                                                <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                                     {user.createdAt
                                                         ? new Date(user.createdAt).toLocaleDateString('fr-FR')
                                                         : 'N/A'}

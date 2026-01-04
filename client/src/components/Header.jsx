@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaShoppingCart, FaUser, FaSearch, FaTimes, FaBars, FaUserShield, FaHeart } from 'react-icons/fa';
 import { Store } from '../context/StoreContext';
 import ThemeToggle from './ThemeToggle';
+import { apiFetch } from '../utils/api';
 
 const Header = () => {
   const { state } = useContext(Store);
@@ -64,9 +65,12 @@ const Header = () => {
     setSearchQuery(query);
     if (query.length > 0) {
       try {
-        const response = await fetch(`/api/products/search?q=${encodeURIComponent(query)}`);
+        const response = await apiFetch(`/api/products/search?q=${encodeURIComponent(query)}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
-        setSearchResults(data.slice(0, 5));
+        setSearchResults(Array.isArray(data) ? data.slice(0, 5) : []);
       } catch (error) {
         console.error('Search error:', error);
         setSearchResults([]);

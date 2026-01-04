@@ -4,6 +4,8 @@ import { Store } from '../context/StoreContext';
 import { Helmet } from 'react-helmet-async';
 import { FaCheck, FaLock, FaCreditCard, FaTruck } from 'react-icons/fa';
 import { apiFetch } from '../utils/api';
+import { shippingAddressSchema, paymentMethodSchema } from '../schemas/validationSchemas';
+import { safeValidateForm } from '../utils/formValidation';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -35,6 +37,8 @@ const CheckoutScreen = () => {
     country: cart.shippingAddress?.country || 'France',
   });
   const [paymentMethod, setPaymentMethod] = useState(cart.paymentMethod || 'Stripe');
+  const [shippingErrors, setShippingErrors] = useState({});
+  const [paymentErrors, setPaymentErrors] = useState({});
 
   useEffect(() => {
     if (!userInfo) {
@@ -53,18 +57,40 @@ const CheckoutScreen = () => {
 
   const handleShippingSubmit = (e) => {
     e.preventDefault();
+    setShippingErrors({});
+
+    // Validation avec Zod
+    const validation = safeValidateForm(shippingAddressSchema, shippingData);
+
+    if (!validation.success) {
+      setShippingErrors(validation.errors);
+      return;
+    }
+
+    // Si la validation réussit, sauvegarder et continuer
     ctxDispatch({
       type: 'SAVE_SHIPPING_ADDRESS',
-      payload: shippingData,
+      payload: validation.data,
     });
-    localStorage.setItem('shippingAddress', JSON.stringify(shippingData));
+    localStorage.setItem('shippingAddress', JSON.stringify(validation.data));
     setCurrentStep(2);
   };
 
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
-    ctxDispatch({ type: 'SAVE_PAYMENT_METHOD', payload: paymentMethod });
-    localStorage.setItem('paymentMethod', paymentMethod);
+    setPaymentErrors({});
+
+    // Validation avec Zod
+    const validation = safeValidateForm(paymentMethodSchema, { paymentMethod });
+
+    if (!validation.success) {
+      setPaymentErrors(validation.errors);
+      return;
+    }
+
+    // Si la validation réussit, sauvegarder et continuer
+    ctxDispatch({ type: 'SAVE_PAYMENT_METHOD', payload: validation.data.paymentMethod });
+    localStorage.setItem('paymentMethod', validation.data.paymentMethod);
     setCurrentStep(3);
   };
 
@@ -223,69 +249,85 @@ const CheckoutScreen = () => {
                 </h2>
                 <form onSubmit={handleShippingSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="address" className="block font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70 mb-2">
+                    <label htmlFor="address" className="block font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                       Adresse
                     </label>
                     <input
                       type="text"
                       id="address"
                       value={shippingData.address}
-                      onChange={(e) =>
-                        setShippingData({ ...shippingData, address: e.target.value })
-                      }
-                      className="input-luxe"
+                      onChange={(e) => {
+                        setShippingData({ ...shippingData, address: e.target.value });
+                        if (shippingErrors.address) setShippingErrors({ ...shippingErrors, address: undefined });
+                      }}
+                      className={`input-luxe ${shippingErrors.address ? 'border-red-500 dark:border-red-400' : ''}`}
                       required
                     />
+                    {shippingErrors.address && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">{shippingErrors.address}</p>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="city" className="block font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70 mb-2">
+                      <label htmlFor="city" className="block font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                         Ville
                       </label>
                       <input
                         type="text"
                         id="city"
                         value={shippingData.city}
-                        onChange={(e) =>
-                          setShippingData({ ...shippingData, city: e.target.value })
-                        }
-                        className="input-luxe"
+                        onChange={(e) => {
+                          setShippingData({ ...shippingData, city: e.target.value });
+                          if (shippingErrors.city) setShippingErrors({ ...shippingErrors, city: undefined });
+                        }}
+                        className={`input-luxe ${shippingErrors.city ? 'border-red-500 dark:border-red-400' : ''}`}
                         required
                       />
+                      {shippingErrors.city && (
+                        <p className="mt-1 text-sm text-red-600 dark:text-red-400">{shippingErrors.city}</p>
+                      )}
                     </div>
 
                     <div>
-                      <label htmlFor="postalCode" className="block font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70 mb-2">
+                      <label htmlFor="postalCode" className="block font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                         Code Postal
                       </label>
                       <input
                         type="text"
                         id="postalCode"
                         value={shippingData.postalCode}
-                        onChange={(e) =>
-                          setShippingData({ ...shippingData, postalCode: e.target.value })
-                        }
-                        className="input-luxe"
+                        onChange={(e) => {
+                          setShippingData({ ...shippingData, postalCode: e.target.value });
+                          if (shippingErrors.postalCode) setShippingErrors({ ...shippingErrors, postalCode: undefined });
+                        }}
+                        className={`input-luxe ${shippingErrors.postalCode ? 'border-red-500 dark:border-red-400' : ''}`}
                         required
                       />
+                      {shippingErrors.postalCode && (
+                        <p className="mt-1 text-sm text-red-600 dark:text-red-400">{shippingErrors.postalCode}</p>
+                      )}
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="country" className="block font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70 mb-2">
+                    <label htmlFor="country" className="block font-sans text-sm uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
                       Pays
                     </label>
                     <input
                       type="text"
                       id="country"
                       value={shippingData.country}
-                      onChange={(e) =>
-                        setShippingData({ ...shippingData, country: e.target.value })
-                      }
-                      className="input-luxe"
+                      onChange={(e) => {
+                        setShippingData({ ...shippingData, country: e.target.value });
+                        if (shippingErrors.country) setShippingErrors({ ...shippingErrors, country: undefined });
+                      }}
+                      className={`input-luxe ${shippingErrors.country ? 'border-red-500 dark:border-red-400' : ''}`}
                       required
                     />
+                    {shippingErrors.country && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">{shippingErrors.country}</p>
+                    )}
                   </div>
 
                   <button type="submit" className="btn-luxe-gold w-full !px-4 md:!px-8 !text-sm md:!text-base">
@@ -303,6 +345,11 @@ const CheckoutScreen = () => {
                   Méthode de Paiement
                 </h2>
                 <form onSubmit={handlePaymentSubmit} className="space-y-6">
+                  {paymentErrors.paymentMethod && (
+                    <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                      <p className="font-sans text-sm text-red-700 dark:text-red-400">{paymentErrors.paymentMethod}</p>
+                    </div>
+                  )}
                   <div className="space-y-4">
                     <label className={`flex items-center p-4 border-2 cursor-pointer transition-all duration-200 ${
                       paymentMethod === 'Stripe' 

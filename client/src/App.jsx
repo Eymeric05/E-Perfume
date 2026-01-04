@@ -14,6 +14,7 @@ import { HelmetProvider } from 'react-helmet-async';
 const HomeScreen = lazy(() => import('./screens/HomeScreen'));
 const ProductScreen = lazy(() => import('./screens/ProductScreen'));
 const ProductsListScreen = lazy(() => import('./screens/ProductsListScreen'));
+const SearchScreen = lazy(() => import('./screens/SearchScreen'));
 const BrandScreen = lazy(() => import('./screens/BrandScreen'));
 const CartScreen = lazy(() => import('./screens/CartScreen'));
 const LoginScreen = lazy(() => import('./screens/LoginScreen'));
@@ -54,6 +55,7 @@ const AppContent = () => {
           <Routes location={location}>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/products" element={<ProductsListScreen />} />
+            <Route path="/search" element={<SearchScreen />} />
             <Route path="/brand/:brandName" element={<BrandScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart" element={<CartScreen />} />

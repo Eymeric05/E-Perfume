@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const generateToken = require('../utils/generateToken');
+const verifyRecaptcha = require('../utils/verifyRecaptcha');
 const User = require('../models/User');
 const Product = require('../models/Product');
 
@@ -7,7 +8,14 @@ const Product = require('../models/Product');
 // @route   POST /api/users/login
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, recaptchaToken } = req.body;
+
+    // Vérifier le token reCAPTCHA
+    const isRecaptchaValid = await verifyRecaptcha(recaptchaToken);
+    if (!isRecaptchaValid) {
+        res.status(400);
+        throw new Error('Captcha invalide. Veuillez réessayer.');
+    }
 
     const user = await User.findOne({ email });
 
@@ -29,7 +37,14 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, recaptchaToken } = req.body;
+
+    // Vérifier le token reCAPTCHA
+    const isRecaptchaValid = await verifyRecaptcha(recaptchaToken);
+    if (!isRecaptchaValid) {
+        res.status(400);
+        throw new Error('Captcha invalide. Veuillez réessayer.');
+    }
 
     const userExists = await User.findOne({ email });
 

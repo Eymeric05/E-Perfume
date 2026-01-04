@@ -71,11 +71,11 @@ const AdminLayout = ({ children }) => {
                 className="flex items-center gap-2 mb-6"
               >
                 <FaHome className="w-4 h-4 text-luxe-gold" />
-                <span className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 hover:text-luxe-gold transition-colors">
+                <span className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 hover:text-luxe-gold transition-colors dark:hover:text-luxe-gold">
                   Retour au site
                 </span>
               </Link>
-              <h1 className="font-serif text-2xl text-luxe-black dark:text-luxe-cream">Administration</h1>
+              <h1 className="font-serif text-2xl text-luxe-black dark:text-luxe-cream ">Administration</h1>
               {userInfo && (
                 <p className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/70 mt-1">
                   {userInfo.name}

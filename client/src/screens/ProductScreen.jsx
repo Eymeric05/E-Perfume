@@ -255,14 +255,15 @@ const ProductScreen = () => {
   // Handle images: combine main image with additional images
   // Always ensure we have at least the main image
   const mainImage = product?.image || '';
-  const imagesArray = (product?.images && Array.isArray(product.images) && product.images.length > 0)
-    ? product.images.filter(img => img && img.trim() !== '' && img !== mainImage)
+  const imagesFromDB = product?.images && Array.isArray(product.images) 
+    ? product.images.filter(img => img && img.trim() !== '') 
     : [];
   
   // Combine: main image first, then additional images (remove duplicates)
-  const images = mainImage 
-    ? [mainImage, ...imagesArray]
-    : (imagesArray.length > 0 ? imagesArray : []);
+  // Filter out the main image from the array to avoid duplicates
+  const additionalImages = imagesFromDB.filter(img => img !== mainImage);
+  const allImages = mainImage ? [mainImage, ...additionalImages] : additionalImages;
+  const images = allImages.filter(img => img && img.trim() !== '');
 
   const Rating = ({ value, text }) => {
     const numValue = Number(value) || 0;

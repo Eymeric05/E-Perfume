@@ -252,13 +252,30 @@ const Header = () => {
                         setIsSearchOpen(false);
                         setSearchQuery('');
                       }}
-                      className="block px-4 py-3 border-b border-luxe-charcoal/5 dark:border-luxe-cream/10 hover:bg-luxe-gold/10 dark:hover:bg-luxe-champagne/20 transition-all duration-200 focus:outline-none"
+                      className="flex items-center gap-4 px-4 py-3 border-b border-luxe-charcoal/5 dark:border-luxe-cream/10 hover:bg-luxe-gold/10 dark:hover:bg-luxe-champagne/20 transition-all duration-200 focus:outline-none"
                       role="option"
                       aria-label={`${product.name} par ${product.brand}`}
                       tabIndex={0}
                     >
-                      <div className="font-sans text-sm font-light text-luxe-black dark:text-luxe-cream tracking-wide">{product.name}</div>
-                      <div className="font-sans text-xs text-luxe-charcoal/50 dark:text-luxe-cream/50 mt-0.5 tracking-wider uppercase">{product.brand}</div>
+                      {/* Product Image */}
+                      <div className="flex-shrink-0 w-16 h-16 bg-luxe-warm-white dark:bg-luxe-charcoal/50 rounded overflow-hidden border border-luxe-charcoal/10 dark:border-luxe-cream/10">
+                        <img
+                          src={product.image || product.images?.[0] || 'https://via.placeholder.com/64'}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          onError={(e) => {
+                            if (e.target.src !== 'https://via.placeholder.com/64') {
+                              e.target.src = 'https://via.placeholder.com/64';
+                            }
+                          }}
+                        />
+                      </div>
+                      {/* Product Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="font-sans text-sm font-light text-luxe-black dark:text-luxe-cream tracking-wide truncate">{product.name}</div>
+                        <div className="font-sans text-xs text-luxe-charcoal/50 dark:text-luxe-cream/50 mt-0.5 tracking-wider uppercase">{product.brand}</div>
+                      </div>
                     </Link>
                   ))}
                 </div>

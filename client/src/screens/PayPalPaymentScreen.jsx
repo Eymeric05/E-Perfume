@@ -31,7 +31,6 @@ const PayPalPaymentScreen = () => {
                     setLoading(false);
                 }
             } catch (err) {
-                console.error('Erreur fetchOrder:', err);
                 setError('Erreur lors du chargement de la commande');
                 setLoading(false);
             }
@@ -50,25 +49,21 @@ const PayPalPaymentScreen = () => {
             return;
         }
 
-        console.log('Début du chargement du SDK PayPal');
         initializedRef.current = true;
 
         loadPayPalSDK((err) => {
             if (err) {
-                console.error('Erreur loadPayPalSDK:', err);
                 setError('Impossible de charger le SDK PayPal: ' + err.message);
                 setLoading(false);
                 return;
             }
 
             if (!window.paypal || !window.paypal.Buttons) {
-                console.error('PayPal SDK non disponible après chargement');
                 setError('PayPal SDK non disponible');
                 setLoading(false);
                 return;
             }
 
-            console.log('SDK PayPal chargé avec succès');
             setPaypalReady(true);
             setLoading(false);
         });
@@ -80,7 +75,6 @@ const PayPalPaymentScreen = () => {
             return;
         }
 
-        console.log('Initialisation des boutons PayPal');
         let paypalButtons = null;
 
         try {
@@ -95,7 +89,6 @@ const PayPalPaymentScreen = () => {
                 },
                 createOrder: async () => {
                     try {
-                        console.log('Création de la commande PayPal...');
                         const createRes = await apiFetch('/api/payment/paypal/create-order', {
                             method: 'POST',
                             headers: {
@@ -113,17 +106,14 @@ const PayPalPaymentScreen = () => {
                             throw new Error(createData.error || 'Erreur lors de la création de la commande PayPal');
                         }
 
-                        console.log('Commande PayPal créée:', createData.orderId);
                         return createData.orderId;
                     } catch (error) {
-                        console.error('Erreur lors de la création de la commande PayPal:', error);
                         setError('Erreur lors de la création de la commande PayPal: ' + error.message);
                         throw error;
                     }
                 },
                 onApprove: async (data, actions) => {
                     try {
-                        console.log('Capture du paiement PayPal...');
                         const details = await actions.order.capture();
                         
                         const response = await apiFetch(`/api/orders/${orderId}/pay`, {
@@ -150,12 +140,10 @@ const PayPalPaymentScreen = () => {
                             setError('Erreur lors de la validation de la commande: ' + (responseData.message || 'Erreur inconnue'));
                         }
                     } catch (error) {
-                        console.error('Erreur lors de la capture PayPal:', error);
                         setError('Erreur lors du paiement: ' + (error.message || 'Une erreur est survenue'));
                     }
                 },
                 onError: (err) => {
-                    console.error('Erreur PayPal:', err);
                     setError('Erreur lors de l\'initialisation du paiement PayPal');
                 },
                 onCancel: () => {
@@ -164,9 +152,7 @@ const PayPalPaymentScreen = () => {
             });
 
             paypalButtons.render(paypalButtonContainerRef.current);
-            console.log('Boutons PayPal rendus');
         } catch (err) {
-            console.error('Erreur lors de l\'initialisation des boutons PayPal:', err);
             setError('Erreur lors de l\'initialisation des boutons PayPal: ' + err.message);
         }
 

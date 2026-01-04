@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/Product');
+const Comment = require('../models/Comment');
 
 // @desc    Fetch all products
 // @route   GET /api/products
@@ -28,6 +29,35 @@ const getProducts = asyncHandler(async (req, res) => {
     }
     
     const products = await Product.find(query);
+    
+    // Si all=true et que l'utilisateur est admin, inclure les commentaires depuis la collection Comments
+    if (all === 'true' && req.user && req.user.isAdmin) {
+        const productsWithComments = await Promise.all(
+            products.map(async (product) => {
+                const productObj = product.toObject();
+                const comments = await Comment.find({ product: product._id })
+                    .populate('user', 'name')
+                    .sort({ createdAt: -1 });
+                
+                productObj.reviews = comments.map(c => ({
+                    _id: c._id,
+                    name: c.name,
+                    rating: c.rating,
+                    comment: c.comment,
+                    user: c.user,
+                    isModerated: c.isModerated,
+                    moderatedBy: c.moderatedBy,
+                    moderatedAt: c.moderatedAt,
+                    createdAt: c.createdAt,
+                    updatedAt: c.updatedAt,
+                }));
+                
+                return productObj;
+            })
+        );
+        return res.json(productsWithComments);
+    }
+    
     res.json(products);
 });
 
@@ -58,18 +88,46 @@ const getProductById = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (product) {
-        // Only return moderated reviews for non-admin users
+        // Récupérer les commentaires depuis la collection Comments
         const isAdmin = req.user && req.user.isAdmin;
-        if (!isAdmin) {
-            const productObj = product.toObject();
-            const userId = req.user ? req.user._id.toString() : '';
-            productObj.reviews = productObj.reviews.filter(r => 
-                r.isModerated || (userId && r.user.toString() === userId)
-            );
-            res.json(productObj);
+        let comments;
+        
+        if (isAdmin) {
+            // Admin voit tous les commentaires
+            comments = await Comment.find({ product: product._id })
+                .populate('user', 'name')
+                .sort({ createdAt: -1 });
         } else {
-            res.json(product);
+            // Utilisateurs normaux voient seulement les commentaires modérés ou leurs propres commentaires
+            const userId = req.user ? req.user._id : null;
+            const query = { 
+                product: product._id,
+                $or: [{ isModerated: true }]
+            };
+            if (userId) {
+                query.$or.push({ user: userId });
+            }
+            comments = await Comment.find(query)
+                .populate('user', 'name')
+                .sort({ createdAt: -1 });
         }
+        
+        // Convertir les commentaires au format reviews pour compatibilité
+        const productObj = product.toObject();
+        productObj.reviews = comments.map(c => ({
+            _id: c._id,
+            name: c.name,
+            rating: c.rating,
+            comment: c.comment,
+            user: c.user,
+            isModerated: c.isModerated,
+            moderatedBy: c.moderatedBy,
+            moderatedAt: c.moderatedAt,
+            createdAt: c.createdAt,
+            updatedAt: c.updatedAt,
+        }));
+        
+        res.json(productObj);
     } else {
         res.status(404);
         throw new Error('Product not found');
@@ -83,6 +141,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (product) {
+        // Supprimer tous les commentaires associés au produit
+        await Comment.deleteMany({ product: product._id });
         await product.deleteOne();
         res.json({ message: 'Product removed' });
     } else {
@@ -207,30 +267,39 @@ const createProductReview = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (product) {
-        const alreadyReviewed = product.reviews.find(
-            (r) => r.user.toString() === req.user._id.toString()
-        );
+        // Vérifier si l'utilisateur a déjà laissé un commentaire
+        const existingComment = await Comment.findOne({
+            product: product._id,
+            user: req.user._id,
+        });
 
-        if (alreadyReviewed) {
+        if (existingComment) {
             res.status(400);
             throw new Error('Vous avez déjà laissé un avis pour ce produit');
         }
 
-        const review = {
+        // Créer le commentaire dans la collection Comments
+        const newComment = new Comment({
+            product: product._id,
+            user: req.user._id,
             name: req.user.name,
             rating: Number(rating),
             comment,
-            user: req.user._id,
             isModerated: false,
-        };
+        });
 
-        product.reviews.push(review);
+        await newComment.save();
 
-        product.numReviews = product.reviews.length;
-
-        product.rating =
-            product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-            product.reviews.length;
+        // Mettre à jour le rating et numReviews du produit
+        const allComments = await Comment.find({ product: product._id });
+        product.numReviews = allComments.length;
+        if (allComments.length > 0) {
+            product.rating =
+                allComments.reduce((acc, item) => item.rating + acc, 0) /
+                allComments.length;
+        } else {
+            product.rating = 0;
+        }
 
         await product.save();
         res.status(201).json({ message: 'Avis ajouté' });
@@ -248,39 +317,48 @@ const moderateReview = asyncHandler(async (req, res) => {
 
     const product = await Product.findById(req.params.id);
 
-    if (product) {
-        const review = product.reviews.id(req.params.reviewId);
-
-        if (review) {
-            if (action === 'approve') {
-                review.isModerated = true;
-                review.moderatedBy = req.user._id;
-                review.moderatedAt = new Date();
-            } else if (action === 'reject') {
-                // Remove the review
-                product.reviews.pull({ _id: req.params.reviewId });
-                
-                // Recalculate rating
-                if (product.reviews.length > 0) {
-                    product.rating =
-                        product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-                        product.reviews.length;
-                } else {
-                    product.rating = 0;
-                }
-                product.numReviews = product.reviews.length;
-            }
-
-            await product.save();
-            res.json({ message: 'Avis modéré' });
-        } else {
-            res.status(404);
-            throw new Error('Avis non trouvé');
-        }
-    } else {
+    if (!product) {
         res.status(404);
         throw new Error('Produit non trouvé');
     }
+
+    // Trouver le commentaire dans la collection Comments
+    const comment = await Comment.findById(req.params.reviewId);
+
+    if (!comment) {
+        res.status(404);
+        throw new Error('Avis non trouvé');
+    }
+
+    // Vérifier que le commentaire appartient au produit
+    if (comment.product.toString() !== product._id.toString()) {
+        res.status(400);
+        throw new Error('Le commentaire n\'appartient pas à ce produit');
+    }
+
+    if (action === 'approve') {
+        comment.isModerated = true;
+        comment.moderatedBy = req.user._id;
+        comment.moderatedAt = new Date();
+        await comment.save();
+    } else if (action === 'reject') {
+        // Supprimer le commentaire de la collection Comments
+        await Comment.findByIdAndDelete(req.params.reviewId);
+        
+        // Recalculer le rating du produit
+        const allComments = await Comment.find({ product: product._id });
+        product.numReviews = allComments.length;
+        if (allComments.length > 0) {
+            product.rating =
+                allComments.reduce((acc, item) => item.rating + acc, 0) /
+                allComments.length;
+        } else {
+            product.rating = 0;
+        }
+        await product.save();
+    }
+
+    res.json({ message: 'Avis modéré' });
 });
 
 module.exports = {

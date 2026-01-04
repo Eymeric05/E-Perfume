@@ -122,7 +122,9 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
 
         {success && (
           <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded text-green-700 text-sm">
-            Votre avis a été soumis et sera publié après modération.
+            {userInfo?.isAdmin 
+              ? 'Votre avis a été publié avec succès.'
+              : 'Votre avis a été soumis et sera publié après modération.'}
           </div>
         )}
 

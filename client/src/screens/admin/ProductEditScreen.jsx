@@ -366,11 +366,28 @@ const ProductEditScreen = () => {
 
                                     {brandLogo && (
                                         <div className="mt-4">
-                                            <img
-                                                src={brandLogo}
-                                                alt="Logo de la marque"
-                                                className="h-16 w-auto object-contain rounded-lg border border-luxe-charcoal/10"
-                                            />
+                                            {brandLogo.toLowerCase().endsWith('.svg') || brandLogo.includes('/svg/') ? (
+                                                <div className="h-16 w-auto flex items-center justify-center rounded-lg border border-luxe-charcoal/10 bg-luxe-warm-white dark:bg-luxe-charcoal p-2">
+                                                    <object
+                                                        data={brandLogo}
+                                                        type="image/svg+xml"
+                                                        className="h-full w-full object-contain"
+                                                        aria-label="Logo de la marque"
+                                                    >
+                                                        <img
+                                                            src={brandLogo}
+                                                            alt="Logo de la marque"
+                                                            className="h-full w-full object-contain"
+                                                        />
+                                                    </object>
+                                                </div>
+                                            ) : (
+                                                <img
+                                                    src={brandLogo}
+                                                    alt="Logo de la marque"
+                                                    className="h-16 w-auto object-contain rounded-lg border border-luxe-charcoal/10"
+                                                />
+                                            )}
                                         </div>
                                     )}
 

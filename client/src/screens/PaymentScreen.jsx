@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
+import '../styles/screens/PaymentScreen.css';
 
 const PaymentScreen = () => {
     const navigate = useNavigate();
@@ -27,11 +28,11 @@ const PaymentScreen = () => {
     };
 
     return (
-        <div style={{ maxWidth: '600px', margin: '2rem auto' }}>
-            <h1 style={{ marginBottom: '1rem' }}>Méthode de Paiement</h1>
+        <div className="payment-container">
+            <h1>Méthode de Paiement</h1>
             <form onSubmit={submitHandler}>
-                <div style={{ marginBottom: '1rem' }}>
-                    <div style={{ marginBottom: '0.5rem' }}>
+                <div className="payment-options">
+                    <div className="payment-option">
                         <input
                             type="radio"
                             id="Stripe"
@@ -40,9 +41,9 @@ const PaymentScreen = () => {
                             checked={paymentMethodName === 'Stripe'}
                             onChange={(e) => setPaymentMethod(e.target.value)}
                         />
-                        <label htmlFor="Stripe" style={{ marginLeft: '0.5rem' }}>Stripe / Carte Bancaire</label>
+                        <label htmlFor="Stripe">Stripe / Carte Bancaire</label>
                     </div>
-                    <div style={{ marginBottom: '0.5rem' }}>
+                    <div className="payment-option">
                         <input
                             type="radio"
                             id="PayPal"
@@ -51,7 +52,7 @@ const PaymentScreen = () => {
                             checked={paymentMethodName === 'PayPal'}
                             onChange={(e) => setPaymentMethod(e.target.value)}
                         />
-                        <label htmlFor="PayPal" style={{ marginLeft: '0.5rem' }}>PayPal</label>
+                        <label htmlFor="PayPal">PayPal</label>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-block">

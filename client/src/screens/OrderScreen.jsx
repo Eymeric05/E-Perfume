@@ -9,6 +9,7 @@ import {
     useStripe,
     useElements,
 } from '@stripe/react-stripe-js';
+import '../styles/screens/OrderScreen.css';
 
 function reducer(state, action) {
     switch (action.type) {
@@ -82,17 +83,16 @@ const CheckoutForm = ({ order, handlePaymentSuccess }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="checkout-form">
             <CardElement options={{ style: { base: { fontSize: '16px' } } }} />
             <button
                 type="submit"
                 disabled={!stripe || processing}
-                className="btn btn-block"
-                style={{ marginTop: '1rem' }}
+                className="btn btn-block checkout-button"
             >
                 {processing ? 'Traitement...' : 'Payer'}
             </button>
-            {error && <div style={{ color: 'red', marginTop: '0.5rem' }}>{error}</div>}
+            {error && <div className="checkout-error">{error}</div>}
         </form>
     );
 };
@@ -141,11 +141,49 @@ const OrderScreen = () => {
             }
         };
 
+        const verifyPayment = async () => {
+            try {
+                // Vérifier si on vient de Stripe avec success
+                const urlParams = new URLSearchParams(window.location.search);
+                const sessionId = urlParams.get('session_id');
+
+                if (sessionId) {
+                    // Vérifier le paiement
+                    const res = await apiFetch('/api/payment/verify-payment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${userInfo.token}`,
+                        },
+                        body: JSON.stringify({ sessionId, orderId }),
+                    });
+                    const data = await res.json();
+                    
+                    if (data.isPaid) {
+                        // Recharger la commande
+                        await fetchOrder();
+                        // Nettoyer l'URL
+                        window.history.replaceState({}, '', `/order/${orderId}`);
+                    }
+                }
+            } catch (err) {
+                console.error('Erreur lors de la vérification du paiement:', err);
+            }
+        };
+
         if (!userInfo) {
             return navigate('/login');
         }
         if (!order._id || successPay || (order._id && order._id !== orderId)) {
-            fetchOrder();
+            fetchOrder().then(() => {
+                // Vérifier le paiement après avoir chargé la commande
+                const urlParams = new URLSearchParams(window.location.search);
+                const success = urlParams.get('success');
+                
+                if (success === 'true') {
+                    verifyPayment();
+                }
+            });
             if (successPay) {
                 dispatch({ type: 'PAY_RESET' });
             }
@@ -180,13 +218,13 @@ const OrderScreen = () => {
     return loading ? (
         <div>Chargement...</div>
     ) : error ? (
-        <div style={{ color: 'red' }}>{error}</div>
+        <div className="order-error">{error}</div>
     ) : (
-        <div style={{ padding: '2rem 0' }}>
-            <h1 style={{ marginBottom: '1rem' }}>Commande {orderId}</h1>
-            <div style={gridStyle}>
-                <div style={{ flex: 2 }}>
-                    <div style={cardStyle}>
+        <div className="order-container">
+            <h1>Commande {orderId}</h1>
+            <div className="order-grid">
+                <div className="order-main">
+                    <div className="order-card">
                         <h2>Livraison</h2>
                         <p>
                             <strong>Nom:</strong> {order.user.name} <br />
@@ -196,34 +234,34 @@ const OrderScreen = () => {
                             {order.shippingAddress.country}
                         </p>
                         {order.isDelivered ? (
-                            <div style={successStyle}>Livré le {order.deliveredAt.substring(0, 10)}</div>
+                            <div className="order-status-success">Livré le {order.deliveredAt.substring(0, 10)}</div>
                         ) : (
-                            <div style={dangerStyle}>Non Livré</div>
+                            <div className="order-status-danger">Non Livré</div>
                         )}
                     </div>
 
-                    <div style={cardStyle}>
+                    <div className="order-card">
                         <h2>Paiement</h2>
                         <p>
                             <strong>Méthode:</strong> {order.paymentMethod}
                         </p>
                         {order.isPaid ? (
-                            <div style={successStyle}>Payé le {order.paidAt.substring(0, 10)}</div>
+                            <div className="order-status-success">Payé le {order.paidAt.substring(0, 10)}</div>
                         ) : (
-                            <div style={dangerStyle}>Non Payé</div>
+                            <div className="order-status-danger">Non Payé</div>
                         )}
                     </div>
 
-                    <div style={cardStyle}>
+                    <div className="order-card">
                         <h2>Articles</h2>
-                        <ul style={{ listStyle: 'none', padding: 0 }}>
+                        <ul className="order-items-list">
                             {order.orderItems.map((item) => (
-                                <li key={item._id} style={itemStyle}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <li key={item._id} className="order-item">
+                                    <div className="order-item-content">
                                         <img
                                             src={item.image}
                                             alt={item.name}
-                                            style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }}
+                                            className="order-item-image"
                                         />
                                         <Link to={`/product/${item.product}`}>{item.name}</Link>
                                     </div>
@@ -236,27 +274,27 @@ const OrderScreen = () => {
                     </div>
                 </div>
 
-                <div style={{ flex: 1 }}>
-                    <div style={cardStyle}>
+                <div className="order-sidebar">
+                    <div className="order-summary">
                         <h2>Résumé</h2>
-                        <div style={rowStyle}>
+                        <div className="order-summary-item">
                             <span>Articles</span>
                             <span>{order.itemsPrice.toFixed(2)} €</span>
                         </div>
-                        <div style={rowStyle}>
+                        <div className="order-summary-item">
                             <span>Livraison</span>
                             <span>{order.shippingPrice.toFixed(2)} €</span>
                         </div>
-                        <div style={rowStyle}>
+                        <div className="order-summary-item">
                             <span>TVA</span>
                             <span>{order.taxPrice.toFixed(2)} €</span>
                         </div>
-                        <div style={rowStyle}>
+                        <div className="order-summary-item">
                             <strong>Total</strong>
                             <strong>{order.totalPrice.toFixed(2)} €</strong>
                         </div>
                         {!order.isPaid && stripePromise && (
-                            <div style={{ marginTop: '1rem' }}>
+                            <div className="checkout-button">
                                 <Elements stripe={stripePromise}>
                                     <CheckoutForm order={order} handlePaymentSuccess={handlePaymentSuccess} />
                                 </Elements>
@@ -267,52 +305,6 @@ const OrderScreen = () => {
             </div>
         </div>
     );
-};
-
-const gridStyle = {
-    display: 'flex',
-    gap: '2rem',
-    flexWrap: 'wrap',
-};
-
-const cardStyle = {
-    border: '1px solid #e0e0e0',
-    borderRadius: '4px',
-    padding: '1.5rem',
-    background: '#fff',
-    marginBottom: '1rem',
-};
-
-const itemStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0.5rem 0',
-    borderBottom: '1px solid #eee',
-};
-
-const rowStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '0.5rem',
-};
-
-const successStyle = {
-    color: '#155724',
-    backgroundColor: '#d4edda',
-    borderColor: '#c3e6cb',
-    padding: '0.75rem 1.25rem',
-    marginBottom: '1rem',
-    borderRadius: '0.25rem',
-};
-
-const dangerStyle = {
-    color: '#721c24',
-    backgroundColor: '#f8d7da',
-    borderColor: '#f5c6cb',
-    padding: '0.75rem 1.25rem',
-    marginBottom: '1rem',
-    borderRadius: '0.25rem',
 };
 
 export default OrderScreen;

@@ -109,13 +109,11 @@ app.get('/api/config/stripe', (req, res) =>
   res.send(process.env.STRIPE_PUBLISHABLE_KEY || '')
 );
 
-const dirname = path.resolve();
-app.use('/uploads', express.static(path.join(dirname, '/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Error Handling
 app.use(notFound);
 app.use(errorHandler);
-
 
 // Start Server
 app.listen(PORT, () => {

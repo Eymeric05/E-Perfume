@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
+import '../styles/screens/ShippingScreen.css';
 
 const ShippingScreen = () => {
     const navigate = useNavigate();
@@ -45,50 +46,50 @@ const ShippingScreen = () => {
     };
 
     return (
-        <div style={{ maxWidth: '600px', margin: '2rem auto' }}>
-            <h1 style={{ marginBottom: '1rem' }}>Adresse de Livraison</h1>
+        <div className="shipping-container">
+            <h1>Adresse de Livraison</h1>
             <form onSubmit={submitHandler}>
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="address" style={{ display: 'block', marginBottom: '0.5rem' }}>Adresse</label>
+                <div className="shipping-form-group">
+                    <label htmlFor="address" className="shipping-label">Adresse</label>
                     <input
                         type="text"
                         id="address"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        style={inputStyle}
+                        className="shipping-input"
                         required
                     />
                 </div>
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="city" style={{ display: 'block', marginBottom: '0.5rem' }}>Ville</label>
+                <div className="shipping-form-group">
+                    <label htmlFor="city" className="shipping-label">Ville</label>
                     <input
                         type="text"
                         id="city"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
-                        style={inputStyle}
+                        className="shipping-input"
                         required
                     />
                 </div>
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="postalCode" style={{ display: 'block', marginBottom: '0.5rem' }}>Code Postal</label>
+                <div className="shipping-form-group">
+                    <label htmlFor="postalCode" className="shipping-label">Code Postal</label>
                     <input
                         type="text"
                         id="postalCode"
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
-                        style={inputStyle}
+                        className="shipping-input"
                         required
                     />
                 </div>
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="country" style={{ display: 'block', marginBottom: '0.5rem' }}>Pays</label>
+                <div className="shipping-form-group">
+                    <label htmlFor="country" className="shipping-label">Pays</label>
                     <input
                         type="text"
                         id="country"
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
-                        style={inputStyle}
+                        className="shipping-input"
                         required
                     />
                 </div>
@@ -98,13 +99,6 @@ const ShippingScreen = () => {
             </form>
         </div>
     );
-};
-
-const inputStyle = {
-    width: '100%',
-    padding: '0.8rem',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
 };
 
 export default ShippingScreen;

@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/components/ProductBadges.css';
 
 const ProductBadges = ({ product }) => {
   if (!product) return null;
@@ -37,12 +38,11 @@ const ProductBadges = ({ product }) => {
   if (badges.length === 0) return null;
 
   return (
-    <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+    <div className="product-badges-container">
       {badges.map((badge, index) => (
         <span
           key={index}
-          className={`${badge.className} px-3 py-1 text-xs font-sans font-bold uppercase tracking-wider shadow-lg animate-fade-in`}
-          style={{ animationDelay: `${index * 100}ms` }}
+          className={`product-badge ${badge.className}`}
         >
           {badge.label}
         </span>
@@ -52,10 +52,6 @@ const ProductBadges = ({ product }) => {
 };
 
 export default ProductBadges;
-
-
-
-
 
 
 

@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { apiFetch } from '../utils/api';
+import '../styles/screens/RegisterScreen.css';
 
 const RegisterScreen = () => {
     const navigate = useNavigate();
@@ -52,54 +53,54 @@ const RegisterScreen = () => {
     }, [navigate, redirect, userInfo]);
 
     return (
-        <div style={{ maxWidth: '400px', margin: '2rem auto' }}>
-            <h1 style={{ marginBottom: '1rem' }}>Inscription</h1>
+        <div className="register-container">
+            <h1>Inscription</h1>
             <form onSubmit={submitHandler}>
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="name" style={{ display: 'block', marginBottom: '0.5rem' }}>Nom</label>
+                <div className="register-form-group">
+                    <label htmlFor="name" className="register-label">Nom</label>
                     <input
                         type="text"
                         id="name"
                         placeholder="Entrez votre nom"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        style={inputStyle}
+                        className="register-input"
                         required
                     />
                 </div>
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem' }}>Email</label>
+                <div className="register-form-group">
+                    <label htmlFor="email" className="register-label">Email</label>
                     <input
                         type="email"
                         id="email"
                         placeholder="Entrez votre email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        style={inputStyle}
+                        className="register-input"
                         required
                     />
                 </div>
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="password" style={{ display: 'block', marginBottom: '0.5rem' }}>Mot de passe</label>
+                <div className="register-form-group">
+                    <label htmlFor="password" className="register-label">Mot de passe</label>
                     <input
                         type="password"
                         id="password"
                         placeholder="Entrez votre mot de passe"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        style={inputStyle}
+                        className="register-input"
                         required
                     />
                 </div>
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="confirmPassword" style={{ display: 'block', marginBottom: '0.5rem' }}>Confirmer mot de passe</label>
+                <div className="register-form-group">
+                    <label htmlFor="confirmPassword" className="register-label">Confirmer mot de passe</label>
                     <input
                         type="password"
                         id="confirmPassword"
                         placeholder="Confirmez votre mot de passe"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        style={inputStyle}
+                        className="register-input"
                         required
                     />
                 </div>
@@ -107,19 +108,12 @@ const RegisterScreen = () => {
                     S'inscrire
                 </button>
             </form>
-            <div style={{ marginTop: '1rem' }}>
+            <div className="register-footer">
                 Déjà un compte ?{' '}
                 <Link to={`/login?redirect=${redirect}`}>Se connecter</Link>
             </div>
         </div>
     );
-};
-
-const inputStyle = {
-    width: '100%',
-    padding: '0.8rem',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
 };
 
 export default RegisterScreen;

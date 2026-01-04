@@ -1,0 +1,39 @@
+.register-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.register-container h1 {
+  margin-bottom: 1rem;
+}
+
+.register-form-group {
+  margin-bottom: 1rem;
+}
+
+.register-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-primary, #1a0a14);
+}
+
+.register-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.register-input:focus {
+  outline: none;
+  border-color: var(--accent-amber, #d4a574);
+}
+
+.register-footer {
+  margin-top: 1rem;
+  text-align: center;
+}

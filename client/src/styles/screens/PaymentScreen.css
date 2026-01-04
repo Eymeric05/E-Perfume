@@ -1,0 +1,28 @@
+.payment-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.payment-container h1 {
+  margin-bottom: 1rem;
+}
+
+.payment-options {
+  margin-bottom: 1rem;
+}
+
+.payment-option {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.payment-option input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+.payment-option label {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaTimes, FaChevronLeft, FaChevronRight, FaExpand } from 'react-icons/fa';
+import '../styles/components/ImageZoom.css';
 
 const ImageZoom = ({ images, currentIndex = 0, isOpen, onClose, productName }) => {
   const [activeIndex, setActiveIndex] = useState(currentIndex);
@@ -73,19 +74,19 @@ const ImageZoom = ({ images, currentIndex = 0, isOpen, onClose, productName }) =
 
   return (
     <div
-      className="fixed inset-0 bg-luxe-black/95 z-[100] flex items-center justify-center"
+      className="image-zoom-overlay"
       onClick={onClose}
     >
       <div
         ref={containerRef}
-        className="relative w-full h-full flex items-center justify-center p-4"
+        className="image-zoom-container"
         onWheel={handleWheel}
         onMouseMove={handleMouseMove}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-3 text-luxe-cream hover:text-luxe-gold transition-colors"
+          className="image-zoom-close"
           aria-label="Fermer"
         >
           <FaTimes className="w-6 h-6" />
@@ -95,14 +96,14 @@ const ImageZoom = ({ images, currentIndex = 0, isOpen, onClose, productName }) =
           <>
             <button
               onClick={handlePrev}
-              className="absolute left-4 z-10 p-3 text-luxe-cream hover:text-luxe-gold transition-colors bg-luxe-black/50 rounded-full"
+              className="image-zoom-nav image-zoom-nav-prev"
               aria-label="Image précédente"
             >
               <FaChevronLeft className="w-6 h-6" />
             </button>
             <button
               onClick={handleNext}
-              className="absolute right-4 z-10 p-3 text-luxe-cream hover:text-luxe-gold transition-colors bg-luxe-black/50 rounded-full"
+              className="image-zoom-nav image-zoom-nav-next"
               aria-label="Image suivante"
             >
               <FaChevronRight className="w-6 h-6" />
@@ -115,7 +116,7 @@ const ImageZoom = ({ images, currentIndex = 0, isOpen, onClose, productName }) =
             ref={imageRef}
             src={images[safeActiveIndex] || images[0]}
             alt={productName || 'Produit'}
-            className="max-w-full max-h-[90vh] object-contain transition-transform duration-300"
+            className="image-zoom-image"
             style={{
               transform: `scale(${zoomLevel}) translate(${position.x}%, ${position.y}%)`,
               cursor: zoomLevel > 1 ? 'move' : 'zoom-in',
@@ -131,14 +132,14 @@ const ImageZoom = ({ images, currentIndex = 0, isOpen, onClose, productName }) =
           />
 
           {zoomLevel > 1 && (
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-luxe-cream text-sm font-sans">
+            <div className="image-zoom-hint">
               Double-clic pour réinitialiser le zoom
             </div>
           )}
         </div>
 
         {images.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+          <div className="image-zoom-indicators">
             {images.map((img, index) => (
               <button
                 key={index}
@@ -147,16 +148,14 @@ const ImageZoom = ({ images, currentIndex = 0, isOpen, onClose, productName }) =
                   setZoomLevel(1);
                   setPosition({ x: 0, y: 0 });
                 }}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === activeIndex ? 'bg-luxe-gold w-8' : 'bg-luxe-cream/50'
-                }`}
+                className={`image-zoom-indicator ${index === activeIndex ? 'active' : ''}`}
                 aria-label={`Image ${index + 1}`}
               />
             ))}
           </div>
         )}
 
-        <div className="absolute top-4 left-4 text-luxe-cream/70 text-sm font-sans">
+        <div className="image-zoom-counter">
           {safeActiveIndex + 1} / {images.length}
         </div>
       </div>

@@ -1,0 +1,27 @@
+.tag-filter-animated {
+  transition: all 0.3s;
+}
+
+.tag-filter-animated[data-delay="0"] {
+  animation-delay: 0ms;
+}
+
+.tag-filter-animated[data-delay="30"] {
+  animation-delay: 30ms;
+}
+
+.tag-filter-animated[data-delay="60"] {
+  animation-delay: 60ms;
+}
+
+.tag-filter-animated[data-delay="90"] {
+  animation-delay: 90ms;
+}
+
+.tag-filter-animated[data-delay="120"] {
+  animation-delay: 120ms;
+}
+
+.tag-filter-animated[data-delay="150"] {
+  animation-delay: 150ms;
+}

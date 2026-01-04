@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import '../styles/components/PriceSlider.css';
 
 const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax }) => {
   const [minValue, setMinValue] = useState(initialMin !== undefined ? initialMin : min);
@@ -62,29 +63,27 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
   }, [isDragging, minValue, maxValue, min, max, onRangeChange]);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
+    <div className="price-slider-container">
+      <div className="price-slider-header">
+        <span className="price-slider-range">
           {minValue}€ - {maxValue}€
         </span>
       </div>
       <div
         ref={sliderRef}
-        className="relative h-2 bg-luxe-charcoal/10 dark:bg-luxe-cream/10 rounded-full cursor-pointer"
+        className="price-slider-track"
         onMouseDown={(e) => {
-          // Only handle click on the bar itself, not on handles or active range
           const target = e.target;
-          const isHandle = target.classList.contains('slider-handle') || 
-                          target.closest('.slider-handle');
-          const isActiveRange = target.classList.contains('slider-range') ||
-                               target.closest('.slider-range');
+          const isHandle = target.classList.contains('price-slider-handle') || 
+                          target.closest('.price-slider-handle');
+          const isActiveRange = target.classList.contains('price-slider-active-range') ||
+                               target.closest('.price-slider-active-range');
           
           if (!isHandle && !isActiveRange) {
             const rect = sliderRef.current.getBoundingClientRect();
             const percent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
             const value = Math.round(min + (percent / 100) * (max - min));
             
-            // Determine which handle is closer
             const distToMin = Math.abs(value - minValue);
             const distToMax = Math.abs(value - maxValue);
             
@@ -99,16 +98,14 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
         }}
       >
         <div
-          className="absolute h-2 bg-luxe-gold rounded-full transition-all duration-300 ease-out slider-range pointer-events-none"
+          className="price-slider-active-range"
           style={{
             left: `${percentage(minValue)}%`,
             width: `${percentage(maxValue) - percentage(minValue)}%`,
           }}
         />
         <div
-          className={`absolute w-5 h-5 bg-luxe-gold rounded-full shadow-lg cursor-grab active:cursor-grabbing transform -translate-y-1.5 transition-all duration-300 hover:scale-125 hover:shadow-xl z-10 slider-handle ${
-            isDragging === 'min' ? 'scale-125 shadow-2xl' : ''
-          }`}
+          className={`price-slider-handle ${isDragging === 'min' ? 'active' : ''}`}
           style={{ left: `calc(${percentage(minValue)}% - 10px)` }}
           onMouseDown={(e) => {
             e.stopPropagation();
@@ -117,9 +114,7 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
           }}
         />
         <div
-          className={`absolute w-5 h-5 bg-luxe-gold rounded-full shadow-lg cursor-grab active:cursor-grabbing transform -translate-y-1.5 transition-all duration-300 hover:scale-125 hover:shadow-xl z-10 slider-handle ${
-            isDragging === 'max' ? 'scale-125 shadow-2xl' : ''
-          }`}
+          className={`price-slider-handle ${isDragging === 'max' ? 'active' : ''}`}
           style={{ left: `calc(${percentage(maxValue)}% - 10px)` }}
           onMouseDown={(e) => {
             e.stopPropagation();
@@ -128,7 +123,7 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
           }}
         />
       </div>
-      <div className="flex items-center justify-between text-xs text-luxe-charcoal/50 dark:text-luxe-cream/50">
+      <div className="price-slider-labels">
         <span>{min}€</span>
         <span>{max}€</span>
       </div>

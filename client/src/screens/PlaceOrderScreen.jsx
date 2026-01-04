@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useReducer } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { apiFetch } from '../utils/api';
+import '../styles/screens/PlaceOrderScreen.css';
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -35,6 +36,8 @@ const PlaceOrderScreen = () => {
     const placeOrderHandler = async () => {
         try {
             dispatch({ type: 'CREATE_REQUEST' });
+            
+            // Créer la commande
             const res = await apiFetch('/api/orders', {
                 method: 'POST',
                 headers: {
@@ -55,18 +58,51 @@ const PlaceOrderScreen = () => {
             const data = await res.json();
 
             if (res.ok) {
-                ctxDispatch({ type: 'CART_CLEAR' });
-                dispatch({ type: 'CREATE_SUCCESS' });
-                localStorage.removeItem('cartItems');
-                navigate(`/order/${data._id}`);
+                // Si la méthode de paiement est Stripe, créer une session Checkout
+                if (cart.paymentMethod === 'Stripe') {
+                    try {
+                        const stripeRes = await apiFetch('/api/payment/create-checkout-session', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${userInfo.token}`,
+                            },
+                            body: JSON.stringify({
+                                items: cart.cartItems,
+                                orderId: data._id,
+                            }),
+                        });
+
+                        const stripeData = await stripeRes.json();
+                        
+                        if (stripeRes.ok && stripeData.url) {
+                            // Rediriger vers Stripe Checkout
+                            window.location.href = stripeData.url;
+                            return;
+                        } else {
+                            throw new Error(stripeData.error || 'Erreur lors de la création de la session Stripe');
+                        }
+                    } catch (stripeErr) {
+                        console.error('Erreur Stripe:', stripeErr);
+                        dispatch({ type: 'CREATE_FAIL' });
+                        alert('Erreur lors de l\'initialisation du paiement: ' + (stripeErr.message || stripeErr));
+                        return;
+                    }
+                } else {
+                    // Pour les autres méthodes de paiement, procéder normalement
+                    ctxDispatch({ type: 'CART_CLEAR' });
+                    dispatch({ type: 'CREATE_SUCCESS' });
+                    localStorage.removeItem('cartItems');
+                    navigate(`/order/${data._id}`);
+                }
             } else {
                 dispatch({ type: 'CREATE_FAIL' });
-                alert('Error placing order');
+                alert('Erreur lors de la création de la commande');
             }
 
         } catch (err) {
             dispatch({ type: 'CREATE_FAIL' });
-            alert('Error placing order');
+            alert('Erreur lors de la création de la commande: ' + err.message);
         }
     };
 
@@ -77,11 +113,11 @@ const PlaceOrderScreen = () => {
     }, [cart, navigate]);
 
     return (
-        <div style={{ padding: '2rem 0' }}>
-            <h1 style={{ marginBottom: '2rem' }}>Récapitulatif de la Commande</h1>
-            <div style={gridStyle}>
-                <div style={{ flex: 2 }}>
-                    <div style={cardStyle}>
+        <div className="place-order-container">
+            <h1>Récapitulatif de la Commande</h1>
+            <div className="place-order-grid">
+                <div className="place-order-main">
+                    <div className="place-order-card">
                         <h2>Livraison</h2>
                         <p>
                             <strong>Nom:</strong> {userInfo.name} <br />
@@ -92,7 +128,7 @@ const PlaceOrderScreen = () => {
                         <Link to="/shipping">Modifier</Link>
                     </div>
 
-                    <div style={cardStyle}>
+                    <div className="place-order-card">
                         <h2>Paiement</h2>
                         <p>
                             <strong>Méthode:</strong> {cart.paymentMethod}
@@ -100,16 +136,16 @@ const PlaceOrderScreen = () => {
                         <Link to="/payment">Modifier</Link>
                     </div>
 
-                    <div style={cardStyle}>
+                    <div className="place-order-card">
                         <h2>Articles</h2>
-                        <ul style={{ listStyle: 'none', padding: 0 }}>
+                        <ul className="place-order-items-list">
                             {cart.cartItems.map((item) => (
-                                <li key={item._id} style={itemStyle}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <li key={item._id} className="place-order-item">
+                                    <div className="place-order-item-content">
                                         <img
                                             src={item.image}
                                             alt={item.name}
-                                            style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }}
+                                            className="place-order-item-image"
                                         />
                                         <Link to={`/product/${item._id}`}>{item.name}</Link>
                                     </div>
@@ -123,22 +159,22 @@ const PlaceOrderScreen = () => {
                     </div>
                 </div>
 
-                <div style={{ flex: 1 }}>
-                    <div style={cardStyle}>
+                <div className="place-order-sidebar">
+                    <div className="place-order-summary">
                         <h2>Résumé</h2>
-                        <div style={rowStyle}>
+                        <div className="place-order-summary-item">
                             <span>Articles</span>
                             <span>{cart.itemsPrice.toFixed(2)} €</span>
                         </div>
-                        <div style={rowStyle}>
+                        <div className="place-order-summary-item">
                             <span>Livraison</span>
                             <span>{cart.shippingPrice.toFixed(2)} €</span>
                         </div>
-                        <div style={rowStyle}>
+                        <div className="place-order-summary-item">
                             <span>TVA</span>
                             <span>{cart.taxPrice.toFixed(2)} €</span>
                         </div>
-                        <div style={rowStyle}>
+                        <div className="place-order-summary-item">
                             <strong>Total</strong>
                             <strong>{cart.totalPrice.toFixed(2)} €</strong>
                         </div>
@@ -155,34 +191,6 @@ const PlaceOrderScreen = () => {
             </div>
         </div>
     );
-};
-
-const gridStyle = {
-    display: 'flex',
-    gap: '2rem',
-    flexWrap: 'wrap',
-};
-
-const cardStyle = {
-    border: '1px solid #e0e0e0',
-    borderRadius: '4px',
-    padding: '1.5rem',
-    background: '#fff',
-    marginBottom: '1rem',
-};
-
-const itemStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0.5rem 0',
-    borderBottom: '1px solid #eee',
-};
-
-const rowStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '0.5rem',
 };
 
 export default PlaceOrderScreen;

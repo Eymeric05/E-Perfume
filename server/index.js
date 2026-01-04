@@ -140,6 +140,7 @@ const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const brandRoutes = require('./routes/brandRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const path = require('path');
 
@@ -153,6 +154,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/brands', brandRoutes);
 
 app.get('/api/config/stripe', (req, res) =>
   res.send(process.env.STRIPE_PUBLISHABLE_KEY || '')

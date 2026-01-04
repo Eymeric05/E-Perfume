@@ -6,7 +6,7 @@ const Comment = require('../models/Comment');
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-    const { category, all, fragranceFamily, skinType } = req.query;
+    const { category, all, fragranceFamily, skinType, brand } = req.query;
     let query = {};
     
     // If 'all' parameter is true, return all products (for admin panel)
@@ -26,6 +26,9 @@ const getProducts = asyncHandler(async (req, res) => {
     }
     if (skinType) {
         query.skinType = skinType;
+    }
+    if (brand) {
+        query.brand = { $regex: new RegExp(`^${brand}$`, 'i') };
     }
     
     const products = await Product.find(query);

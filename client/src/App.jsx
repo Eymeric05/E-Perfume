@@ -14,6 +14,7 @@ import { HelmetProvider } from 'react-helmet-async';
 const HomeScreen = lazy(() => import('./screens/HomeScreen'));
 const ProductScreen = lazy(() => import('./screens/ProductScreen'));
 const ProductsListScreen = lazy(() => import('./screens/ProductsListScreen'));
+const BrandScreen = lazy(() => import('./screens/BrandScreen'));
 const CartScreen = lazy(() => import('./screens/CartScreen'));
 const LoginScreen = lazy(() => import('./screens/LoginScreen'));
 const RegisterScreen = lazy(() => import('./screens/RegisterScreen'));
@@ -30,6 +31,8 @@ const LogoutScreen = lazy(() => import('./screens/LogoutScreen'));
 // Lazy loading des écrans admin
 const ProductListScreen = lazy(() => import('./screens/admin/ProductListScreen'));
 const ProductEditScreen = lazy(() => import('./screens/admin/ProductEditScreen'));
+const BrandListScreen = lazy(() => import('./screens/admin/BrandListScreen'));
+const BrandEditScreen = lazy(() => import('./screens/admin/BrandEditScreen'));
 const DashboardScreen = lazy(() => import('./screens/admin/DashboardScreen'));
 const OrdersListScreen = lazy(() => import('./screens/admin/OrdersListScreen'));
 const UsersListScreen = lazy(() => import('./screens/admin/UsersListScreen'));
@@ -51,6 +54,7 @@ const AppContent = () => {
           <Routes location={location}>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/products" element={<ProductsListScreen />} />
+            <Route path="/brand/:brandName" element={<BrandScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart" element={<CartScreen />} />
             <Route path="/login" element={<LoginScreen />} />
@@ -92,6 +96,26 @@ const AppContent = () => {
                 <AdminRoute>
                   <Suspense fallback={<LoadingSpinner />}>
                     <ProductEditScreen />
+                  </Suspense>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/brands"
+              element={
+                <AdminRoute>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <BrandListScreen />
+                  </Suspense>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/brands/:brandName"
+              element={
+                <AdminRoute>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <BrandEditScreen />
                   </Suspense>
                 </AdminRoute>
               }

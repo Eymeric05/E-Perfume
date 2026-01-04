@@ -10,7 +10,8 @@ import {
   FaHome,
   FaBars,
   FaTimes,
-  FaCommentDots
+  FaCommentDots,
+  FaImage
 } from 'react-icons/fa';
 
 const AdminLayout = ({ children }) => {
@@ -29,6 +30,7 @@ const AdminLayout = ({ children }) => {
   const menuItems = [
     { path: '/admin', icon: FaChartBar, label: 'Tableau de bord', exact: true },
     { path: '/admin/products', icon: FaBox, label: 'Produits' },
+    { path: '/admin/brands', icon: FaImage, label: 'Marques' },
     { path: '/admin/orders', icon: FaShoppingCart, label: 'Commandes' },
     { path: '/admin/users', icon: FaUsers, label: 'Utilisateurs' },
     { path: '/admin/reviews', icon: FaCommentDots, label: 'Modération des avis' },

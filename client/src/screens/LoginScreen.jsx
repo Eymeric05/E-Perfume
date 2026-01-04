@@ -31,18 +31,23 @@ const LoginScreen = () => {
 
         // Exécuter reCAPTCHA v3 pour obtenir le token
         let recaptchaToken = '';
-        if (executeRecaptcha) {
-            try {
-                recaptchaToken = await executeRecaptcha('login');
-            } catch (error) {
-                console.error('Erreur reCAPTCHA:', error);
-                setErrors({ recaptchaToken: 'Erreur lors de la vérification reCAPTCHA. Veuillez réessayer.' });
+        if (!executeRecaptcha) {
+            console.error('executeRecaptcha n\'est pas disponible');
+            setErrors({ recaptchaToken: 'reCAPTCHA n\'est pas disponible. Vérifiez la configuration.' });
+            setIsSubmitting(false);
+            return;
+        }
+
+        try {
+            recaptchaToken = await executeRecaptcha('login');
+            if (!recaptchaToken) {
+                setErrors({ recaptchaToken: 'Erreur lors de la génération du token reCAPTCHA. Veuillez réessayer.' });
                 setIsSubmitting(false);
                 return;
             }
-        } else {
-            // Si executeRecaptcha n'est pas disponible, afficher une erreur
-            setErrors({ recaptchaToken: 'reCAPTCHA n\'est pas disponible. Vérifiez la configuration.' });
+        } catch (error) {
+            console.error('Erreur reCAPTCHA:', error);
+            setErrors({ recaptchaToken: 'Erreur lors de la vérification reCAPTCHA. Veuillez réessayer.' });
             setIsSubmitting(false);
             return;
         }

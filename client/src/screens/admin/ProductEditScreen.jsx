@@ -330,7 +330,7 @@ const ProductEditScreen = () => {
                             {/* Left Column */}
                             <div className="space-y-6">
                                 {/* Basic Information */}
-                                <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 space-y-4">
+                                <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/30 p-6 space-y-4">
                                     <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream mb-4">
                                         Informations de base
                                     </h2>
@@ -561,7 +561,7 @@ const ProductEditScreen = () => {
                                             id="isLimitedEdition"
                                             checked={isLimitedEdition}
                                             onChange={(e) => setIsLimitedEdition(e.target.checked)}
-                                            className="w-4 h-4 text-luxe-gold bg-luxe-warm-white border-luxe-charcoal/20 rounded focus:ring-luxe-gold focus:ring-2"
+                                            className="w-4 h-4 text-luxe-gold bg-luxe-warm-white dark:bg-luxe-charcoal border-luxe-charcoal/20 dark:border-luxe-gold/50 rounded focus:ring-luxe-gold focus:ring-2"
                                         />
                                         <label htmlFor="isLimitedEdition" className="font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 cursor-pointer">
                                             Collection limitée (affiché dans Collections Éphémères)
@@ -583,7 +583,7 @@ const ProductEditScreen = () => {
                                 </div>
 
                                 {/* Image Upload */}
-                                <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 space-y-4">
+                                <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/30 p-6 space-y-4">
                                     <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream mb-4">
                                         Images
                                     </h2>
@@ -691,7 +691,7 @@ const ProductEditScreen = () => {
                             <div className="space-y-6">
                                 {/* Fragrance Notes (for perfumes) */}
                                 {!isSkincare && (
-                                    <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 space-y-4">
+                                    <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/30 p-6 space-y-4">
                                         <div className="flex items-center justify-between mb-4">
                                             <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream">
                                                 Notes Olfactives
@@ -707,7 +707,7 @@ const ProductEditScreen = () => {
                                         </div>
 
                                         {fragranceNotes.map((group, groupIndex) => (
-                                            <div key={groupIndex} className="p-4 bg-luxe-champagne/20 rounded-lg space-y-3">
+                                            <div key={groupIndex} className="p-4 bg-luxe-champagne/20 dark:bg-luxe-charcoal/50 rounded-lg space-y-3 border border-luxe-charcoal/10 dark:border-luxe-gold/20">
                                                 <div className="flex items-center justify-between">
                                                     <select
                                                         value={group.type || 'Top'}
@@ -721,7 +721,7 @@ const ProductEditScreen = () => {
                                                     <button
                                                         type="button"
                                                         onClick={() => removeFragranceNoteGroup(groupIndex)}
-                                                        className="p-2 text-red-500 hover:bg-red-50 rounded transition-colors"
+                                                        className="p-2 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
                                                     >
                                                         <FaTimes className="w-4 h-4" />
                                                     </button>
@@ -730,13 +730,13 @@ const ProductEditScreen = () => {
                                                     {group.notes && group.notes.map((note, noteIndex) => (
                                                         <span
                                                             key={noteIndex}
-                                                            className="inline-flex items-center gap-2 px-3 py-1 bg-luxe-warm-white rounded-full text-sm"
+                                                            className="inline-flex items-center gap-2 px-3 py-1 bg-luxe-warm-white dark:bg-luxe-charcoal/70 dark:border dark:border-luxe-gold/30 rounded-full text-sm text-luxe-black dark:text-luxe-cream"
                                                         >
                                                             {note}
                                                             <button
                                                                 type="button"
                                                                 onClick={() => removeNoteFromGroup(groupIndex, noteIndex)}
-                                                                className="text-red-500 hover:text-red-700"
+                                                                className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                                                             >
                                                                 <FaTimes className="w-3 h-3" />
                                                             </button>
@@ -767,7 +767,7 @@ const ProductEditScreen = () => {
 
                                 {/* Benefits (for skincare) */}
                                 {isSkincare && (
-                                    <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 space-y-4">
+                                    <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/30 p-6 space-y-4">
                                         <div className="flex items-center justify-between mb-4">
                                             <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream">
                                                 Bienfaits
@@ -786,13 +786,13 @@ const ProductEditScreen = () => {
                                             {benefits.map((benefit, index) => (
                                                 <span
                                                     key={index}
-                                                    className="inline-flex items-center gap-2 px-3 py-1 bg-luxe-champagne/30 rounded-full text-sm"
+                                                    className="inline-flex items-center gap-2 px-3 py-1 bg-luxe-champagne/30 dark:bg-luxe-charcoal/70 dark:border dark:border-luxe-gold/30 rounded-full text-sm text-luxe-black dark:text-luxe-cream"
                                                 >
                                                     {benefit}
                                                     <button
                                                         type="button"
                                                         onClick={() => removeBenefit(index)}
-                                                        className="text-red-500 hover:text-red-700"
+                                                        className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                                                     >
                                                         <FaTimes className="w-3 h-3" />
                                                     </button>

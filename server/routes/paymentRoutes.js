@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Stripe = require('stripe');
+const paypal = require('@paypal/checkout-server-sdk');
 const dotenv = require('dotenv');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -8,6 +9,20 @@ dotenv.config();
 const stripe = process.env.STRIPE_SECRET_KEY 
     ? Stripe(process.env.STRIPE_SECRET_KEY)
     : null;
+
+// Configuration PayPal
+const paypalClientId = process.env.PAYPAL_CLIENT_ID || 'AaHD6tvQUQe95QIEtFDVxerfNCbLVSwAtpmXtSFpGbiIQ6k2eDFLWYxkvDDqf-bQcfaxds1q8WKgR0Fe';
+const paypalClientSecret = process.env.PAYPAL_CLIENT_SECRET || 'ECMXY0l9OxNUx9738m4yEM2iS5NoXcF7zV2cwpAVBGHU2Q-xvMbwfW8loE0cQDuqZ3kEZo3xw-oDiEqa';
+const paypalEnvironment = process.env.PAYPAL_ENVIRONMENT || 'sandbox'; // 'sandbox' ou 'live'
+
+// Créer un environnement PayPal
+function paypalClient() {
+    const environment = paypalEnvironment === 'live' 
+        ? new paypal.core.LiveEnvironment(paypalClientId, paypalClientSecret)
+        : new paypal.core.SandboxEnvironment(paypalClientId, paypalClientSecret);
+    
+    return new paypal.core.PayPalHttpClient(environment);
+}
 
 // Route pour créer une session Stripe Checkout
 router.post('/create-checkout-session', protect, async (req, res) => {
@@ -164,6 +179,176 @@ router.post('/create-payment-intent', async (req, res) => {
             clientSecret: paymentIntent.client_secret,
         });
     } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ ROUTES PAYPAL ============
+
+// Route pour créer une commande PayPal
+router.post('/paypal/create-order', protect, async (req, res) => {
+    const { items, orderId } = req.body;
+    const frontendUrl = process.env.FRONTEND_URL || 'https://e-perfume-gamma.vercel.app';
+
+    try {
+        const client = paypalClient();
+        const request = new paypal.orders.OrdersCreateRequest();
+
+        // Calculer le total
+        const itemsTotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const tax = Math.round((itemsTotal * 0.15) * 100) / 100; // TVA de 15%
+        const shipping = itemsTotal > 100 ? 0 : 10;
+        const total = Math.round((itemsTotal + tax + shipping) * 100) / 100;
+
+        request.prefer("return=representation");
+        request.requestBody({
+            intent: 'CAPTURE',
+            purchase_units: [{
+                reference_id: orderId.toString(),
+                description: 'Commande E-Parfume',
+                custom_id: orderId.toString(),
+                amount: {
+                    currency_code: 'EUR',
+                    value: total.toFixed(2),
+                    breakdown: {
+                        item_total: {
+                            currency_code: 'EUR',
+                            value: itemsTotal.toFixed(2)
+                        },
+                        tax_total: {
+                            currency_code: 'EUR',
+                            value: tax.toFixed(2)
+                        },
+                        shipping: {
+                            currency_code: 'EUR',
+                            value: shipping.toFixed(2)
+                        }
+                    }
+                },
+                items: items.map(item => ({
+                    name: item.name,
+                    description: item.brand || '',
+                    unit_amount: {
+                        currency_code: 'EUR',
+                        value: item.price.toFixed(2)
+                    },
+                    quantity: item.quantity.toString()
+                }))
+            }],
+            application_context: {
+                brand_name: 'E-Parfume',
+                landing_page: 'BILLING',
+                user_action: 'PAY_NOW',
+                return_url: `${frontendUrl}/order/${orderId}?success=true&paypal_order_id={order_id}`,
+                cancel_url: `${frontendUrl}/checkout?canceled=true`
+            }
+        });
+
+        const order = await client.execute(request);
+        
+        // Trouver l'approval URL
+        const approvalUrl = order.result.links.find(link => link.rel === 'approve')?.href;
+        
+        res.json({
+            orderId: order.result.id,
+            approvalUrl: approvalUrl,
+            status: order.result.status
+        });
+    } catch (error) {
+        console.error('Erreur lors de la création de la commande PayPal:', error);
+        res.status(500).json({ error: error.message || 'Erreur lors de la création de la commande PayPal' });
+    }
+});
+
+// Route pour capturer un paiement PayPal
+router.post('/paypal/capture-order', protect, async (req, res) => {
+    const { paypalOrderId, orderId } = req.body;
+    const Order = require('../models/Order');
+
+    try {
+        const client = paypalClient();
+        const request = new paypal.orders.OrdersCaptureRequest(paypalOrderId);
+        request.requestBody({});
+
+        const capture = await client.execute(request);
+        const order = await Order.findById(orderId);
+
+        if (!order) {
+            return res.status(404).json({ error: 'Commande non trouvée' });
+        }
+
+        // Vérifier si le paiement est réussi
+        if (capture.result.status === 'COMPLETED') {
+            order.isPaid = true;
+            order.paidAt = Date.now();
+            order.paymentResult = {
+                id: capture.result.id,
+                status: capture.result.status,
+                update_time: capture.result.update_time || new Date().toISOString(),
+                email_address: capture.result.payer?.email_address || ''
+            };
+            await order.save();
+
+            res.json({
+                success: true,
+                order: order,
+                capture: capture.result
+            });
+        } else {
+            res.status(400).json({
+                error: 'Le paiement PayPal n\'a pas été complété',
+                status: capture.result.status
+            });
+        }
+    } catch (error) {
+        console.error('Erreur lors de la capture du paiement PayPal:', error);
+        res.status(500).json({ error: error.message || 'Erreur lors de la capture du paiement PayPal' });
+    }
+});
+
+// Route pour vérifier le statut d'une commande PayPal
+router.post('/paypal/verify-payment', protect, async (req, res) => {
+    const { paypalOrderId, orderId } = req.body;
+    const Order = require('../models/Order');
+
+    try {
+        const order = await Order.findById(orderId);
+        
+        if (!order) {
+            return res.status(404).json({ error: 'Commande non trouvée' });
+        }
+
+        // Si la commande est déjà payée, retourner le statut
+        if (order.isPaid) {
+            return res.json({ isPaid: true, order });
+        }
+
+        // Si on a un paypalOrderId, vérifier le statut de la commande PayPal
+        if (paypalOrderId) {
+            const client = paypalClient();
+            const request = new paypal.orders.OrdersGetRequest(paypalOrderId);
+            
+            const paypalOrder = await client.execute(request);
+            
+            if (paypalOrder.result.status === 'COMPLETED') {
+                // Mettre à jour la commande
+                order.isPaid = true;
+                order.paidAt = Date.now();
+                order.paymentResult = {
+                    id: paypalOrder.result.id,
+                    status: paypalOrder.result.status,
+                    update_time: paypalOrder.result.update_time || new Date().toISOString(),
+                    email_address: paypalOrder.result.payer?.email_address || ''
+                };
+                await order.save();
+                
+                return res.json({ isPaid: true, order });
+            }
+        }
+        
+        res.json({ isPaid: false, order });
+    } catch (error) {
+        console.error('Erreur lors de la vérification du paiement PayPal:', error);
         res.status(500).json({ error: error.message });
     }
 });

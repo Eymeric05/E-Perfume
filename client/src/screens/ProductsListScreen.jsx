@@ -411,14 +411,14 @@ const ProductsListScreen = () => {
                     {(selectedFilters.priceRange || selectedFilters.priceMin !== null || selectedFilters.priceMax !== null) && (
                       <button
                         onClick={clearPriceFilter}
-                        className="p-1 text-luxe-charcoal/40 hover:text-luxe-gold transition-all duration-300 hover:rotate-180 hover:scale-110 group"
+                        className="p-1 text-luxe-charcoal/40 hover:text-luxe-gold transition-all duration-300 hover:rotate-180 hover:scale-110 group dark:text-luxe-cream/40 dark:hover:text-luxe-gold"
                         title="Réinitialiser le prix"
                       >
-                        <FaUndo className="w-3 h-3 group-hover:animate-spin" />
+                        <FaUndo className="w-3 h-3 group-hover:animate-spin dark:text-luxe-cream/40" />
                       </button>
                     )}
                   </div>
-                  <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg p-4 border border-luxe-charcoal/10 dark:border-luxe-gold/20">
+                  <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg p-4 border border-luxe-charcoal/10 dark:border-luxe-gold/20 dark:text-luxe-cream/70">
                     <PriceSlider
                       min={0}
                       max={Math.max(...products.map(p => p.price || 0), 500)}
@@ -429,7 +429,7 @@ const ProductsListScreen = () => {
                           ...prev,
                           priceMin,
                           priceMax,
-                          priceRange: null, // Clear button selection when using slider
+                          priceRange: null,
                         }));
                       }}
                     />
@@ -443,7 +443,7 @@ const ProductsListScreen = () => {
                             ...prev,
                             priceRange: prev.priceRange === range.label ? null : range.label,
                             priceMin: null,
-                            priceMax: null, // Clear slider when using buttons
+                            priceMax: null, 
                           }));
                         }}
                         className={`tag-filter w-full text-left transition-all duration-200 ${

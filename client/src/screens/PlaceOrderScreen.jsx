@@ -88,6 +88,12 @@ const PlaceOrderScreen = () => {
                         alert('Erreur lors de l\'initialisation du paiement: ' + (stripeErr.message || stripeErr));
                         return;
                     }
+                } else if (cart.paymentMethod === 'PayPal') {
+                    // Pour PayPal, rediriger vers la page de commande où le bouton PayPal sera affiché
+                    ctxDispatch({ type: 'CART_CLEAR' });
+                    dispatch({ type: 'CREATE_SUCCESS' });
+                    localStorage.removeItem('cartItems');
+                    navigate(`/order/${data._id}?paypal=true`);
                 } else {
                     // Pour les autres méthodes de paiement, procéder normalement
                     ctxDispatch({ type: 'CART_CLEAR' });

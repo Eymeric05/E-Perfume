@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { loadStripe } from '@stripe/stripe-js';
@@ -31,6 +31,145 @@ function reducer(state, action) {
             return state;
     }
 }
+
+const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch }) => {
+    const paypalButtonContainerRef = useRef(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!window.paypal || !paypalButtonContainerRef.current) {
+            return;
+        }
+
+        let paypalButtons = null;
+
+        const renderPayPalButtons = async () => {
+            try {
+                setLoading(true);
+
+                // Vider le conteneur avant de créer de nouveaux boutons
+                if (paypalButtonContainerRef.current) {
+                    paypalButtonContainerRef.current.innerHTML = '';
+                }
+
+                paypalButtons = window.paypal.Buttons({
+                    style: {
+                        layout: 'vertical',
+                        color: 'gold',
+                        shape: 'rect',
+                        label: 'paypal'
+                    },
+                    createOrder: async (data, actions) => {
+                        try {
+                            // Créer une commande PayPal côté serveur
+                            const createRes = await apiFetch('/api/payment/paypal/create-order', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${userInfo.token}`,
+                                },
+                                body: JSON.stringify({
+                                    items: order.orderItems.map(item => ({
+                                        name: item.name,
+                                        price: item.price,
+                                        quantity: item.qty,
+                                        brand: item.brand || ''
+                                    })),
+                                    orderId: orderId,
+                                }),
+                            });
+
+                            const createData = await createRes.json();
+
+                            if (!createRes.ok) {
+                                throw new Error(createData.error || 'Erreur lors de la création de la commande PayPal');
+                            }
+
+                            // Retourner l'orderId PayPal
+                            return createData.orderId;
+                        } catch (error) {
+                            console.error('Erreur lors de la création de la commande PayPal:', error);
+                            throw error;
+                        }
+                    },
+                    onApprove: async (data, actions) => {
+                        try {
+                            // 1. Le paiement est validé par PayPal - capturer la commande
+                            const details = await actions.order.capture();
+                            
+                            // 2. On prévient notre serveur Render pour mettre à jour la BDD
+                            const response = await apiFetch(`/api/orders/${orderId}/pay`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${userInfo.token}`
+                                },
+                                body: JSON.stringify({
+                                    id: details.id,
+                                    status: details.status,
+                                    update_time: details.update_time || new Date().toISOString(),
+                                    email_address: details.payer?.email_address || details.payer?.payer_info?.email || '',
+                                }),
+                            });
+
+                            const responseData = await response.json();
+
+                            if (response.ok) {
+                                // 3. C'est ici que tu peux vider le panier et rediriger
+                                ctxDispatch({ type: 'CART_CLEAR' });
+                                localStorage.removeItem('cartItems');
+                                
+                                // Appeler la fonction de succès pour mettre à jour l'état
+                                onPaymentSuccess(responseData);
+                                
+                                // Recharger la page pour afficher le statut mis à jour
+                                window.location.href = `/order/${orderId}?success=true`;
+                            } else {
+                                alert('Erreur lors de la validation de la commande: ' + (responseData.message || 'Erreur inconnue'));
+                            }
+                        } catch (error) {
+                            console.error('Erreur lors de la capture PayPal:', error);
+                            alert('Erreur lors du paiement: ' + error.message);
+                        }
+                    },
+                    onError: (err) => {
+                        console.error('Erreur PayPal:', err);
+                        alert('Erreur lors de l\'initialisation du paiement PayPal');
+                    },
+                    onCancel: () => {
+                        console.log('Paiement PayPal annulé');
+                    }
+                });
+
+                if (paypalButtonContainerRef.current) {
+                    paypalButtons.render(paypalButtonContainerRef.current);
+                }
+            } catch (error) {
+                console.error('Erreur lors du rendu des boutons PayPal:', error);
+                if (paypalButtonContainerRef.current) {
+                    paypalButtonContainerRef.current.innerHTML = 
+                        '<div style="color: red; padding: 10px;">Erreur lors du chargement de PayPal. Veuillez recharger la page.</div>';
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        renderPayPalButtons();
+
+        return () => {
+            if (paypalButtons) {
+                paypalButtons.close();
+            }
+        };
+    }, [order, orderId, userInfo, ctxDispatch, onPaymentSuccess]);
+
+    if (loading) {
+        return <div style={{ padding: '20px', textAlign: 'center' }}>Chargement de PayPal...</div>;
+    }
+
+    return <div ref={paypalButtonContainerRef}></div>;
+};
 
 const CheckoutForm = ({ order, handlePaymentSuccess }) => {
     const stripe = useStripe();
@@ -152,9 +291,10 @@ const OrderScreen = () => {
                 // Vérifier si on vient de Stripe avec success
                 const urlParams = new URLSearchParams(window.location.search);
                 const sessionId = urlParams.get('session_id');
+                const paypalOrderId = urlParams.get('paypal_order_id');
 
                 if (sessionId) {
-                    // Vérifier le paiement
+                    // Vérifier le paiement Stripe
                     const res = await apiFetch('/api/payment/verify-payment', {
                         method: 'POST',
                         headers: {
@@ -162,6 +302,27 @@ const OrderScreen = () => {
                             Authorization: `Bearer ${userInfo.token}`,
                         },
                         body: JSON.stringify({ sessionId, orderId }),
+                    });
+                    const data = await res.json();
+                    
+                    if (data.isPaid) {
+                        // Vider le panier après paiement réussi
+                        ctxDispatch({ type: 'CART_CLEAR' });
+                        localStorage.removeItem('cartItems');
+                        // Recharger la commande
+                        await fetchOrder();
+                        // Nettoyer l'URL
+                        window.history.replaceState({}, '', `/order/${orderId}`);
+                    }
+                } else if (paypalOrderId) {
+                    // Vérifier le paiement PayPal
+                    const res = await apiFetch('/api/payment/paypal/verify-payment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${userInfo.token}`,
+                        },
+                        body: JSON.stringify({ paypalOrderId, orderId }),
                     });
                     const data = await res.json();
                     
@@ -302,11 +463,37 @@ const OrderScreen = () => {
                             <strong>Total</strong>
                             <strong>{(order.totalPrice || 0).toFixed(2)} €</strong>
                         </div>
-                        {!order.isPaid && stripePromise && (
+                        {!order.isPaid && (
                             <div className="checkout-button">
-                                <Elements stripe={stripePromise}>
-                                    <CheckoutForm order={order} handlePaymentSuccess={handlePaymentSuccess} />
-                                </Elements>
+                                {(() => {
+                                    const urlParams = new URLSearchParams(window.location.search);
+                                    const isPayPal = urlParams.get('paypal') === 'true' || order.paymentMethod === 'PayPal';
+                                    
+                                    if (isPayPal && window.paypal) {
+                                        return (
+                                            <PayPalButton 
+                                                order={order} 
+                                                orderId={orderId}
+                                                onPaymentSuccess={handlePaymentSuccess}
+                                                userInfo={userInfo}
+                                                ctxDispatch={ctxDispatch}
+                                            />
+                                        );
+                                    } else if (stripePromise && (order.paymentMethod === 'Stripe' || !isPayPal)) {
+                                        return (
+                                            <Elements stripe={stripePromise}>
+                                                <CheckoutForm order={order} handlePaymentSuccess={handlePaymentSuccess} />
+                                            </Elements>
+                                        );
+                                    } else if (isPayPal && !window.paypal) {
+                                        return (
+                                            <div style={{ padding: '20px', textAlign: 'center', color: 'red' }}>
+                                                PayPal SDK non chargé. Veuillez recharger la page.
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                })()}
                             </div>
                         )}
                     </div>

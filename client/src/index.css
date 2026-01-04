@@ -89,6 +89,7 @@
   .input-luxe {
     @apply w-full px-4 py-3 bg-luxe-cream dark:bg-luxe-charcoal border border-luxe-charcoal/20 dark:border-luxe-gold/30 text-luxe-black dark:text-luxe-cream font-sans;
     @apply focus:outline-none focus:border-luxe-gold dark:focus:border-luxe-gold focus:ring-1 focus:ring-luxe-gold transition-all duration-200;
+    @apply placeholder:text-luxe-charcoal/50 dark:placeholder:text-luxe-cream/50;
   }
 
   .section-spacing {

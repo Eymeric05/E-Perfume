@@ -129,6 +129,12 @@ const CheckoutScreen = () => {
             dispatch({ type: 'CREATE_FAIL', payload: stripeErr.message || 'Erreur lors de l\'initialisation du paiement' });
             return;
           }
+        } else if (paymentMethod === 'PayPal') {
+          // Pour PayPal, rediriger vers la page de commande où le bouton PayPal sera affiché
+          ctxDispatch({ type: 'CART_CLEAR' });
+          dispatch({ type: 'CREATE_SUCCESS' });
+          localStorage.removeItem('cartItems');
+          navigate(`/order/${data._id}?paypal=true`);
         } else {
           // Pour les autres méthodes de paiement, procéder normalement
           ctxDispatch({ type: 'CART_CLEAR' });

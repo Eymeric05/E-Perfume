@@ -8,6 +8,7 @@
     "install-all": "npm install && npm install --prefix client && npm install --prefix server"
   },
   "dependencies": {
+    "@paypal/react-paypal-js": "^8.9.2",
     "concurrently": "^8.2.2",
     "stripe": "^20.1.0"
   },

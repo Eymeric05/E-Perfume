@@ -13,6 +13,7 @@
         "compress-images:dry-run": "node utils/compressImages.js --dry-run"
     },
     "dependencies": {
+        "@paypal/checkout-server-sdk": "^1.0.3",
         "bcryptjs": "^2.4.3",
         "cloudinary": "^1.41.3",
         "cors": "^2.8.5",

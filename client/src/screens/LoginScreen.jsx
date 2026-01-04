@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { Store } from '../context/StoreContext';
 import { Helmet } from 'react-helmet-async';
 import { FaLock, FaEnvelope } from 'react-icons/fa';
 import { apiFetch } from '../utils/api';
 import { loginSchema } from '../schemas/validationSchemas';
 import { safeValidateForm } from '../utils/formValidation';
-import ReCaptcha from '../components/ReCaptcha';
 
 const LoginScreen = () => {
     const navigate = useNavigate();
@@ -14,32 +14,33 @@ const LoginScreen = () => {
     const redirectInUrl = new URLSearchParams(search).get('redirect');
     const redirect = redirectInUrl ? redirectInUrl : '/';
 
+    const { executeRecaptcha } = useGoogleReCaptcha();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [recaptchaToken, setRecaptchaToken] = useState('');
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const { userInfo } = state;
 
-    const handleRecaptchaVerify = (token) => {
-        setRecaptchaToken(token);
-    };
-
-    const handleRecaptchaExpire = () => {
-        setRecaptchaToken('');
-    };
-
-    const handleRecaptchaError = (error) => {
-        console.error('reCAPTCHA error:', error);
-        setRecaptchaToken('');
-    };
-
     const submitHandler = async (e) => {
         e.preventDefault();
         setErrors({});
         setIsSubmitting(true);
+
+        // Exécuter reCAPTCHA v3 pour obtenir le token
+        let recaptchaToken = '';
+        if (executeRecaptcha) {
+            try {
+                recaptchaToken = await executeRecaptcha('login');
+            } catch (error) {
+                console.error('Erreur reCAPTCHA:', error);
+                setErrors({ submit: 'Erreur lors de la vérification reCAPTCHA. Veuillez réessayer.' });
+                setIsSubmitting(false);
+                return;
+            }
+        }
 
         // Validation avec Zod
         const validation = safeValidateForm(loginSchema, {
@@ -165,15 +166,7 @@ const LoginScreen = () => {
                             )}
                         </div>
 
-                        {/* reCAPTCHA - Préparé pour l'intégration future */}
-                        <div>
-                            <ReCaptcha
-                                onVerify={handleRecaptchaVerify}
-                                onExpire={handleRecaptchaExpire}
-                                onError={handleRecaptchaError}
-                                theme="light"
-                            />
-                        </div>
+                        {/* reCAPTCHA v3 est invisible et s'exécute lors de la soumission */}
 
                         <button
                             type="submit"

@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -162,13 +163,25 @@ const AppContent = () => {
 };
 
 function App() {
+  const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
   return (
     <ThemeProvider>
       <StoreProvider>
         <HelmetProvider>
-          <Router>
-            <AppContent />
-          </Router>
+          <GoogleReCaptchaProvider
+            reCaptchaKey={siteKey || ''}
+            scriptProps={{
+              async: false,
+              defer: false,
+              appendTo: 'head',
+              nonce: undefined,
+            }}
+          >
+            <Router>
+              <AppContent />
+            </Router>
+          </GoogleReCaptchaProvider>
         </HelmetProvider>
       </StoreProvider>
     </ThemeProvider>

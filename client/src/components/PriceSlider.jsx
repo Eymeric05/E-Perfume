@@ -123,7 +123,7 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
           }}
         />
       </div>
-      <div className="price-slider-labels">
+      <div className="price-slider-labels dark:text-luxe-cream/70">
         <span>{min}€</span>
         <span>{max}€</span>
       </div>

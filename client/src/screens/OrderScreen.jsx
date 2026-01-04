@@ -98,7 +98,7 @@ const CheckoutForm = ({ order, handlePaymentSuccess }) => {
 };
 
 const OrderScreen = () => {
-    const { state } = useContext(Store);
+    const { state, dispatch: ctxDispatch } = useContext(Store);
     const { userInfo } = state;
     const params = useParams();
     const { id: orderId } = params;
@@ -160,6 +160,9 @@ const OrderScreen = () => {
                     const data = await res.json();
                     
                     if (data.isPaid) {
+                        // Vider le panier après paiement réussi
+                        ctxDispatch({ type: 'CART_CLEAR' });
+                        localStorage.removeItem('cartItems');
                         // Recharger la commande
                         await fetchOrder();
                         // Nettoyer l'URL

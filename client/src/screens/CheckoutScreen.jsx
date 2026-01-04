@@ -77,6 +77,8 @@ const CheckoutScreen = () => {
   const placeOrderHandler = async () => {
     try {
       dispatch({ type: 'CREATE_REQUEST' });
+      
+      // Créer la commande
       const res = await apiFetch('/api/orders', {
         method: 'POST',
         headers: {
@@ -97,10 +99,43 @@ const CheckoutScreen = () => {
       const data = await res.json();
 
       if (res.ok) {
-        ctxDispatch({ type: 'CART_CLEAR' });
-        dispatch({ type: 'CREATE_SUCCESS' });
-        localStorage.removeItem('cartItems');
-        navigate(`/order/${data._id}`);
+        // Si la méthode de paiement est Stripe, créer une session Checkout
+        if (paymentMethod === 'Stripe') {
+          try {
+            const stripeRes = await apiFetch('/api/payment/create-checkout-session', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`,
+              },
+              body: JSON.stringify({
+                items: cart.cartItems,
+                orderId: data._id,
+              }),
+            });
+
+            const stripeData = await stripeRes.json();
+            
+            if (stripeRes.ok && stripeData.url) {
+              // Ne pas vider le panier maintenant, on le fera après le retour de Stripe
+              // Rediriger vers Stripe Checkout
+              window.location.href = stripeData.url;
+              return;
+            } else {
+              throw new Error(stripeData.error || 'Erreur lors de la création de la session Stripe');
+            }
+          } catch (stripeErr) {
+            console.error('Erreur Stripe:', stripeErr);
+            dispatch({ type: 'CREATE_FAIL', payload: stripeErr.message || 'Erreur lors de l\'initialisation du paiement' });
+            return;
+          }
+        } else {
+          // Pour les autres méthodes de paiement, procéder normalement
+          ctxDispatch({ type: 'CART_CLEAR' });
+          dispatch({ type: 'CREATE_SUCCESS' });
+          localStorage.removeItem('cartItems');
+          navigate(`/order/${data._id}`);
+        }
       } else {
         dispatch({ type: 'CREATE_FAIL', payload: data.message || 'Erreur lors de la commande' });
       }

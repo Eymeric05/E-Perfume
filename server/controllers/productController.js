@@ -15,6 +15,9 @@ const getProducts = asyncHandler(async (req, res) => {
     } else if (category) {
         // If category is specified, filter by it
         query = { category };
+    } else if (brand) {
+        // If brand is specified, include all products from that brand (including skincare)
+        query = {};
     } else {
         // If no category specified, exclude skincare (show only perfumes)
         query = { category: { $ne: 'skincare' } };

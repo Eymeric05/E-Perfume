@@ -46,6 +46,7 @@ const ProductEditScreen = () => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [image, setImage] = useState('');
+    const [images, setImages] = useState([]);
     const [category, setCategory] = useState('');
     const [productType, setProductType] = useState('parfum'); // 'parfum' or 'skincare'
     const [gender, setGender] = useState(''); // 'Homme' or 'Femme' for perfumes
@@ -83,7 +84,13 @@ const ProductEditScreen = () => {
                 const data = await res.json();
                 setName(data.name || '');
                 setPrice(data.price || '');
-                setImage(data.image || '');
+                const mainImg = data.image || '';
+                setImage(mainImg);
+                // Filtrer les images supplémentaires en excluant l'image principale
+                const additionalImages = data.images && Array.isArray(data.images) 
+                    ? data.images.filter(img => img && img.trim() !== '' && img !== mainImg)
+                    : [];
+                setImages(additionalImages);
                 const cat = data.category || '';
                 setCategory(cat);
                 if (cat === 'skincare') {
@@ -133,6 +140,7 @@ const ProductEditScreen = () => {
                     name,
                     price: parseFloat(price),
                     image,
+                    images,
                     category: finalCategory,
                     brand,
                     brandLogo,
@@ -201,11 +209,52 @@ const ProductEditScreen = () => {
             const data = await res.text();
             dispatch({ type: 'UPLOAD_SUCCESS' });
             setImage(data);
-            alert('Image téléchargée avec succès');
+            alert('Image principale téléchargée avec succès');
         } catch (err) {
             dispatch({ type: 'UPLOAD_FAIL' });
             alert('Erreur lors du téléchargement de l\'image');
         }
+    };
+
+    const uploadMultipleFilesHandler = async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        try {
+            dispatch({ type: 'UPLOAD_REQUEST' });
+            const uploadedImages = [];
+            
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append('image', file);
+                const res = await apiFetch('/api/upload', {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${userInfo.token}`,
+                    },
+                    body: formData,
+                });
+                const imageUrl = await res.text();
+                uploadedImages.push(imageUrl);
+            }
+            
+            dispatch({ type: 'UPLOAD_SUCCESS' });
+            setImages([...images, ...uploadedImages]);
+            alert(`${uploadedImages.length} image(s) téléchargée(s) avec succès`);
+        } catch (err) {
+            dispatch({ type: 'UPLOAD_FAIL' });
+            alert('Erreur lors du téléchargement des images');
+        }
+    };
+
+    const removeImage = (indexToRemove) => {
+        setImages(images.filter((_, index) => index !== indexToRemove));
+    };
+
+    const setAsMainImage = (imageUrl) => {
+        setImage(imageUrl);
+        // Retirer l'image du tableau des images supplémentaires car elle devient l'image principale
+        setImages(images.filter(img => img !== imageUrl));
     };
 
     const addFragranceNoteGroup = () => {
@@ -536,12 +585,12 @@ const ProductEditScreen = () => {
                                 {/* Image Upload */}
                                 <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 space-y-4">
                                     <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream mb-4">
-                                        Image
+                                        Images
                                     </h2>
 
                                     <div>
                                         <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
-                                            URL de l'image *
+                                            Image principale (URL) *
                                         </label>
                                         <input
                                             type="text"
@@ -554,11 +603,11 @@ const ProductEditScreen = () => {
 
                                     <div>
                                         <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
-                                            Ou télécharger une image
+                                            Ou télécharger une image principale
                                         </label>
                                         <label className="flex items-center gap-2 px-8 py-3 bg-luxe-cream dark:bg-luxe-charcoal border-2 border-luxe-black dark:border-luxe-gold text-luxe-black dark:text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out hover:bg-luxe-black dark:hover:bg-luxe-black hover:text-luxe-cream hover:scale-105 cursor-pointer">
                                             <FaUpload className="w-4 h-4" />
-                                            {loadingUpload ? 'Téléchargement...' : 'Choisir un fichier'}
+                                            {loadingUpload ? 'Téléchargement...' : 'Choisir une image principale'}
                                             <input
                                                 type="file"
                                                 onChange={uploadFileHandler}
@@ -569,12 +618,70 @@ const ProductEditScreen = () => {
                                     </div>
 
                                     {image && (
-                                        <div className="mt-4">
+                                        <div className="mt-4 relative">
+                                            <div className="absolute top-2 left-2 bg-luxe-gold text-luxe-black px-2 py-1 rounded text-xs font-semibold z-10">
+                                                Image principale
+                                            </div>
                                             <img
                                                 src={image}
-                                                alt="Preview"
-                                                className="w-full h-64 object-cover rounded-lg border border-luxe-charcoal/10"
+                                                alt="Preview principale"
+                                                className="w-full h-64 object-cover rounded-lg border-2 border-luxe-gold"
                                             />
+                                        </div>
+                                    )}
+
+                                    <div className="pt-4 border-t border-luxe-charcoal/10">
+                                        <label className="block font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-2">
+                                            Images supplémentaires
+                                        </label>
+                                        <label className="flex items-center gap-2 px-8 py-3 bg-luxe-cream dark:bg-luxe-charcoal border-2 border-luxe-black dark:border-luxe-gold text-luxe-black dark:text-luxe-cream font-sans font-medium tracking-wider uppercase transition-all duration-300 ease-out hover:bg-luxe-black dark:hover:bg-luxe-black hover:text-luxe-cream hover:scale-105 cursor-pointer">
+                                            <FaUpload className="w-4 h-4" />
+                                            {loadingUpload ? 'Téléchargement...' : 'Ajouter des images'}
+                                            <input
+                                                type="file"
+                                                multiple
+                                                onChange={uploadMultipleFilesHandler}
+                                                className="hidden"
+                                                accept="image/svg+xml,image/jpeg,image/jpg,image/png,image/webp"
+                                            />
+                                        </label>
+                                        <p className="font-sans text-xs text-luxe-charcoal/50 dark:text-luxe-cream/50 mt-2">
+                                            Vous pouvez sélectionner plusieurs images à la fois
+                                        </p>
+                                    </div>
+
+                                    {images.length > 0 && (
+                                        <div className="space-y-3">
+                                            <h3 className="font-serif text-lg font-light text-luxe-black dark:text-luxe-cream">
+                                                Images supplémentaires ({images.length})
+                                            </h3>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                {images.map((img, index) => (
+                                                    <div key={index} className="relative group">
+                                                        <img
+                                                            src={img}
+                                                            alt={`Image ${index + 1}`}
+                                                            className="w-full h-32 object-cover rounded-lg border border-luxe-charcoal/10"
+                                                        />
+                                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setAsMainImage(img)}
+                                                                className="px-3 py-1 bg-luxe-gold text-luxe-black text-xs font-semibold rounded hover:bg-luxe-gold/90 transition-colors"
+                                                            >
+                                                                Définir comme principale
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => removeImage(index)}
+                                                                className="px-3 py-1 bg-red-500 text-white text-xs font-semibold rounded hover:bg-red-600 transition-colors"
+                                                            >
+                                                                <FaTimes className="w-3 h-3" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     )}
                                 </div>

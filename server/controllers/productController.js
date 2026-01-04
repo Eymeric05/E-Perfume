@@ -170,6 +170,7 @@ const createProduct = asyncHandler(async (req, res) => {
         skinType,
         ingredients,
         isLimitedEdition,
+        images,
     } = req.body;
 
     const product = new Product({
@@ -189,6 +190,7 @@ const createProduct = asyncHandler(async (req, res) => {
         skinType: skinType || '',
         ingredients: ingredients || '',
         isLimitedEdition: isLimitedEdition || false,
+        images: images || [],
     });
 
     const createdProduct = await product.save();
@@ -214,6 +216,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         skinType,
         ingredients,
         isLimitedEdition,
+        images,
     } = req.body;
 
     const product = await Product.findById(req.params.id);
@@ -248,6 +251,9 @@ const updateProduct = asyncHandler(async (req, res) => {
         }
         if (isLimitedEdition !== undefined) {
             product.isLimitedEdition = isLimitedEdition;
+        }
+        if (images !== undefined) {
+            product.images = images;
         }
 
         const updatedProduct = await product.save();

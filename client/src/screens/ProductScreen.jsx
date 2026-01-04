@@ -252,15 +252,17 @@ const ProductScreen = () => {
     ? product.benefits 
     : [];
 
-  // Handle images: use images array if available, otherwise fallback to single image
+  // Handle images: combine main image with additional images
   // Always ensure we have at least the main image
   const mainImage = product?.image || '';
   const imagesArray = (product?.images && Array.isArray(product.images) && product.images.length > 0)
-    ? product.images.filter(img => img && img.trim() !== '')
+    ? product.images.filter(img => img && img.trim() !== '' && img !== mainImage)
     : [];
   
-  // Combine: use images array if valid, otherwise use main image
-  const images = imagesArray.length > 0 ? imagesArray : (mainImage ? [mainImage] : []);
+  // Combine: main image first, then additional images (remove duplicates)
+  const images = mainImage 
+    ? [mainImage, ...imagesArray]
+    : (imagesArray.length > 0 ? imagesArray : []);
 
   const Rating = ({ value, text }) => {
     const numValue = Number(value) || 0;

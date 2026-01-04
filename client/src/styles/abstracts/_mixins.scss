@@ -2,6 +2,8 @@
 // MIXINS SASS - E-Parfume
 // ============================================
 
+@use 'variables' as *;
+
 // Breakpoints (Mobile First)
 @mixin mobile {
   @media (max-width: #{$breakpoint-md - 1px}) {

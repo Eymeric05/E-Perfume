@@ -37,10 +37,15 @@ const RegisterScreen = () => {
                 recaptchaToken = await executeRecaptcha('register');
             } catch (error) {
                 console.error('Erreur reCAPTCHA:', error);
-                setErrors({ submit: 'Erreur lors de la vérification reCAPTCHA. Veuillez réessayer.' });
+                setErrors({ recaptchaToken: 'Erreur lors de la vérification reCAPTCHA. Veuillez réessayer.' });
                 setIsSubmitting(false);
                 return;
             }
+        } else {
+            // Si executeRecaptcha n'est pas disponible, afficher une erreur
+            setErrors({ recaptchaToken: 'reCAPTCHA n\'est pas disponible. Vérifiez la configuration.' });
+            setIsSubmitting(false);
+            return;
         }
 
         // Validation avec Zod
@@ -182,6 +187,11 @@ const RegisterScreen = () => {
                 </div>
 
                 {/* reCAPTCHA v3 est invisible et s'exécute lors de la soumission */}
+                {errors.recaptchaToken && (
+                    <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                        <p className="font-sans text-sm text-red-700 dark:text-red-400">{errors.recaptchaToken}</p>
+                    </div>
+                )}
 
                 <div className="register-form-group" style={{ marginTop: '1.5rem' }}>
                     <button

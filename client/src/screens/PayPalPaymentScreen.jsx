@@ -14,6 +14,7 @@ const PayPalPaymentScreen = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [order, setOrder] = useState(null);
+    const [paypalReady, setPaypalReady] = useState(false);
     const initializedRef = useRef(false);
 
     useEffect(() => {
@@ -30,6 +31,7 @@ const PayPalPaymentScreen = () => {
                     setLoading(false);
                 }
             } catch (err) {
+                console.error('Erreur fetchOrder:', err);
                 setError('Erreur lors du chargement de la commande');
                 setLoading(false);
             }
@@ -42,133 +44,138 @@ const PayPalPaymentScreen = () => {
         }
     }, [orderId, userInfo, navigate]);
 
+    // Charger le SDK PayPal dès que la commande est disponible
     useEffect(() => {
-        if (!order || !userInfo || initializedRef.current || !paypalButtonContainerRef.current) {
+        if (!order || !userInfo || initializedRef.current) {
             return;
         }
 
+        console.log('Début du chargement du SDK PayPal');
         initializedRef.current = true;
-        let cleanup = null;
 
-        const initPayPal = async () => {
-            try {
-                await new Promise((resolve, reject) => {
-                    loadPayPalSDK((err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
+        loadPayPalSDK((err) => {
+            if (err) {
+                console.error('Erreur loadPayPalSDK:', err);
+                setError('Impossible de charger le SDK PayPal: ' + err.message);
+                setLoading(false);
+                return;
+            }
+
+            if (!window.paypal || !window.paypal.Buttons) {
+                console.error('PayPal SDK non disponible après chargement');
+                setError('PayPal SDK non disponible');
+                setLoading(false);
+                return;
+            }
+
+            console.log('SDK PayPal chargé avec succès');
+            setPaypalReady(true);
+            setLoading(false);
+        });
+    }, [order, userInfo]);
+
+    // Initialiser les boutons PayPal une fois que le SDK est prêt et le ref est disponible
+    useEffect(() => {
+        if (!paypalReady || !order || !paypalButtonContainerRef.current) {
+            return;
+        }
+
+        console.log('Initialisation des boutons PayPal');
+        let paypalButtons = null;
+
+        try {
+            paypalButtonContainerRef.current.innerHTML = '';
+
+            paypalButtons = window.paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'rect',
+                    label: 'paypal'
+                },
+                createOrder: async () => {
+                    try {
+                        console.log('Création de la commande PayPal...');
+                        const createRes = await apiFetch('/api/payment/paypal/create-order', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${userInfo.token}`,
+                            },
+                            body: JSON.stringify({
+                                orderId: orderId,
+                            }),
+                        });
+
+                        const createData = await createRes.json();
+
+                        if (!createRes.ok) {
+                            throw new Error(createData.error || 'Erreur lors de la création de la commande PayPal');
                         }
-                    });
-                });
 
-                if (!window.paypal || !window.paypal.Buttons) {
-                    throw new Error('PayPal SDK non disponible');
-                }
-
-                if (!paypalButtonContainerRef.current) {
-                    throw new Error('Conteneur PayPal non trouvé');
-                }
-
-                paypalButtonContainerRef.current.innerHTML = '';
-
-                const paypalButtons = window.paypal.Buttons({
-                    style: {
-                        layout: 'vertical',
-                        color: 'gold',
-                        shape: 'rect',
-                        label: 'paypal'
-                    },
-                    createOrder: async () => {
-                        try {
-                            const createRes = await apiFetch('/api/payment/paypal/create-order', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    Authorization: `Bearer ${userInfo.token}`,
-                                },
-                                body: JSON.stringify({
-                                    items: order.orderItems.map(item => ({
-                                        name: item.name,
-                                        price: parseFloat(item.price || 0),
-                                        quantity: parseInt(item.qty || 1),
-                                        brand: item.brand || ''
-                                    })),
-                                    orderId: orderId,
-                                }),
-                            });
-
-                            const createData = await createRes.json();
-
-                            if (!createRes.ok) {
-                                throw new Error(createData.error || 'Erreur lors de la création de la commande PayPal');
-                            }
-
-                            return createData.orderId;
-                        } catch (error) {
-                            console.error('Erreur lors de la création de la commande PayPal:', error);
-                            setError('Erreur lors de la création de la commande PayPal: ' + error.message);
-                            throw error;
-                        }
-                    },
-                    onApprove: async (data, actions) => {
-                        try {
-                            const details = await actions.order.capture();
-                            
-                            const response = await apiFetch(`/api/orders/${orderId}/pay`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    Authorization: `Bearer ${userInfo.token}`
-                                },
-                                body: JSON.stringify({
-                                    id: details.id,
-                                    status: details.status,
-                                    update_time: details.update_time || new Date().toISOString(),
-                                    email_address: details.payer?.email_address || details.payer?.payer_info?.email || '',
-                                }),
-                            });
-
-                            const responseData = await response.json();
-
-                            if (response.ok) {
-                                ctxDispatch({ type: 'CART_CLEAR' });
-                                localStorage.removeItem('cartItems');
-                                navigate(`/order/${orderId}?success=true`);
-                            } else {
-                                setError('Erreur lors de la validation de la commande: ' + (responseData.message || 'Erreur inconnue'));
-                            }
-                        } catch (error) {
-                            console.error('Erreur lors de la capture PayPal:', error);
-                            setError('Erreur lors du paiement: ' + (error.message || 'Une erreur est survenue'));
-                        }
-                    },
-                    onError: (err) => {
-                        console.error('Erreur PayPal:', err);
-                        setError('Erreur lors de l\'initialisation du paiement PayPal');
-                    },
-                    onCancel: () => {
-                        navigate(`/order/${orderId}`);
+                        console.log('Commande PayPal créée:', createData.orderId);
+                        return createData.orderId;
+                    } catch (error) {
+                        console.error('Erreur lors de la création de la commande PayPal:', error);
+                        setError('Erreur lors de la création de la commande PayPal: ' + error.message);
+                        throw error;
                     }
-                });
+                },
+                onApprove: async (data, actions) => {
+                    try {
+                        console.log('Capture du paiement PayPal...');
+                        const details = await actions.order.capture();
+                        
+                        const response = await apiFetch(`/api/orders/${orderId}/pay`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${userInfo.token}`
+                            },
+                            body: JSON.stringify({
+                                id: details.id,
+                                status: details.status,
+                                update_time: details.update_time || new Date().toISOString(),
+                                email_address: details.payer?.email_address || details.payer?.payer_info?.email || '',
+                            }),
+                        });
 
-                paypalButtons.render(paypalButtonContainerRef.current);
-                cleanup = () => paypalButtons.close();
-                setLoading(false);
-            } catch (err) {
-                console.error('Erreur lors de l\'initialisation PayPal:', err);
-                setError(err.message || 'Erreur lors de l\'initialisation de PayPal');
-                setLoading(false);
+                        const responseData = await response.json();
+
+                        if (response.ok) {
+                            ctxDispatch({ type: 'CART_CLEAR' });
+                            localStorage.removeItem('cartItems');
+                            navigate(`/order/${orderId}?success=true`);
+                        } else {
+                            setError('Erreur lors de la validation de la commande: ' + (responseData.message || 'Erreur inconnue'));
+                        }
+                    } catch (error) {
+                        console.error('Erreur lors de la capture PayPal:', error);
+                        setError('Erreur lors du paiement: ' + (error.message || 'Une erreur est survenue'));
+                    }
+                },
+                onError: (err) => {
+                    console.error('Erreur PayPal:', err);
+                    setError('Erreur lors de l\'initialisation du paiement PayPal');
+                },
+                onCancel: () => {
+                    navigate(`/order/${orderId}`);
+                }
+            });
+
+            paypalButtons.render(paypalButtonContainerRef.current);
+            console.log('Boutons PayPal rendus');
+        } catch (err) {
+            console.error('Erreur lors de l\'initialisation des boutons PayPal:', err);
+            setError('Erreur lors de l\'initialisation des boutons PayPal: ' + err.message);
+        }
+
+        return () => {
+            if (paypalButtons && paypalButtonContainerRef.current) {
+                paypalButtonContainerRef.current.innerHTML = '';
             }
         };
-
-        const timer = setTimeout(initPayPal, 100);
-        
-        return () => {
-            clearTimeout(timer);
-            if (cleanup) cleanup();
-        };
-    }, [order, userInfo, orderId, navigate, ctxDispatch]);
+    }, [paypalReady, order, userInfo, orderId, navigate, ctxDispatch]);
 
     if (loading) {
         return (

@@ -283,8 +283,9 @@ const CheckoutScreen = () => {
                     />
                   </div>
 
-                  <button type="submit" className="btn-luxe-gold w-full">
-                    Continuer vers le Paiement
+                  <button type="submit" className="btn-luxe-gold w-full !px-4 md:!px-8 !text-sm md:!text-base">
+                    <span className="hidden sm:inline">Continuer vers le Paiement</span>
+                    <span className="sm:hidden">Continuer</span>
                   </button>
                 </form>
               </div>
@@ -333,16 +334,17 @@ const CheckoutScreen = () => {
                     </label>
                   </div>
 
-                  <div className="flex gap-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
                     <button
                       type="button"
                       onClick={() => setCurrentStep(1)}
-                      className="btn-luxe-secondary flex-1"
+                      className="btn-luxe-secondary flex-1 !px-4 md:!px-8 !text-sm md:!text-base"
                     >
                       Retour
                     </button>
-                    <button type="submit" className="btn-luxe-gold flex-1">
-                      Continuer vers la Confirmation
+                    <button type="submit" className="btn-luxe-gold flex-1 !px-4 md:!px-8 !text-sm md:!text-base">
+                      <span className="hidden sm:inline">Continuer vers la Confirmation</span>
+                      <span className="sm:hidden">Continuer</span>
                     </button>
                   </div>
                 </form>
@@ -428,19 +430,26 @@ const CheckoutScreen = () => {
                   </div>
                 )}
 
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-4">
                   <button
                     onClick={() => setCurrentStep(2)}
-                    className="btn-luxe-secondary flex-1"
+                    className="btn-luxe-secondary flex-1 !px-4 md:!px-8 !text-sm md:!text-base"
                   >
                     Retour
                   </button>
                   <button
                     onClick={placeOrderHandler}
                     disabled={loading}
-                    className="btn-luxe-gold flex-1"
+                    className="btn-luxe-gold flex-1 !px-4 md:!px-8 !text-sm md:!text-base"
                   >
-                    {loading ? 'Traitement...' : 'Confirmer la Commande'}
+                    {loading ? (
+                      'Traitement...'
+                    ) : (
+                      <>
+                        <span className="hidden sm:inline">Confirmer la Commande</span>
+                        <span className="sm:hidden">Confirmer</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

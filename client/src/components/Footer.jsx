@@ -58,12 +58,20 @@ const Footer = () => {
             <p className="font-sans text-xs text-luxe-cream/50 text-center md:text-left">
               &copy; {new Date().getFullYear()} E-perfume. Tous droits réservés.
             </p>
-            <Link
-              to="/legal"
-              className="font-sans text-xs text-luxe-cream/50 hover:text-luxe-gold transition-colors duration-200"
-            >
-              Mentions légales
-            </Link>
+            <div className="flex gap-4">
+              <Link
+                to="/privacy"
+                className="font-sans text-xs text-luxe-cream/50 hover:text-luxe-gold transition-colors duration-200"
+              >
+                Politique de confidentialité
+              </Link>
+              <Link
+                to="/legal"
+                className="font-sans text-xs text-luxe-cream/50 hover:text-luxe-gold transition-colors duration-200"
+              >
+                Mentions légales
+              </Link>
+            </div>
           </div>
         </div>
       </div>

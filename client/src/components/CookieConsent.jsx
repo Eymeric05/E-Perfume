@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);
@@ -77,13 +78,13 @@ const CookieConsent = () => {
                 "Accepter", vous acceptez notre utilisation des cookies conformément à notre 
                 politique de confidentialité et au RGPD.
               </p>
-              <a
-                href="/privacy"
+              <Link
+                to="/privacy"
                 className="font-sans text-sm text-luxe-gold hover:text-luxe-champagne underline transition-colors"
                 aria-label="En savoir plus sur notre politique de confidentialité"
               >
                 En savoir plus
-              </a>
+              </Link>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
               <button

@@ -52,29 +52,35 @@ const BrandScreen = () => {
         // Try to get brand info from Brand model
         let brandData = null;
         if (brandResult && brandResult.ok) {
-          brandData = await brandResult.json();
+          try {
+            brandData = await brandResult.json();
+          } catch (e) {
+            // Ignore JSON parse errors
+            console.log('No brand data from Brand model');
+          }
         }
 
         // Extract logo and hero image - prioritize Brand model, fallback to products
-        if (brandData && brandData.heroImage) {
-          setBrandInfo({
-            brandLogo: brandData.brandLogo || null,
-            heroImage: brandData.heroImage || null,
-          });
-        } else if (productsData.length > 0) {
+        if (productsData.length > 0) {
           const firstProduct = productsData[0];
           // Chercher une image de collection dans le nom de fichier ou utiliser la première image disponible
           const collectionImage = productsData.find(p => 
-            p.images?.some(img => img.toLowerCase().includes('collection')) ||
-            p.image?.toLowerCase().includes('collection')
+            p.images?.some(img => img && img.toLowerCase().includes('collection')) ||
+            (p.image && p.image.toLowerCase().includes('collection'))
           );
           
           setBrandInfo({
             brandLogo: brandData?.brandLogo || firstProduct.brandLogo || null,
-            heroImage: collectionImage?.images?.[0] || 
-                       collectionImage?.image || 
-                       firstProduct.images?.[0] || 
-                       firstProduct.image || null,
+            heroImage: brandData?.heroImage || 
+                       (collectionImage?.images?.[0] || collectionImage?.image) ||
+                       (firstProduct.images?.[0] || firstProduct.image) || 
+                       null,
+          });
+        } else if (brandData) {
+          // If no products but brand data exists, use brand data
+          setBrandInfo({
+            brandLogo: brandData.brandLogo || null,
+            heroImage: brandData.heroImage || null,
           });
         }
       } catch (err) {

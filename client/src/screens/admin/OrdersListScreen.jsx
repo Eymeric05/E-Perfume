@@ -156,7 +156,7 @@ const OrdersListScreen = () => {
 
                 {/* Loading States */}
                 {loadingUpdate && (
-                    <div className="p-4 bg-luxe-champagne/30 border border-luxe-gold/30 rounded-lg">
+                    <div className="p-4 bg-luxe-champagne/30 dark:bg-luxe-charcoal/50 border border-luxe-gold/30 dark:border-luxe-gold/50 rounded-lg">
                         <p className="font-sans text-sm text-luxe-black dark:text-luxe-cream">Mise à jour en cours...</p>
                     </div>
                 )}
@@ -165,8 +165,8 @@ const OrdersListScreen = () => {
                 {loading ? (
                     <LoadingSpinner text="Chargement des commandes..." />
                 ) : error ? (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="font-sans text-sm text-red-700">{error}</p>
+                    <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                        <p className="font-sans text-sm text-red-700 dark:text-red-400">{error}</p>
                     </div>
                 ) : filteredOrders.length === 0 ? (
                     <div className="text-center py-20">
@@ -178,7 +178,7 @@ const OrdersListScreen = () => {
                     <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-gold/20 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full">
-                                <thead className="bg-luxe-champagne/20">
+                                <thead className="bg-luxe-champagne/20 dark:bg-luxe-charcoal/50">
                                     <tr>
                                         <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                             ID
@@ -198,14 +198,14 @@ const OrdersListScreen = () => {
                                         <th className="text-left px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                             Livré
                                         </th>
-                                        <th className="text-right px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70">
+                                        <th className="text-right px-6 py-4 font-sans text-xs uppercase tracking-wider text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                             Actions
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-luxe-charcoal/10">
+                                <tbody className="divide-y divide-luxe-charcoal/10 dark:divide-luxe-gold/20">
                                     {filteredOrders.map((order) => (
-                                        <tr key={order._id} className="hover:bg-luxe-champagne/10 transition-colors">
+                                        <tr key={order._id} className="hover:bg-luxe-champagne/10 dark:hover:bg-luxe-charcoal/70 transition-colors">
                                             <td className="px-6 py-4">
                                                 <p className="font-mono text-xs text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                                     {order._id.substring(0, 8)}...
@@ -231,12 +231,12 @@ const OrdersListScreen = () => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 {order.isPaid ? (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">
+                                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs border border-green-200 dark:border-green-800">
                                                         <FaCheck className="w-3 h-3" />
                                                         Payé
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs">
+                                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs border border-red-200 dark:border-red-800">
                                                         <FaTimes className="w-3 h-3" />
                                                         Non payé
                                                     </span>
@@ -244,12 +244,12 @@ const OrdersListScreen = () => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 {order.isDelivered ? (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">
+                                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs border border-green-200 dark:border-green-800">
                                                         <FaCheck className="w-3 h-3" />
                                                         Livré
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">
+                                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-xs border border-yellow-200 dark:border-yellow-800">
                                                         En attente
                                                     </span>
                                                 )}

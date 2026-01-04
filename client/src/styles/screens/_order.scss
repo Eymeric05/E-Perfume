@@ -11,6 +11,14 @@
 
   h1 {
     margin-bottom: $spacing-lg;
+
+    @media (prefers-color-scheme: dark) {
+      color: $luxe-cream;
+    }
+
+    .dark & {
+      color: $luxe-cream;
+    }
   }
 }
 
@@ -27,15 +35,43 @@
   padding: $spacing-md;
   margin-bottom: $spacing-md;
 
+  @media (prefers-color-scheme: dark) {
+    background: $luxe-charcoal;
+    border-color: rgba($luxe-gold, 0.3);
+    color: $luxe-cream;
+  }
+
+  .dark & {
+    background: $luxe-charcoal;
+    border-color: rgba($luxe-gold, 0.3);
+    color: $luxe-cream;
+  }
+
   h2 {
     margin-bottom: $spacing-sm;
     font-size: 1.25rem;
     font-weight: 600;
+
+    @media (prefers-color-scheme: dark) {
+      color: $luxe-cream;
+    }
+
+    .dark & {
+      color: $luxe-cream;
+    }
   }
 
   p {
     margin-bottom: 0.5rem;
     line-height: 1.6;
+
+    @media (prefers-color-scheme: dark) {
+      color: $luxe-cream;
+    }
+
+    .dark & {
+      color: $luxe-cream;
+    }
   }
 }
 
@@ -47,10 +83,30 @@
   position: sticky;
   top: $spacing-lg;
 
+  @media (prefers-color-scheme: dark) {
+    background: $luxe-charcoal;
+    border-color: rgba($luxe-gold, 0.3);
+    color: $luxe-cream;
+  }
+
+  .dark & {
+    background: $luxe-charcoal;
+    border-color: rgba($luxe-gold, 0.3);
+    color: $luxe-cream;
+  }
+
   h2 {
     margin-bottom: $spacing-sm;
     font-size: 1.25rem;
     font-weight: 600;
+
+    @media (prefers-color-scheme: dark) {
+      color: $luxe-cream;
+    }
+
+    .dark & {
+      color: $luxe-cream;
+    }
   }
 }
 
@@ -59,6 +115,16 @@
   margin-bottom: 0.75rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid #e0e0e0;
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom-color: rgba($luxe-gold, 0.2);
+    color: $luxe-cream;
+  }
+
+  .dark & {
+    border-bottom-color: rgba($luxe-gold, 0.2);
+    color: $luxe-cream;
+  }
 
   &:last-child {
     border-bottom: none;
@@ -90,6 +156,16 @@
   align-items: center;
   padding: 0.5rem 0;
   border-bottom: 1px solid #eee;
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom-color: rgba($luxe-gold, 0.1);
+    color: $luxe-cream;
+  }
+
+  .dark & {
+    border-bottom-color: rgba($luxe-gold, 0.1);
+    color: $luxe-cream;
+  }
 }
 
 .order-item-content {
@@ -112,6 +188,18 @@
   padding: 0.75rem 1.25rem;
   margin-bottom: $spacing-sm;
   border-radius: $border-radius-sm;
+
+  @media (prefers-color-scheme: dark) {
+    color: #4ade80;
+    background-color: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.3);
+  }
+
+  .dark & {
+    color: #4ade80;
+    background-color: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.3);
+  }
 }
 
 .order-status-danger {
@@ -121,10 +209,30 @@
   padding: 0.75rem 1.25rem;
   margin-bottom: $spacing-sm;
   border-radius: $border-radius-sm;
+
+  @media (prefers-color-scheme: dark) {
+    color: #f87171;
+    background-color: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .dark & {
+    color: #f87171;
+    background-color: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
+  }
 }
 
 .order-error {
   color: red;
+
+  @media (prefers-color-scheme: dark) {
+    color: #f87171;
+  }
+
+  .dark & {
+    color: #f87171;
+  }
 }
 
 .order-main {

@@ -182,7 +182,7 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
 
     if (error) {
         return (
-            <div style={{ padding: '20px', textAlign: 'center', color: 'red', border: '1px solid red', borderRadius: '4px' }}>
+            <div style={{ padding: '20px', textAlign: 'center', border: '1px solid', borderRadius: '4px' }} className="text-red-600 dark:text-red-400 border-red-600 dark:border-red-400">
                 {error}
             </div>
         );
@@ -190,9 +190,9 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
 
     if (loading) {
         return (
-            <div style={{ padding: '20px', textAlign: 'center' }}>
+            <div style={{ padding: '20px', textAlign: 'center' }} className="text-luxe-black dark:text-luxe-cream">
                 <div>Chargement de PayPal...</div>
-                <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+                <div style={{ marginTop: '10px', fontSize: '14px' }} className="text-luxe-charcoal/70 dark:text-luxe-cream/70">
                     Veuillez patienter pendant que nous initialisons le paiement sécurisé
                 </div>
             </div>
@@ -203,7 +203,7 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
         <div>
             <div ref={paypalButtonContainerRef} style={{ minHeight: '50px' }}></div>
             {!loading && !error && paypalButtonContainerRef.current && paypalButtonContainerRef.current.children.length === 0 && (
-                <div style={{ padding: '10px', textAlign: 'center', fontSize: '14px', color: '#666' }}>
+                <div style={{ padding: '10px', textAlign: 'center', fontSize: '14px' }} className="text-luxe-charcoal/70 dark:text-luxe-cream/70">
                     Le bouton PayPal devrait apparaître ici. Si ce n'est pas le cas, rechargez la page.
                 </div>
             )}
@@ -426,12 +426,12 @@ const OrderScreen = () => {
     };
 
     return loading ? (
-        <div>Chargement...</div>
+        <div className="text-center py-20 text-luxe-black dark:text-luxe-cream">Chargement...</div>
     ) : error ? (
         <div className="order-error">{error}</div>
     ) : (
         <div className="order-container">
-            <h1>Commande {orderId}</h1>
+            <h1 className="text-luxe-black dark:text-luxe-cream">Commande {orderId}</h1>
             <div className="order-grid">
                 <div className="order-main">
                     <div className="order-card">
@@ -527,7 +527,7 @@ const OrderScreen = () => {
                                         );
                                     } else if (isPayPal && !window.paypal) {
                                         return (
-                                            <div style={{ padding: '20px', textAlign: 'center', color: 'red' }}>
+                                            <div style={{ padding: '20px', textAlign: 'center' }} className="text-red-600 dark:text-red-400">
                                                 PayPal SDK non chargé. Veuillez recharger la page.
                                             </div>
                                         );

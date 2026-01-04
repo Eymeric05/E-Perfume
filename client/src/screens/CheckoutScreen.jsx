@@ -157,13 +157,13 @@ const CheckoutScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-luxe-cream">
+    <div className="min-h-screen bg-luxe-cream dark:bg-luxe-charcoal">
       <Helmet>
         <title>Commande - E-perfume</title>
       </Helmet>
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
-        <h1 className="font-serif text-5xl md:text-6xl font-light text-luxe-black mb-12">
+        <h1 className="font-serif text-5xl md:text-6xl font-light text-luxe-black dark:text-luxe-cream mb-12">
           Commande
         </h1>
 
@@ -217,8 +217,8 @@ const CheckoutScreen = () => {
           <div className="lg:col-span-2">
             {/* Step 1: Shipping */}
             {currentStep === 1 && (
-              <div className="bg-luxe-warm-white border border-luxe-charcoal/10 p-8">
-                <h2 className="font-serif text-3xl font-light text-luxe-black mb-6">
+              <div className="bg-luxe-warm-white dark:bg-luxe-charcoal border border-luxe-charcoal/10 dark:border-luxe-gold/30 p-8">
+                <h2 className="font-serif text-3xl font-light text-luxe-black dark:text-luxe-cream mb-6">
                   Adresse de Livraison
                 </h2>
                 <form onSubmit={handleShippingSubmit} className="space-y-6">
@@ -298,8 +298,8 @@ const CheckoutScreen = () => {
 
             {/* Step 2: Payment */}
             {currentStep === 2 && (
-              <div className="bg-luxe-warm-white border border-luxe-charcoal/10 p-8">
-                <h2 className="font-serif text-3xl font-light text-luxe-black mb-6">
+              <div className="bg-luxe-warm-white dark:bg-luxe-charcoal border border-luxe-charcoal/10 dark:border-luxe-gold/30 p-8">
+                <h2 className="font-serif text-3xl font-light text-luxe-black dark:text-luxe-cream mb-6">
                   Méthode de Paiement
                 </h2>
                 <form onSubmit={handlePaymentSubmit} className="space-y-6">
@@ -499,24 +499,24 @@ const CheckoutScreen = () => {
 
           {/* Order Summary Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-luxe-warm-white border border-luxe-charcoal/10 p-6">
-              <h2 className="font-serif text-2xl font-light text-luxe-black mb-6">
+            <div className="sticky top-24 bg-luxe-warm-white dark:bg-luxe-charcoal border border-luxe-charcoal/10 dark:border-luxe-gold/30 p-6">
+              <h2 className="font-serif text-2xl font-light text-luxe-black dark:text-luxe-cream mb-6">
                 Récapitulatif
               </h2>
 
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between items-center">
-                  <span className="font-sans text-sm text-luxe-charcoal/70">
+                  <span className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                     Sous-total ({cart.cartItems.reduce((a, c) => a + c.quantity, 0)} articles)
                   </span>
-                  <span className="font-serif text-lg font-normal text-luxe-black">
+                  <span className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream">
                     {formatPrice(itemsPrice)}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="font-sans text-sm text-luxe-charcoal/70">Livraison</span>
-                  <span className="font-serif text-lg font-normal text-luxe-black">
+                  <span className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">Livraison</span>
+                  <span className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream">
                     {shippingPrice === 0 ? (
                       <span className="text-luxe-gold">Gratuite</span>
                     ) : (
@@ -526,16 +526,16 @@ const CheckoutScreen = () => {
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="font-sans text-sm text-luxe-charcoal/70">TVA</span>
-                  <span className="font-serif text-lg font-normal text-luxe-black">
+                  <span className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">TVA</span>
+                  <span className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream">
                     {formatPrice(taxPrice)}
                   </span>
                 </div>
 
                 <div className="pt-4 border-t border-luxe-charcoal/10">
                   <div className="flex justify-between items-center">
-                    <span className="font-sans font-medium text-luxe-black">Total</span>
-                    <span className="font-serif text-2xl font-normal text-luxe-black">
+                    <span className="font-sans font-medium text-luxe-black dark:text-luxe-cream">Total</span>
+                    <span className="font-serif text-2xl font-normal text-luxe-black dark:text-luxe-cream">
                       {formatPrice(totalPrice)}
                     </span>
                   </div>

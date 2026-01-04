@@ -13,6 +13,14 @@
 
   h1 {
     margin-bottom: $spacing-lg;
+
+    @media (prefers-color-scheme: dark) {
+      color: $luxe-cream;
+    }
+
+    .dark & {
+      color: $luxe-cream;
+    }
   }
 }
 
@@ -29,15 +37,43 @@
   padding: $spacing-md;
   margin-bottom: $spacing-md;
 
+  @media (prefers-color-scheme: dark) {
+    background: $luxe-charcoal;
+    border-color: rgba($luxe-gold, 0.3);
+    color: $luxe-cream;
+  }
+
+  .dark & {
+    background: $luxe-charcoal;
+    border-color: rgba($luxe-gold, 0.3);
+    color: $luxe-cream;
+  }
+
   h2 {
     margin-bottom: $spacing-sm;
     font-size: 1.25rem;
     font-weight: 600;
+
+    @media (prefers-color-scheme: dark) {
+      color: $luxe-cream;
+    }
+
+    .dark & {
+      color: $luxe-cream;
+    }
   }
 
   p {
     margin-bottom: 0.5rem;
     line-height: 1.6;
+
+    @media (prefers-color-scheme: dark) {
+      color: $luxe-cream;
+    }
+
+    .dark & {
+      color: $luxe-cream;
+    }
   }
 
   a {
@@ -46,6 +82,14 @@
 
     &:hover {
       color: $accent-rose;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      color: $luxe-gold;
+    }
+
+    .dark & {
+      color: $luxe-gold;
     }
   }
 }
@@ -58,10 +102,30 @@
   position: sticky;
   top: $spacing-lg;
 
+  @media (prefers-color-scheme: dark) {
+    background: $luxe-charcoal;
+    border-color: rgba($luxe-gold, 0.3);
+    color: $luxe-cream;
+  }
+
+  .dark & {
+    background: $luxe-charcoal;
+    border-color: rgba($luxe-gold, 0.3);
+    color: $luxe-cream;
+  }
+
   h2 {
     margin-bottom: $spacing-sm;
     font-size: 1.25rem;
     font-weight: 600;
+
+    @media (prefers-color-scheme: dark) {
+      color: $luxe-cream;
+    }
+
+    .dark & {
+      color: $luxe-cream;
+    }
   }
 }
 
@@ -70,6 +134,16 @@
   margin-bottom: 0.75rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid #e0e0e0;
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom-color: rgba($luxe-gold, 0.2);
+    color: $luxe-cream;
+  }
+
+  .dark & {
+    border-bottom-color: rgba($luxe-gold, 0.2);
+    color: $luxe-cream;
+  }
 
   &:last-child {
     border-bottom: none;
@@ -88,6 +162,16 @@
   align-items: center;
   padding: 0.5rem 0;
   border-bottom: 1px solid #eee;
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom-color: rgba($luxe-gold, 0.1);
+    color: $luxe-cream;
+  }
+
+  .dark & {
+    border-bottom-color: rgba($luxe-gold, 0.1);
+    color: $luxe-cream;
+  }
 }
 
 .place-order-item-content {

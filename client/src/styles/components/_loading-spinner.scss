@@ -20,6 +20,14 @@
     font-family: $font-serif;
     font-size: 1.125rem;
     color: $text-primary;
+
+    @media (prefers-color-scheme: dark) {
+      color: $luxe-cream;
+    }
+
+    .dark & {
+      color: $luxe-cream;
+    }
   }
 }
 

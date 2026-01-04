@@ -65,13 +65,13 @@ const PriceSlider = ({ min = 0, max = 500, onRangeChange, initialMin, initialMax
   return (
     <div className="price-slider-container">
       <div className="price-slider-header">
-        <span className="price-slider-range">
+        <span className="price-slider-range dark:text-luxe-cream/70">
           {minValue}€ - {maxValue}€
         </span>
       </div>
       <div
         ref={sliderRef}
-        className="price-slider-track"
+        className="price-slider-track dark:bg-luxe-charcoal/10 dark:border-luxe-gold/20"
         onMouseDown={(e) => {
           const target = e.target;
           const isHandle = target.classList.contains('price-slider-handle') || 

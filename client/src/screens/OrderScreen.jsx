@@ -60,7 +60,7 @@ const CheckoutForm = ({ order, handlePaymentSuccess }) => {
             const res = await apiFetch('/api/payment/create-payment-intent', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: Math.round(order.totalPrice * 100) }),
+                body: JSON.stringify({ amount: Math.round((order.totalPrice || 0) * 100) }),
             });
             const { clientSecret } = await res.json();
 
@@ -116,9 +116,15 @@ const OrderScreen = () => {
 
     useEffect(() => {
         const fetchStripeKey = async () => {
-            const res = await apiFetch('/api/config/stripe');
-            const key = await res.text();
-            setStripePromise(loadStripe(key));
+            try {
+                const res = await apiFetch('/api/config/stripe');
+                const key = await res.text();
+                if (key && key.trim()) {
+                    setStripePromise(loadStripe(key.trim()));
+                }
+            } catch (err) {
+                console.error('Erreur lors de la récupération de la clé Stripe:', err);
+            }
         };
         fetchStripeKey();
     }, []);
@@ -230,14 +236,14 @@ const OrderScreen = () => {
                     <div className="order-card">
                         <h2>Livraison</h2>
                         <p>
-                            <strong>Nom:</strong> {order.user.name} <br />
-                            <strong>Email:</strong> {order.user.email} <br />
-                            <strong>Adresse:</strong> {order.shippingAddress.address},{' '}
-                            {order.shippingAddress.city}, {order.shippingAddress.postalCode},{' '}
-                            {order.shippingAddress.country}
+                            <strong>Nom:</strong> {order.user?.name || 'N/A'} <br />
+                            <strong>Email:</strong> {order.user?.email || 'N/A'} <br />
+                            <strong>Adresse:</strong> {order.shippingAddress?.address || 'N/A'},{' '}
+                            {order.shippingAddress?.city || 'N/A'}, {order.shippingAddress?.postalCode || 'N/A'},{' '}
+                            {order.shippingAddress?.country || 'N/A'}
                         </p>
                         {order.isDelivered ? (
-                            <div className="order-status-success">Livré le {order.deliveredAt.substring(0, 10)}</div>
+                            <div className="order-status-success">Livré le {order.deliveredAt?.substring(0, 10) || 'N/A'}</div>
                         ) : (
                             <div className="order-status-danger">Non Livré</div>
                         )}
@@ -246,10 +252,10 @@ const OrderScreen = () => {
                     <div className="order-card">
                         <h2>Paiement</h2>
                         <p>
-                            <strong>Méthode:</strong> {order.paymentMethod}
+                            <strong>Méthode:</strong> {order.paymentMethod || 'N/A'}
                         </p>
                         {order.isPaid ? (
-                            <div className="order-status-success">Payé le {order.paidAt.substring(0, 10)}</div>
+                            <div className="order-status-success">Payé le {order.paidAt?.substring(0, 10) || 'N/A'}</div>
                         ) : (
                             <div className="order-status-danger">Non Payé</div>
                         )}
@@ -258,7 +264,7 @@ const OrderScreen = () => {
                     <div className="order-card">
                         <h2>Articles</h2>
                         <ul className="order-items-list">
-                            {order.orderItems.map((item) => (
+                            {order.orderItems?.map((item) => (
                                 <li key={item._id} className="order-item">
                                     <div className="order-item-content">
                                         <img
@@ -269,10 +275,10 @@ const OrderScreen = () => {
                                         <Link to={`/product/${item.product}`}>{item.name}</Link>
                                     </div>
                                     <div>
-                                        {item.qty} x {item.price} € = {item.qty * item.price} €
+                                        {item.qty} x {(item.price || 0).toFixed(2)} € = {((item.qty || 0) * (item.price || 0)).toFixed(2)} €
                                     </div>
                                 </li>
-                            ))}
+                            )) || <li>Aucun article</li>}
                         </ul>
                     </div>
                 </div>
@@ -282,19 +288,19 @@ const OrderScreen = () => {
                         <h2>Résumé</h2>
                         <div className="order-summary-item">
                             <span>Articles</span>
-                            <span>{order.itemsPrice.toFixed(2)} €</span>
+                            <span>{(order.itemsPrice || 0).toFixed(2)} €</span>
                         </div>
                         <div className="order-summary-item">
                             <span>Livraison</span>
-                            <span>{order.shippingPrice.toFixed(2)} €</span>
+                            <span>{(order.shippingPrice || 0).toFixed(2)} €</span>
                         </div>
                         <div className="order-summary-item">
                             <span>TVA</span>
-                            <span>{order.taxPrice.toFixed(2)} €</span>
+                            <span>{(order.taxPrice || 0).toFixed(2)} €</span>
                         </div>
                         <div className="order-summary-item">
                             <strong>Total</strong>
-                            <strong>{order.totalPrice.toFixed(2)} €</strong>
+                            <strong>{(order.totalPrice || 0).toFixed(2)} €</strong>
                         </div>
                         {!order.isPaid && stripePromise && (
                             <div className="checkout-button">

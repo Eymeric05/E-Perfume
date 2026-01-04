@@ -14,9 +14,9 @@ const PayPalPaymentScreen = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [order, setOrder] = useState(null);
+    const initializedRef = useRef(false);
 
     useEffect(() => {
-        // Charger les informations de la commande
         const fetchOrder = async () => {
             try {
                 const res = await apiFetch(`/api/orders/${orderId}`, {
@@ -37,122 +37,138 @@ const PayPalPaymentScreen = () => {
 
         if (userInfo && orderId) {
             fetchOrder();
+        } else if (!userInfo) {
+            navigate('/login');
         }
-    }, [orderId, userInfo]);
+    }, [orderId, userInfo, navigate]);
 
     useEffect(() => {
-        if (!order || !paypalButtonContainerRef.current) {
+        if (!order || !userInfo || initializedRef.current || !paypalButtonContainerRef.current) {
             return;
         }
 
-        // Charger le SDK PayPal
-        loadPayPalSDK((err) => {
-            if (err) {
-                setError('Impossible de charger le SDK PayPal');
-                setLoading(false);
-                return;
-            }
+        initializedRef.current = true;
+        let cleanup = null;
 
-            if (!window.paypal || !window.paypal.Buttons) {
-                setError('PayPal SDK non disponible');
-                setLoading(false);
-                return;
-            }
-
-            // Initialiser les boutons PayPal
-            initializePayPal();
-        });
-    }, [order]);
-
-    const initializePayPal = () => {
-        if (!paypalButtonContainerRef.current || !order) {
-            return;
-        }
-
-        const paypalButtons = window.paypal.Buttons({
-            style: {
-                layout: 'vertical',
-                color: 'gold',
-                shape: 'rect',
-                label: 'paypal'
-            },
-            createOrder: async (data, actions) => {
-                try {
-                    const createRes = await apiFetch('/api/payment/paypal/create-order', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${userInfo.token}`,
-                        },
-                        body: JSON.stringify({
-                            items: order.orderItems.map(item => ({
-                                name: item.name,
-                                price: item.price,
-                                quantity: item.qty,
-                                brand: item.brand || ''
-                            })),
-                            orderId: orderId,
-                        }),
+        const initPayPal = async () => {
+            try {
+                await new Promise((resolve, reject) => {
+                    loadPayPalSDK((err) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
                     });
+                });
 
-                    const createData = await createRes.json();
-
-                    if (!createRes.ok) {
-                        throw new Error(createData.error || 'Erreur lors de la création de la commande PayPal');
-                    }
-
-                    return createData.orderId;
-                } catch (error) {
-                    console.error('Erreur lors de la création de la commande PayPal:', error);
-                    setError('Erreur lors de la création de la commande PayPal: ' + error.message);
-                    throw error;
+                if (!window.paypal || !window.paypal.Buttons) {
+                    throw new Error('PayPal SDK non disponible');
                 }
-            },
-            onApprove: async (data, actions) => {
-                try {
-                    const details = await actions.order.capture();
-                    
-                    const response = await apiFetch(`/api/orders/${orderId}/pay`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${userInfo.token}`
-                        },
-                        body: JSON.stringify({
-                            id: details.id,
-                            status: details.status,
-                            update_time: details.update_time || new Date().toISOString(),
-                            email_address: details.payer?.email_address || details.payer?.payer_info?.email || '',
-                        }),
-                    });
 
-                    const responseData = await response.json();
-
-                    if (response.ok) {
-                        // Vider le panier après paiement réussi
-                        ctxDispatch({ type: 'CART_CLEAR' });
-                        localStorage.removeItem('cartItems');
-                        navigate(`/order/${orderId}?success=true`);
-                    } else {
-                        setError('Erreur lors de la validation de la commande: ' + (responseData.message || 'Erreur inconnue'));
-                    }
-                } catch (error) {
-                    console.error('Erreur lors de la capture PayPal:', error);
-                    setError('Erreur lors du paiement: ' + (error.message || 'Une erreur est survenue'));
+                if (!paypalButtonContainerRef.current) {
+                    throw new Error('Conteneur PayPal non trouvé');
                 }
-            },
-            onError: (err) => {
-                console.error('Erreur PayPal:', err);
-                setError('Erreur lors de l\'initialisation du paiement PayPal');
-            },
-            onCancel: () => {
-                navigate(`/order/${orderId}`);
+
+                paypalButtonContainerRef.current.innerHTML = '';
+
+                const paypalButtons = window.paypal.Buttons({
+                    style: {
+                        layout: 'vertical',
+                        color: 'gold',
+                        shape: 'rect',
+                        label: 'paypal'
+                    },
+                    createOrder: async () => {
+                        try {
+                            const createRes = await apiFetch('/api/payment/paypal/create-order', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${userInfo.token}`,
+                                },
+                                body: JSON.stringify({
+                                    items: order.orderItems.map(item => ({
+                                        name: item.name,
+                                        price: parseFloat(item.price || 0),
+                                        quantity: parseInt(item.qty || 1),
+                                        brand: item.brand || ''
+                                    })),
+                                    orderId: orderId,
+                                }),
+                            });
+
+                            const createData = await createRes.json();
+
+                            if (!createRes.ok) {
+                                throw new Error(createData.error || 'Erreur lors de la création de la commande PayPal');
+                            }
+
+                            return createData.orderId;
+                        } catch (error) {
+                            console.error('Erreur lors de la création de la commande PayPal:', error);
+                            setError('Erreur lors de la création de la commande PayPal: ' + error.message);
+                            throw error;
+                        }
+                    },
+                    onApprove: async (data, actions) => {
+                        try {
+                            const details = await actions.order.capture();
+                            
+                            const response = await apiFetch(`/api/orders/${orderId}/pay`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${userInfo.token}`
+                                },
+                                body: JSON.stringify({
+                                    id: details.id,
+                                    status: details.status,
+                                    update_time: details.update_time || new Date().toISOString(),
+                                    email_address: details.payer?.email_address || details.payer?.payer_info?.email || '',
+                                }),
+                            });
+
+                            const responseData = await response.json();
+
+                            if (response.ok) {
+                                ctxDispatch({ type: 'CART_CLEAR' });
+                                localStorage.removeItem('cartItems');
+                                navigate(`/order/${orderId}?success=true`);
+                            } else {
+                                setError('Erreur lors de la validation de la commande: ' + (responseData.message || 'Erreur inconnue'));
+                            }
+                        } catch (error) {
+                            console.error('Erreur lors de la capture PayPal:', error);
+                            setError('Erreur lors du paiement: ' + (error.message || 'Une erreur est survenue'));
+                        }
+                    },
+                    onError: (err) => {
+                        console.error('Erreur PayPal:', err);
+                        setError('Erreur lors de l\'initialisation du paiement PayPal');
+                    },
+                    onCancel: () => {
+                        navigate(`/order/${orderId}`);
+                    }
+                });
+
+                paypalButtons.render(paypalButtonContainerRef.current);
+                cleanup = () => paypalButtons.close();
+                setLoading(false);
+            } catch (err) {
+                console.error('Erreur lors de l\'initialisation PayPal:', err);
+                setError(err.message || 'Erreur lors de l\'initialisation de PayPal');
+                setLoading(false);
             }
-        });
+        };
 
-        paypalButtons.render(paypalButtonContainerRef.current);
-        setLoading(false);
-    };
+        const timer = setTimeout(initPayPal, 100);
+        
+        return () => {
+            clearTimeout(timer);
+            if (cleanup) cleanup();
+        };
+    }, [order, userInfo, orderId, navigate, ctxDispatch]);
 
     if (loading) {
         return (

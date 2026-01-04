@@ -279,24 +279,32 @@ const createProductReview = asyncHandler(async (req, res) => {
         }
 
         // Créer le commentaire dans la collection Comments
+        // Si l'utilisateur est admin, le commentaire est automatiquement approuvé
+        const isAdminComment = req.user.isAdmin === true;
         const newComment = new Comment({
             product: product._id,
             user: req.user._id,
             name: req.user.name,
             rating: Number(rating),
             comment,
-            isModerated: false,
+            isModerated: isAdminComment,
+            moderatedBy: isAdminComment ? req.user._id : undefined,
+            moderatedAt: isAdminComment ? new Date() : undefined,
         });
 
         await newComment.save();
 
         // Mettre à jour le rating et numReviews du produit
-        const allComments = await Comment.find({ product: product._id });
-        product.numReviews = allComments.length;
-        if (allComments.length > 0) {
+        // Seulement les commentaires modérés (ou admin) comptent pour le rating
+        const moderatedComments = await Comment.find({ 
+            product: product._id,
+            isModerated: true 
+        });
+        product.numReviews = moderatedComments.length;
+        if (moderatedComments.length > 0) {
             product.rating =
-                allComments.reduce((acc, item) => item.rating + acc, 0) /
-                allComments.length;
+                moderatedComments.reduce((acc, item) => item.rating + acc, 0) /
+                moderatedComments.length;
         } else {
             product.rating = 0;
         }
@@ -341,17 +349,35 @@ const moderateReview = asyncHandler(async (req, res) => {
         comment.moderatedBy = req.user._id;
         comment.moderatedAt = new Date();
         await comment.save();
+        
+        // Après approbation, recalculer le rating
+        const moderatedComments = await Comment.find({ 
+            product: product._id,
+            isModerated: true 
+        });
+        product.numReviews = moderatedComments.length;
+        if (moderatedComments.length > 0) {
+            product.rating =
+                moderatedComments.reduce((acc, item) => item.rating + acc, 0) /
+                moderatedComments.length;
+        } else {
+            product.rating = 0;
+        }
+        await product.save();
     } else if (action === 'reject') {
         // Supprimer le commentaire de la collection Comments
         await Comment.findByIdAndDelete(req.params.reviewId);
         
-        // Recalculer le rating du produit
-        const allComments = await Comment.find({ product: product._id });
-        product.numReviews = allComments.length;
-        if (allComments.length > 0) {
+        // Recalculer le rating du produit (seulement les commentaires modérés)
+        const moderatedComments = await Comment.find({ 
+            product: product._id,
+            isModerated: true 
+        });
+        product.numReviews = moderatedComments.length;
+        if (moderatedComments.length > 0) {
             product.rating =
-                allComments.reduce((acc, item) => item.rating + acc, 0) /
-                allComments.length;
+                moderatedComments.reduce((acc, item) => item.rating + acc, 0) /
+                moderatedComments.length;
         } else {
             product.rating = 0;
         }

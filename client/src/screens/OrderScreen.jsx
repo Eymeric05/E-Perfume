@@ -504,7 +504,17 @@ const OrderScreen = () => {
                         <h2>Résumé</h2>
                         <div className="order-summary-item">
                             <span>Articles</span>
-                            <span>{(order.itemsPrice || 0).toFixed(2)} €</span>
+                            <span>{(() => {
+                                // Calculer itemsPrice si non défini dans la commande
+                                if (order.itemsPrice && order.itemsPrice > 0) {
+                                    return order.itemsPrice.toFixed(2);
+                                }
+                                // Sinon, calculer depuis les orderItems
+                                const calculated = order.orderItems?.reduce((sum, item) => {
+                                    return sum + (parseFloat(item.price || 0) * parseInt(item.qty || 0));
+                                }, 0) || 0;
+                                return calculated.toFixed(2);
+                            })()} €</span>
                         </div>
                         <div className="order-summary-item">
                             <span>Livraison</span>
@@ -516,7 +526,19 @@ const OrderScreen = () => {
                         </div>
                         <div className="order-summary-item">
                             <strong>Total</strong>
-                            <strong>{(order.totalPrice || 0).toFixed(2)} €</strong>
+                            <strong>{(() => {
+                                // Calculer le total si non défini
+                                if (order.totalPrice && order.totalPrice > 0) {
+                                    return order.totalPrice.toFixed(2);
+                                }
+                                // Sinon, calculer depuis les autres montants
+                                const itemsTotal = order.itemsPrice || order.orderItems?.reduce((sum, item) => {
+                                    return sum + (parseFloat(item.price || 0) * parseInt(item.qty || 0));
+                                }, 0) || 0;
+                                const tax = order.taxPrice || 0;
+                                const shipping = order.shippingPrice || 0;
+                                return (itemsTotal + tax + shipping).toFixed(2);
+                            })()} €</strong>
                         </div>
                         {!order.isPaid && (
                             <div className="checkout-button">

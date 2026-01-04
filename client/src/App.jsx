@@ -25,6 +25,7 @@ const PaymentScreen = lazy(() => import('./screens/PaymentScreen'));
 const PlaceOrderScreen = lazy(() => import('./screens/PlaceOrderScreen'));
 const CheckoutScreen = lazy(() => import('./screens/CheckoutScreen'));
 const OrderScreen = lazy(() => import('./screens/OrderScreen'));
+const PayPalPaymentScreen = lazy(() => import('./screens/PayPalPaymentScreen'));
 const ProfileScreen = lazy(() => import('./screens/ProfileScreen'));
 const WishlistScreen = lazy(() => import('./screens/WishlistScreen'));
 const LegalScreen = lazy(() => import('./screens/LegalScreen'));
@@ -67,6 +68,7 @@ const AppContent = () => {
             <Route path="/payment" element={<PaymentScreen />} />
             <Route path="/placeorder" element={<PlaceOrderScreen />} />
             <Route path="/checkout" element={<CheckoutScreen />} />
+            <Route path="/order/:id/pay/paypal" element={<PayPalPaymentScreen />} />
             <Route path="/order/:id" element={<OrderScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
             <Route path="/wishlist" element={<WishlistScreen />} />

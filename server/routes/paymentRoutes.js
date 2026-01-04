@@ -202,16 +202,31 @@ router.post('/paypal/create-order', protect, async (req, res) => {
         const request = new paypal.orders.OrdersCreateRequest();
 
         // Utiliser les montants de la commande stockée dans la DB
-        // Calculer itemsTotal depuis les orderItems si itemsPrice n'existe pas
-        const itemsTotal = dbOrder.itemsPrice || dbOrder.orderItems.reduce((sum, item) => sum + (parseFloat(item.price || 0) * parseInt(item.qty || 0)), 0);
+        // Calculer itemsTotal depuis les orderItems de la DB (plus fiable que les items envoyés)
+        const itemsTotalFromDB = dbOrder.orderItems.reduce((sum, item) => {
+            return sum + (parseFloat(item.price || 0) * parseInt(item.qty || 0));
+        }, 0);
+        const itemsTotal = dbOrder.itemsPrice || itemsTotalFromDB;
         const tax = dbOrder.taxPrice || 0;
         const shipping = dbOrder.shippingPrice || 0;
         const total = dbOrder.totalPrice || (itemsTotal + tax + shipping);
 
-        // Vérifier que les items ont bien des prix
-        const validItems = items.filter(item => item.price && parseFloat(item.price) > 0);
-        if (validItems.length === 0) {
+        // Utiliser les orderItems de la DB plutôt que ceux envoyés par le frontend pour garantir la cohérence
+        const itemsToUse = dbOrder.orderItems.length > 0 ? dbOrder.orderItems.map(item => ({
+            name: item.name,
+            price: parseFloat(item.price || 0),
+            quantity: parseInt(item.qty || 0),
+            brand: ''
+        })) : items.filter(item => item.price && parseFloat(item.price) > 0);
+
+        if (itemsToUse.length === 0) {
             return res.status(400).json({ error: 'Aucun article valide avec un prix trouvé' });
+        }
+
+        // Vérifier que la somme des items correspond au itemsTotal
+        const calculatedTotal = itemsToUse.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        if (Math.abs(calculatedTotal - itemsTotal) > 0.01) {
+            console.warn(`Incohérence détectée: itemsTotal=${itemsTotal}, calculé=${calculatedTotal}`);
         }
 
         request.prefer("return=representation");
@@ -239,14 +254,14 @@ router.post('/paypal/create-order', protect, async (req, res) => {
                         }
                     }
                 },
-                items: validItems.map(item => ({
+                items: itemsToUse.map(item => ({
                     name: item.name,
                     description: item.brand || '',
                     unit_amount: {
                         currency_code: 'EUR',
                         value: parseFloat(item.price).toFixed(2)
                     },
-                    quantity: (item.quantity || item.qty || 1).toString()
+                    quantity: item.quantity.toString()
                 }))
             }],
             application_context: {

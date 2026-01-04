@@ -1,10 +1,11 @@
-import React, { useEffect, useReducer, useState, useRef } from 'react';
+import React, { useEffect, useReducer, useState, useRef, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Product from '../components/Product';
 import ProductSkeleton from '../components/ProductSkeleton';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { apiFetch } from '../utils/api';
+import { Store } from '../context/StoreContext';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -27,6 +28,9 @@ const isVideo = (url) => {
 };
 
 const HomeScreen = () => {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+  
   const [{ loading, error, products }, dispatch] = useReducer(reducer, {
     products: [],
     loading: true,
@@ -254,7 +258,9 @@ const HomeScreen = () => {
           ) : (
             <div className="text-center py-20 text-luxe-charcoal/70 dark:text-luxe-cream/70">
               <p className="mb-4">Aucune collection limitée disponible pour le moment</p>
-              <p className="text-sm">Marquez des produits comme "Collection limitée" dans l'administration pour les afficher ici</p>
+              {userInfo?.isAdmin && (
+                <p className="text-sm">Marquez des produits comme "Collection limitée" dans l'administration pour les afficher ici</p>
+              )}
             </div>
           )}
         </div>

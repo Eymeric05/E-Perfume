@@ -109,8 +109,8 @@ const HomeScreen = () => {
   const featuredProducts = React.useMemo(() => {
     if (products.length === 0) return [];
     
-    const featured = products.filter((p) => p.featured || (p.rating && p.rating >= 4));
-    return featured.length > 0 ? featured.slice(0, 6) : products.slice(0, 6);
+    const limitedEdition = products.filter((p) => p.isLimitedEdition === true);
+    return limitedEdition.length > 0 ? limitedEdition.slice(0, 6) : [];
   }, [products]);
 
   const renderSlideBackground = (slide, index) => {
@@ -252,9 +252,9 @@ const HomeScreen = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 text-luxe-charcoal/70">
-              <p className="mb-4">Aucun produit disponible pour le moment</p>
-              <p className="text-sm">Total de produits chargés: {products.length}</p>
+            <div className="text-center py-20 text-luxe-charcoal/70 dark:text-luxe-cream/70">
+              <p className="mb-4">Aucune collection limitée disponible pour le moment</p>
+              <p className="text-sm">Marquez des produits comme "Collection limitée" dans l'administration pour les afficher ici</p>
             </div>
           )}
         </div>

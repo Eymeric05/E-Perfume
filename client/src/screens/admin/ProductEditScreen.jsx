@@ -58,6 +58,7 @@ const ProductEditScreen = () => {
     const [fragranceFamily, setFragranceFamily] = useState('');
     const [skinType, setSkinType] = useState('');
     const [ingredients, setIngredients] = useState('');
+    const [isLimitedEdition, setIsLimitedEdition] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -101,6 +102,7 @@ const ProductEditScreen = () => {
                 setFragranceFamily(data.fragranceFamily || '');
                 setSkinType(data.skinType || '');
                 setIngredients(data.ingredients || '');
+                setIsLimitedEdition(data.isLimitedEdition || false);
                 dispatch({ type: 'FETCH_SUCCESS' });
             } catch (err) {
                 dispatch({ type: 'FETCH_FAIL', payload: err.message });
@@ -141,6 +143,7 @@ const ProductEditScreen = () => {
                     fragranceFamily: isSkincare ? '' : fragranceFamily,
                     skinType: isSkincare ? skinType : '',
                     ingredients: isSkincare ? ingredients : '',
+                    isLimitedEdition: isLimitedEdition,
                 }),
             });
 
@@ -495,6 +498,19 @@ const ProductEditScreen = () => {
                                                 required
                                             />
                                         </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            id="isLimitedEdition"
+                                            checked={isLimitedEdition}
+                                            onChange={(e) => setIsLimitedEdition(e.target.checked)}
+                                            className="w-4 h-4 text-luxe-gold bg-luxe-warm-white border-luxe-charcoal/20 rounded focus:ring-luxe-gold focus:ring-2"
+                                        />
+                                        <label htmlFor="isLimitedEdition" className="font-sans text-sm font-medium text-luxe-charcoal/70 dark:text-luxe-cream/70 cursor-pointer">
+                                            Collection limitée (affiché dans Collections Éphémères)
+                                        </label>
                                     </div>
 
                                     <div>

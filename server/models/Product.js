@@ -49,6 +49,7 @@ const productSchema = new mongoose.Schema({
     isBestseller: { type: Boolean, default: false },
     onSale: { type: Boolean, default: false },
     salePrice: { type: Number },
+    isLimitedEdition: { type: Boolean, default: false },
     images: [String],
 }, {
     timestamps: true,

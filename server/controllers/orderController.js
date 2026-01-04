@@ -20,8 +20,19 @@ const addOrderItems = asyncHandler(async (req, res) => {
         throw new Error('No order items');
         return;
     } else {
+        // Mapper les items du panier vers le format attendu par le modèle Order
+        // Le panier React envoie: { _id, quantity, name, image, price }
+        // Le modèle Order attend: { product, qty, name, image, price }
+        const mappedOrderItems = orderItems.map(item => ({
+            product: item._id,  // Mapper '_id' vers 'product'
+            qty: item.quantity, // Mapper 'quantity' vers 'qty'
+            name: item.name,
+            image: item.image,
+            price: item.price,
+        }));
+
         const order = new Order({
-            orderItems,
+            orderItems: mappedOrderItems,
             user: req.user._id,
             shippingAddress,
             paymentMethod,

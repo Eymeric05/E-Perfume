@@ -162,7 +162,8 @@ app.get('/api/config/stripe', (req, res) =>
 
 app.get('/api/config/paypal', (req, res) =>
   res.json({
-    clientId: process.env.PAYPAL_CLIENT_ID || 'AaHD6tvQUQe95QIEtFDVxerfNCbLVSwAtpmXtSFpGbiIQ6k2eDFLWYxkvDDqf-bQcfaxds1q8WKgR0Fe'
+    clientId: process.env.PAYPAL_CLIENT_ID || 'AaHD6tvQUQe95QIEtFDVxerfNCbLVSwAtpmXtSFpGbiIQ6k2eDFLWYxkvDDqf-bQcfaxds1q8WKgR0Fe',
+    environment: process.env.PAYPAL_ENVIRONMENT || 'sandbox'
   })
 );
 

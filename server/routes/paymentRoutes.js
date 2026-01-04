@@ -11,8 +11,9 @@ const stripe = process.env.STRIPE_SECRET_KEY
     : null;
 
 // Configuration PayPal
+// Note: Dans Render, la variable s'appelle PAYPAL_SECRET (pas PAYPAL_CLIENT_SECRET)
 const paypalClientId = process.env.PAYPAL_CLIENT_ID || 'AaHD6tvQUQe95QIEtFDVxerfNCbLVSwAtpmXtSFpGbiIQ6k2eDFLWYxkvDDqf-bQcfaxds1q8WKgR0Fe';
-const paypalClientSecret = process.env.PAYPAL_CLIENT_SECRET || 'ECMXY0l9OxNUx9738m4yEM2iS5NoXcF7zV2cwpAVBGHU2Q-xvMbwfW8loE0cQDuqZ3kEZo3xw-oDiEqa';
+const paypalClientSecret = process.env.PAYPAL_SECRET || process.env.PAYPAL_CLIENT_SECRET || 'ECMXY0l9OxNUx9738m4yEM2iS5NoXcF7zV2cwpAVBGHU2Q-xvMbwfW8loE0cQDuqZ3kEZo3xw-oDiEqa';
 const paypalEnvironment = process.env.PAYPAL_ENVIRONMENT || 'sandbox'; // 'sandbox' ou 'live'
 
 // Créer un environnement PayPal

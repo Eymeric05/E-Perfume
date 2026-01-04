@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { loadStripe } from '@stripe/stripe-js';
 import { apiFetch } from '../utils/api';
+import { loadPayPalSDK } from '../utils/loadPayPal';
 import {
     Elements,
     CardElement,
@@ -36,17 +37,31 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
     const paypalButtonContainerRef = useRef(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [sdkLoaded, setSdkLoaded] = useState(false);
 
     useEffect(() => {
-        // Vérifier si PayPal SDK est chargé
-        if (!window.paypal) {
-            console.error('PayPal SDK non chargé');
-            setError('PayPal SDK non disponible. Veuillez recharger la page.');
-            setLoading(false);
-            return;
-        }
+        // Charger le SDK PayPal dynamiquement
+        loadPayPalSDK((err) => {
+            if (err) {
+                console.error('Erreur lors du chargement du SDK PayPal:', err);
+                setError('Impossible de charger le SDK PayPal. Veuillez recharger la page.');
+                setLoading(false);
+                return;
+            }
+            
+            if (window.paypal) {
+                console.log('PayPal SDK chargé avec succès');
+                setSdkLoaded(true);
+            } else {
+                setError('PayPal SDK non disponible. Veuillez recharger la page.');
+                setLoading(false);
+            }
+        });
+    }, []);
 
-        if (!paypalButtonContainerRef.current) {
+    useEffect(() => {
+        // Ne pas continuer si le SDK n'est pas chargé ou si le conteneur n'existe pas
+        if (!sdkLoaded || !window.paypal || !paypalButtonContainerRef.current) {
             return;
         }
 
@@ -178,7 +193,7 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
                 paypalButtons.close();
             }
         };
-    }, [order, orderId, userInfo, ctxDispatch, onPaymentSuccess]);
+    }, [order, orderId, userInfo, ctxDispatch, onPaymentSuccess, sdkLoaded]);
 
     if (error) {
         return (

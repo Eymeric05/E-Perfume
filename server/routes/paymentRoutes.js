@@ -189,17 +189,30 @@ router.post('/create-payment-intent', async (req, res) => {
 // Route pour créer une commande PayPal
 router.post('/paypal/create-order', protect, async (req, res) => {
     const { items, orderId } = req.body;
-    const frontendUrl = process.env.FRONTEND_URL || 'https://e-perfume-gamma.vercel.app';
+    const Order = require('../models/Order');
 
     try {
+        // Récupérer la commande depuis la base de données pour utiliser les montants réels
+        const dbOrder = await Order.findById(orderId);
+        if (!dbOrder) {
+            return res.status(404).json({ error: 'Commande non trouvée' });
+        }
+
         const client = paypalClient();
         const request = new paypal.orders.OrdersCreateRequest();
 
-        // Calculer le total
-        const itemsTotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const tax = Math.round((itemsTotal * 0.15) * 100) / 100; // TVA de 15%
-        const shipping = itemsTotal > 100 ? 0 : 10;
-        const total = Math.round((itemsTotal + tax + shipping) * 100) / 100;
+        // Utiliser les montants de la commande stockée dans la DB
+        // Calculer itemsTotal depuis les orderItems si itemsPrice n'existe pas
+        const itemsTotal = dbOrder.itemsPrice || dbOrder.orderItems.reduce((sum, item) => sum + (parseFloat(item.price || 0) * parseInt(item.qty || 0)), 0);
+        const tax = dbOrder.taxPrice || 0;
+        const shipping = dbOrder.shippingPrice || 0;
+        const total = dbOrder.totalPrice || (itemsTotal + tax + shipping);
+
+        // Vérifier que les items ont bien des prix
+        const validItems = items.filter(item => item.price && parseFloat(item.price) > 0);
+        if (validItems.length === 0) {
+            return res.status(400).json({ error: 'Aucun article valide avec un prix trouvé' });
+        }
 
         request.prefer("return=representation");
         request.requestBody({
@@ -210,50 +223,48 @@ router.post('/paypal/create-order', protect, async (req, res) => {
                 custom_id: orderId.toString(),
                 amount: {
                     currency_code: 'EUR',
-                    value: total.toFixed(2),
+                    value: parseFloat(total).toFixed(2),
                     breakdown: {
                         item_total: {
                             currency_code: 'EUR',
-                            value: itemsTotal.toFixed(2)
+                            value: parseFloat(itemsTotal).toFixed(2)
                         },
                         tax_total: {
                             currency_code: 'EUR',
-                            value: tax.toFixed(2)
+                            value: parseFloat(tax).toFixed(2)
                         },
                         shipping: {
                             currency_code: 'EUR',
-                            value: shipping.toFixed(2)
+                            value: parseFloat(shipping).toFixed(2)
                         }
                     }
                 },
-                items: items.map(item => ({
+                items: validItems.map(item => ({
                     name: item.name,
                     description: item.brand || '',
                     unit_amount: {
                         currency_code: 'EUR',
-                        value: item.price.toFixed(2)
+                        value: parseFloat(item.price).toFixed(2)
                     },
-                    quantity: item.quantity.toString()
+                    quantity: (item.quantity || item.qty || 1).toString()
                 }))
             }],
             application_context: {
                 brand_name: 'E-Parfume',
                 landing_page: 'BILLING',
-                user_action: 'PAY_NOW',
-                return_url: `${frontendUrl}/order/${orderId}?success=true&paypal_order_id={order_id}`,
-                cancel_url: `${frontendUrl}/checkout?canceled=true`
+                user_action: 'PAY_NOW'
             }
         });
 
-        const order = await client.execute(request);
+        const paypalOrder = await client.execute(request);
         
         // Trouver l'approval URL
-        const approvalUrl = order.result.links.find(link => link.rel === 'approve')?.href;
+        const approvalUrl = paypalOrder.result.links.find(link => link.rel === 'approve')?.href;
         
         res.json({
-            orderId: order.result.id,
+            orderId: paypalOrder.result.id,
             approvalUrl: approvalUrl,
-            status: order.result.status
+            status: paypalOrder.result.status
         });
     } catch (error) {
         console.error('Erreur lors de la création de la commande PayPal:', error);

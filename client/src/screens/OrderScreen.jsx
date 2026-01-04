@@ -95,8 +95,8 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
                                 body: JSON.stringify({
                                     items: order.orderItems.map(item => ({
                                         name: item.name,
-                                        price: item.price,
-                                        quantity: item.qty,
+                                        price: parseFloat(item.price || 0),
+                                        quantity: parseInt(item.qty || 1),
                                         brand: item.brand || ''
                                     })),
                                     orderId: orderId,

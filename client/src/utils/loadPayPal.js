@@ -1,7 +1,7 @@
 // Utilitaire pour charger le SDK PayPal dynamiquement avec la variable d'environnement
 export const loadPayPalSDK = (callback) => {
   // Si PayPal est déjà chargé, appeler le callback immédiatement
-  if (window.paypal) {
+  if (window.paypal && window.paypal.Buttons) {
     callback();
     return;
   }
@@ -13,11 +13,28 @@ export const loadPayPalSDK = (callback) => {
   // Vérifier si le script existe déjà
   const existingScript = document.querySelector('script[data-paypal-sdk]');
   if (existingScript) {
-    // Attendre que le script soit chargé
-    existingScript.onload = () => callback();
-    if (window.paypal) {
+    // Si le script existe mais PayPal n'est pas encore disponible, attendre
+    if (window.paypal && window.paypal.Buttons) {
       callback();
+      return;
     }
+    
+    // Attendre que PayPal soit disponible
+    const checkInterval = setInterval(() => {
+      if (window.paypal && window.paypal.Buttons) {
+        clearInterval(checkInterval);
+        callback();
+      }
+    }, 100);
+    
+    // Timeout après 10 secondes
+    setTimeout(() => {
+      clearInterval(checkInterval);
+      if (!window.paypal || !window.paypal.Buttons) {
+        callback(new Error('Timeout lors du chargement du SDK PayPal'));
+      }
+    }, 10000);
+    
     return;
   }
 
@@ -26,13 +43,28 @@ export const loadPayPalSDK = (callback) => {
   script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=EUR`;
   script.setAttribute('data-paypal-sdk', 'true');
   script.async = true;
+  
   script.onload = () => {
-    console.log('PayPal SDK chargé avec client_id:', clientId.substring(0, 20) + '...');
-    callback();
+    // Attendre que window.paypal soit disponible après le chargement du script
+    const checkPayPal = setInterval(() => {
+      if (window.paypal && window.paypal.Buttons) {
+        clearInterval(checkPayPal);
+        callback();
+      }
+    }, 100);
+    
+    // Timeout après 10 secondes
+    setTimeout(() => {
+      clearInterval(checkPayPal);
+      if (!window.paypal || !window.paypal.Buttons) {
+        callback(new Error('PayPal SDK non disponible après le chargement du script'));
+      }
+    }, 10000);
   };
+  
   script.onerror = () => {
-    console.error('Erreur lors du chargement du SDK PayPal');
     callback(new Error('Impossible de charger le SDK PayPal'));
   };
+  
   document.head.appendChild(script);
 };

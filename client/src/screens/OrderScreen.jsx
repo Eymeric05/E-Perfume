@@ -49,9 +49,9 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
                 return;
             }
             
-            if (window.paypal) {
-                console.log('PayPal SDK chargé avec succès');
+            if (window.paypal && window.paypal.Buttons) {
                 setSdkLoaded(true);
+                setLoading(false);
             } else {
                 setError('PayPal SDK non disponible. Veuillez recharger la page.');
                 setLoading(false);
@@ -524,7 +524,7 @@ const OrderScreen = () => {
                                     const urlParams = new URLSearchParams(window.location.search);
                                     const isPayPal = urlParams.get('paypal') === 'true' || order.paymentMethod === 'PayPal';
                                     
-                                    if (isPayPal && window.paypal) {
+                                    if (isPayPal) {
                                         return (
                                             <PayPalButton 
                                                 order={order} 
@@ -534,17 +534,11 @@ const OrderScreen = () => {
                                                 ctxDispatch={ctxDispatch}
                                             />
                                         );
-                                    } else if (stripePromise && (order.paymentMethod === 'Stripe' || !isPayPal)) {
+                                    } else if (stripePromise && order.paymentMethod === 'Stripe') {
                                         return (
                                             <Elements stripe={stripePromise}>
                                                 <CheckoutForm order={order} handlePaymentSuccess={handlePaymentSuccess} />
                                             </Elements>
-                                        );
-                                    } else if (isPayPal && !window.paypal) {
-                                        return (
-                                            <div style={{ padding: '20px', textAlign: 'center' }} className="text-red-600 dark:text-red-400">
-                                                PayPal SDK non chargé. Veuillez recharger la page.
-                                            </div>
                                         );
                                     }
                                     return null;

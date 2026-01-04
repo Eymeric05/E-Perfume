@@ -91,10 +91,3 @@ export const updateProfileSchema = z.object({
     .regex(/[^A-Za-z0-9]/, 'Le mot de passe doit contenir au moins un caractère spécial')
     .optional(),
 });
-
-// Type helpers pour TypeScript (si utilisé)
-export type RegisterFormData = z.infer<typeof registerSchema>;
-export type LoginFormData = z.infer<typeof loginSchema>;
-export type ShippingAddressFormData = z.infer<typeof shippingAddressSchema>;
-export type PaymentMethodFormData = z.infer<typeof paymentMethodSchema>;
-export type UpdateProfileFormData = z.infer<typeof updateProfileSchema>;

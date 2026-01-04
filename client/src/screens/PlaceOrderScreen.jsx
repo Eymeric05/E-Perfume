@@ -89,10 +89,9 @@ const PlaceOrderScreen = () => {
                         return;
                     }
                 } else if (cart.paymentMethod === 'PayPal') {
-                    // Pour PayPal, rediriger vers la page de commande où le bouton PayPal sera affiché
-                    ctxDispatch({ type: 'CART_CLEAR' });
+                    // Pour PayPal, NE PAS vider le panier maintenant - on le fera après le paiement réussi
+                    // Rediriger vers la page de commande où le bouton PayPal sera affiché
                     dispatch({ type: 'CREATE_SUCCESS' });
-                    localStorage.removeItem('cartItems');
                     navigate(`/order/${data._id}?paypal=true`);
                 } else {
                     // Pour les autres méthodes de paiement, procéder normalement

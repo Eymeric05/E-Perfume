@@ -32,7 +32,7 @@ const PaymentScreen = () => {
             <h1>Méthode de Paiement</h1>
             <form onSubmit={submitHandler}>
                 <div className="payment-options">
-                    <div className="payment-option">
+                    <div className={`payment-option ${paymentMethodName === 'Stripe' ? 'selected' : ''}`}>
                         <input
                             type="radio"
                             id="Stripe"
@@ -41,9 +41,19 @@ const PaymentScreen = () => {
                             checked={paymentMethodName === 'Stripe'}
                             onChange={(e) => setPaymentMethod(e.target.value)}
                         />
-                        <label htmlFor="Stripe">Stripe / Carte Bancaire</label>
+                        <label htmlFor="Stripe" style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                            <img 
+                                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/stripe/stripe-original.svg" 
+                                alt="Stripe" 
+                                style={{ width: '48px', height: '32px', objectFit: 'contain' }}
+                                onError={(e) => {
+                                    e.target.style.display = 'none';
+                                }}
+                            />
+                            <span>Stripe / Carte Bancaire</span>
+                        </label>
                     </div>
-                    <div className="payment-option">
+                    <div className={`payment-option ${paymentMethodName === 'PayPal' ? 'selected' : ''}`}>
                         <input
                             type="radio"
                             id="PayPal"
@@ -52,7 +62,17 @@ const PaymentScreen = () => {
                             checked={paymentMethodName === 'PayPal'}
                             onChange={(e) => setPaymentMethod(e.target.value)}
                         />
-                        <label htmlFor="PayPal">PayPal</label>
+                        <label htmlFor="PayPal" style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                            <img 
+                                src="https://www.paypalobjects.com/webstatic/mktg/logo-center/PP_Acceptance_Marks_for_LogoCenter_76x48.png" 
+                                alt="PayPal" 
+                                style={{ width: '80px', height: '32px', objectFit: 'contain' }}
+                                onError={(e) => {
+                                    e.target.style.display = 'none';
+                                }}
+                            />
+                            <span>PayPal</span>
+                        </label>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-block">

@@ -160,6 +160,12 @@ app.get('/api/config/stripe', (req, res) =>
   res.send(process.env.STRIPE_PUBLISHABLE_KEY || '')
 );
 
+app.get('/api/config/paypal', (req, res) =>
+  res.json({
+    clientId: process.env.PAYPAL_CLIENT_ID || 'AaHD6tvQUQe95QIEtFDVxerfNCbLVSwAtpmXtSFpGbiIQ6k2eDFLWYxkvDDqf-bQcfaxds1q8WKgR0Fe'
+  })
+);
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Error Handling

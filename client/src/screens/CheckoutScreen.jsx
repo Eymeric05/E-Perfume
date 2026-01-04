@@ -130,10 +130,9 @@ const CheckoutScreen = () => {
             return;
           }
         } else if (paymentMethod === 'PayPal') {
-          // Pour PayPal, rediriger vers la page de commande où le bouton PayPal sera affiché
-          ctxDispatch({ type: 'CART_CLEAR' });
+          // Pour PayPal, NE PAS vider le panier maintenant - on le fera après le paiement réussi
+          // Rediriger vers la page de commande où le bouton PayPal sera affiché
           dispatch({ type: 'CREATE_SUCCESS' });
-          localStorage.removeItem('cartItems');
           navigate(`/order/${data._id}?paypal=true`);
         } else {
           // Pour les autres méthodes de paiement, procéder normalement
@@ -305,7 +304,11 @@ const CheckoutScreen = () => {
                 </h2>
                 <form onSubmit={handlePaymentSubmit} className="space-y-6">
                   <div className="space-y-4">
-                    <label className="flex items-center p-4 border-2 border-luxe-charcoal/20 cursor-pointer hover:border-luxe-gold/50 transition-all duration-200">
+                    <label className={`flex items-center p-4 border-2 cursor-pointer transition-all duration-200 ${
+                      paymentMethod === 'Stripe' 
+                        ? 'border-luxe-gold bg-luxe-gold/5' 
+                        : 'border-luxe-charcoal/20 hover:border-luxe-gold/50'
+                    }`}>
                       <input
                         type="radio"
                         name="payment"
@@ -314,15 +317,33 @@ const CheckoutScreen = () => {
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         className="mr-4 w-4 h-4 text-luxe-gold"
                       />
-                      <div>
-                        <div className="font-sans font-medium text-luxe-black">Carte Bancaire</div>
-                        <div className="font-sans text-sm text-luxe-charcoal/60">
-                          Paiement sécurisé via Stripe
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="flex-shrink-0">
+                          <img 
+                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/stripe/stripe-original.svg" 
+                            alt="Stripe" 
+                            className="w-12 h-8 object-contain"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'block';
+                            }}
+                          />
+                          <div style={{ display: 'none' }} className="text-2xl font-bold text-[#635BFF]">Stripe</div>
+                        </div>
+                        <div>
+                          <div className="font-sans font-medium text-luxe-black">Carte Bancaire</div>
+                          <div className="font-sans text-sm text-luxe-charcoal/60">
+                            Paiement sécurisé via Stripe
+                          </div>
                         </div>
                       </div>
                     </label>
 
-                    <label className="flex items-center p-4 border-2 border-luxe-charcoal/20 cursor-pointer hover:border-luxe-gold/50 transition-all duration-200">
+                    <label className={`flex items-center p-4 border-2 cursor-pointer transition-all duration-200 ${
+                      paymentMethod === 'PayPal' 
+                        ? 'border-luxe-gold bg-luxe-gold/5' 
+                        : 'border-luxe-charcoal/20 hover:border-luxe-gold/50'
+                    }`}>
                       <input
                         type="radio"
                         name="payment"
@@ -331,10 +352,24 @@ const CheckoutScreen = () => {
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         className="mr-4 w-4 h-4 text-luxe-gold"
                       />
-                      <div>
-                        <div className="font-sans font-medium text-luxe-black">PayPal</div>
-                        <div className="font-sans text-sm text-luxe-charcoal/60">
-                          Payer avec votre compte PayPal
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="flex-shrink-0">
+                          <img 
+                            src="https://www.paypalobjects.com/webstatic/mktg/logo-center/PP_Acceptance_Marks_for_LogoCenter_76x48.png" 
+                            alt="PayPal" 
+                            className="w-20 h-8 object-contain"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'block';
+                            }}
+                          />
+                          <div style={{ display: 'none' }} className="text-2xl font-bold text-[#0070BA]">PayPal</div>
+                        </div>
+                        <div>
+                          <div className="font-sans font-medium text-luxe-black">PayPal</div>
+                          <div className="font-sans text-sm text-luxe-charcoal/60">
+                            Payer avec votre compte PayPal
+                          </div>
                         </div>
                       </div>
                     </label>

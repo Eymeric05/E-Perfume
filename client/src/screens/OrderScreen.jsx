@@ -35,9 +35,18 @@ function reducer(state, action) {
 const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch }) => {
     const paypalButtonContainerRef = useRef(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!window.paypal || !paypalButtonContainerRef.current) {
+        // Vérifier si PayPal SDK est chargé
+        if (!window.paypal) {
+            console.error('PayPal SDK non chargé');
+            setError('PayPal SDK non disponible. Veuillez recharger la page.');
+            setLoading(false);
+            return;
+        }
+
+        if (!paypalButtonContainerRef.current) {
             return;
         }
 
@@ -94,8 +103,11 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
                     },
                     onApprove: async (data, actions) => {
                         try {
+                            console.log('PayPal onApprove appelé, orderID:', data.orderID);
+                            
                             // 1. Le paiement est validé par PayPal - capturer la commande
                             const details = await actions.order.capture();
+                            console.log('Paiement PayPal capturé:', details);
                             
                             // 2. On prévient notre serveur Render pour mettre à jour la BDD
                             const response = await apiFetch(`/api/orders/${orderId}/pay`, {
@@ -113,6 +125,7 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
                             });
 
                             const responseData = await response.json();
+                            console.log('Réponse serveur:', responseData);
 
                             if (response.ok) {
                                 // 3. C'est ici que tu peux vider le panier et rediriger
@@ -120,16 +133,18 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
                                 localStorage.removeItem('cartItems');
                                 
                                 // Appeler la fonction de succès pour mettre à jour l'état
-                                onPaymentSuccess(responseData);
+                                if (onPaymentSuccess) {
+                                    onPaymentSuccess(responseData);
+                                }
                                 
                                 // Recharger la page pour afficher le statut mis à jour
-                                window.location.href = `/order/${orderId}?success=true`;
+                                window.location.href = `/order/${orderId}?success=true&paypal_order_id=${details.id}`;
                             } else {
                                 alert('Erreur lors de la validation de la commande: ' + (responseData.message || 'Erreur inconnue'));
                             }
                         } catch (error) {
                             console.error('Erreur lors de la capture PayPal:', error);
-                            alert('Erreur lors du paiement: ' + error.message);
+                            alert('Erreur lors du paiement: ' + (error.message || 'Une erreur est survenue'));
                         }
                     },
                     onError: (err) => {
@@ -146,9 +161,10 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
                 }
             } catch (error) {
                 console.error('Erreur lors du rendu des boutons PayPal:', error);
+                setError('Erreur lors du chargement de PayPal. Veuillez recharger la page.');
                 if (paypalButtonContainerRef.current) {
                     paypalButtonContainerRef.current.innerHTML = 
-                        '<div style="color: red; padding: 10px;">Erreur lors du chargement de PayPal. Veuillez recharger la page.</div>';
+                        '<div style="color: red; padding: 10px; text-align: center;">Erreur lors du chargement de PayPal. Veuillez recharger la page.</div>';
                 }
             } finally {
                 setLoading(false);
@@ -164,11 +180,35 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
         };
     }, [order, orderId, userInfo, ctxDispatch, onPaymentSuccess]);
 
-    if (loading) {
-        return <div style={{ padding: '20px', textAlign: 'center' }}>Chargement de PayPal...</div>;
+    if (error) {
+        return (
+            <div style={{ padding: '20px', textAlign: 'center', color: 'red', border: '1px solid red', borderRadius: '4px' }}>
+                {error}
+            </div>
+        );
     }
 
-    return <div ref={paypalButtonContainerRef}></div>;
+    if (loading) {
+        return (
+            <div style={{ padding: '20px', textAlign: 'center' }}>
+                <div>Chargement de PayPal...</div>
+                <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+                    Veuillez patienter pendant que nous initialisons le paiement sécurisé
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <div ref={paypalButtonContainerRef} style={{ minHeight: '50px' }}></div>
+            {!loading && !error && paypalButtonContainerRef.current && paypalButtonContainerRef.current.children.length === 0 && (
+                <div style={{ padding: '10px', textAlign: 'center', fontSize: '14px', color: '#666' }}>
+                    Le bouton PayPal devrait apparaître ici. Si ce n'est pas le cas, rechargez la page.
+                </div>
+            )}
+        </div>
+    );
 };
 
 const CheckoutForm = ({ order, handlePaymentSuccess }) => {

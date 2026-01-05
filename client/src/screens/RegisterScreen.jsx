@@ -220,9 +220,16 @@ const RegisterScreen = () => {
                     </button>
                 </div>
             </form>
-            <div className="register-footer">
-                Déjà un compte ?{' '}
-                <Link to={`/login?redirect=${redirect}`}>Se connecter</Link>
+            <div className="mt-6 text-center">
+                <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-3">
+                    Déjà un compte ?
+                </p>
+                <Link
+                    to={`/login?redirect=${redirect}`}
+                    className="inline-block btn-luxe-gold w-full text-center"
+                >
+                    Se connecter
+                </Link>
             </div>
         </div>
     );

@@ -193,15 +193,15 @@ const LoginScreen = () => {
                     </form>
 
                     <div className="mt-6 text-center">
-                        <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
-                            Nouveau client ?{' '}
-                            <Link
-                                to={`/register?redirect=${redirect}`}
-                                className="text-luxe-gold hover:text-luxe-black dark:hover:text-luxe-cream transition-colors duration-200 font-medium"
-                            >
-                                Créer un compte
-                            </Link>
+                        <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-3">
+                            Nouveau client ?
                         </p>
+                        <Link
+                            to={`/register?redirect=${redirect}`}
+                            className="inline-block btn-luxe-gold w-full text-center"
+                        >
+                            Créer un compte
+                        </Link>
                     </div>
                 </div>
             </div>

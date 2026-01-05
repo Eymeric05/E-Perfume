@@ -39,7 +39,9 @@ app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), asyn
     const orderId = session.metadata.orderId;
 
     if (orderId) {
-      const order = await Order.findById(orderId);
+      const User = require('./models/User');
+      const { sendOrderConfirmationEmail } = require('./utils/sendOrderEmail');
+      const order = await Order.findById(orderId).populate('user', 'name email');
       
       if (order && !order.isPaid) {
         order.isPaid = true;
@@ -52,6 +54,15 @@ app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), asyn
         };
         await order.save();
         console.log(`Order ${orderId} marked as paid via webhook`);
+        
+        // Envoyer l'email de confirmation
+        if (order.user && order.user.email) {
+          await sendOrderConfirmationEmail(
+            order,
+            order.user.email,
+            order.user.name
+          );
+        }
       }
     }
   }

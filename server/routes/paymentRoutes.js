@@ -142,7 +142,9 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
 
         if (orderId) {
             const Order = require('../models/Order');
-            const order = await Order.findById(orderId);
+            const User = require('../models/User');
+            const { sendOrderConfirmationEmail } = require('../utils/sendOrderEmail');
+            const order = await Order.findById(orderId).populate('user', 'name email');
             
             if (order && !order.isPaid) {
                 order.isPaid = true;
@@ -155,6 +157,15 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
                 };
                 await order.save();
                 console.log(`Order ${orderId} marked as paid via webhook`);
+                
+                // Envoyer l'email de confirmation
+                if (order.user && order.user.email) {
+                    await sendOrderConfirmationEmail(
+                        order,
+                        order.user.email,
+                        order.user.name
+                    );
+                }
             }
         }
     }
@@ -298,7 +309,8 @@ router.post('/paypal/capture-order', protect, async (req, res) => {
         request.requestBody({});
 
         const capture = await client.execute(request);
-        const order = await Order.findById(orderId);
+        const { sendOrderConfirmationEmail } = require('../utils/sendOrderEmail');
+        const order = await Order.findById(orderId).populate('user', 'name email');
 
         if (!order) {
             return res.status(404).json({ error: 'Commande non trouvée' });
@@ -315,6 +327,15 @@ router.post('/paypal/capture-order', protect, async (req, res) => {
                 email_address: capture.result.payer?.email_address || ''
             };
             await order.save();
+
+            // Envoyer l'email de confirmation
+            if (order.user && order.user.email) {
+                await sendOrderConfirmationEmail(
+                    order,
+                    order.user.email,
+                    order.user.name
+                );
+            }
 
             res.json({
                 success: true,

@@ -21,6 +21,7 @@ const RegisterScreen = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const { userInfo } = state;
@@ -84,11 +85,16 @@ const RegisterScreen = () => {
 
             if (res.ok) {
                 const data = await res.json();
-                ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-                localStorage.setItem('userInfo', JSON.stringify(data));
-                navigate(redirect);
+                // Afficher le message de succès
+                setSuccessMessage(data.message || 'Compte créé avec succès. Veuillez vérifier votre email pour activer votre compte.');
+                setErrors({});
+                // Ne pas connecter automatiquement, l'utilisateur doit vérifier son email
+                setTimeout(() => {
+                    navigate('/login');
+                }, 3000);
             } else {
                 const errorData = await res.json().catch(() => ({ message: 'Erreur lors de l\'inscription' }));
+                setSuccessMessage('');
                 setErrors({ submit: errorData.message || 'Erreur lors de l\'inscription' });
             }
         } catch (err) {
@@ -107,6 +113,12 @@ const RegisterScreen = () => {
     return (
         <div className="register-container">
             <h1>Inscription</h1>
+            {successMessage && (
+                <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                    <p className="font-sans text-sm text-green-700 dark:text-green-400">{successMessage}</p>
+                    <p className="font-sans text-xs text-green-600 dark:text-green-500 mt-2">Redirection vers la page de connexion...</p>
+                </div>
+            )}
             {errors.submit && (
                 <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                     <p className="font-sans text-sm text-red-700 dark:text-red-400">{errors.submit}</p>

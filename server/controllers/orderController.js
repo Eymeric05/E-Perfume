@@ -1,5 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const Order = require('../models/Order');
+const User = require('../models/User');
+const { sendOrderConfirmationEmail } = require('../utils/sendOrderEmail');
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -69,7 +71,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @route   PUT /api/orders/:id/pay
 // @access  Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).populate('user', 'name email');
 
     if (order) {
         order.isPaid = true;
@@ -82,6 +84,15 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
         };
 
         const updatedOrder = await order.save();
+
+        // Envoyer l'email de confirmation
+        if (order.user && order.user.email) {
+            await sendOrderConfirmationEmail(
+                updatedOrder,
+                order.user.email,
+                order.user.name
+            );
+        }
 
         res.json(updatedOrder);
     } else {

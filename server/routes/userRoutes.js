@@ -8,11 +8,13 @@ const {
     getWishlist,
     addToWishlist,
     removeFromWishlist,
+    verifyEmail,
 } = require('../controllers/userController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
 router.post('/', registerUser);
 router.post('/login', authUser);
+router.get('/verify/:token', verifyEmail);
 router.route('/profile').get(protect, getUserProfile);
 router.route('/').get(protect, admin, getUsers);
 router.route('/wishlist').get(protect, getWishlist);

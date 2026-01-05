@@ -47,8 +47,7 @@ const Footer = () => {
           <div>
             <h4 className="font-sans text-sm font-medium tracking-wider uppercase mb-4">Contact</h4>
             <ul className="space-y-2">
-              <li className="font-sans text-sm text-luxe-cream/70">contact@e-perfume.com</li>
-              <li className="font-sans text-sm text-luxe-cream/70">+33 1 23 45 67 89</li>
+              <li className="font-sans text-sm text-luxe-cream/70">eperfume@atomicmail.io</li>
             </ul>
           </div>
         </div>

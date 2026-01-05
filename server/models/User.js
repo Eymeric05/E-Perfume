@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
     isAdmin: { type: Boolean, default: false, required: true },
     isVerified: { type: Boolean, default: false },
     verificationToken: { type: String },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
     wishlist: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',

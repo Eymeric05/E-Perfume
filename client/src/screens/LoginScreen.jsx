@@ -192,6 +192,15 @@ const LoginScreen = () => {
                         </button>
                     </form>
 
+                    <div className="mt-4 text-center">
+                        <Link
+                            to="/forgot-password"
+                            className="font-sans text-sm text-luxe-gold hover:text-luxe-black dark:hover:text-luxe-cream transition-colors duration-200 font-medium"
+                        >
+                            Mot de passe oublié ?
+                        </Link>
+                    </div>
+
                     <div className="mt-6 text-center">
                         <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-3">
                             Nouveau client ?

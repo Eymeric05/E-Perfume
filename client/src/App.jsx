@@ -21,6 +21,8 @@ const CartScreen = lazy(() => import('./screens/CartScreen'));
 const LoginScreen = lazy(() => import('./screens/LoginScreen'));
 const RegisterScreen = lazy(() => import('./screens/RegisterScreen'));
 const VerifyEmailScreen = lazy(() => import('./screens/VerifyEmailScreen'));
+const ForgotPasswordScreen = lazy(() => import('./screens/ForgotPasswordScreen'));
+const ResetPasswordScreen = lazy(() => import('./screens/ResetPasswordScreen'));
 const ShippingScreen = lazy(() => import('./screens/ShippingScreen'));
 const PaymentScreen = lazy(() => import('./screens/PaymentScreen'));
 const PlaceOrderScreen = lazy(() => import('./screens/PlaceOrderScreen'));
@@ -66,6 +68,8 @@ const AppContent = () => {
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/verify-email" element={<VerifyEmailScreen />} />
+            <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
+            <Route path="/reset-password" element={<ResetPasswordScreen />} />
             <Route path="/shipping" element={<ShippingScreen />} />
             <Route path="/payment" element={<PaymentScreen />} />
             <Route path="/placeorder" element={<PlaceOrderScreen />} />

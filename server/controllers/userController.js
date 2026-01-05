@@ -24,16 +24,12 @@ const authUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
-        if (!user.isVerified) {
-            res.status(403);
-            throw new Error('Votre compte n\'est pas vérifié. Veuillez vérifier votre email avant de vous connecter.');
-        }
-        
         res.json({
             _id: user._id,
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
+            isVerified: user.isVerified,
             token: generateToken(user._id),
         });
     } else {
@@ -79,30 +75,41 @@ const registerUser = asyncHandler(async (req, res) => {
         const verifyUrl = `${frontendUrl}/verify-email?token=${verificationToken}`;
         
         try {
-            await resend.emails.send({
-                from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
-                to: email,
-                subject: 'Vérifiez votre compte E-perfume',
-                html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                        <h2 style="color: #333;">Bienvenue sur E-perfume !</h2>
-                        <p>Bonjour ${name},</p>
-                        <p>Merci de vous être inscrit sur E-perfume. Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :</p>
-                        <p style="margin: 30px 0;">
-                            <a href="${verifyUrl}" style="background-color: #d4af37; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-                                Vérifier mon compte
-                            </a>
-                        </p>
-                        <p>Ou copiez ce lien dans votre navigateur :</p>
-                        <p style="color: #666; word-break: break-all;">${verifyUrl}</p>
-                        <p style="margin-top: 30px; color: #666; font-size: 12px;">
-                            Si vous n'avez pas créé de compte sur E-perfume, vous pouvez ignorer cet email.
-                        </p>
-                    </div>
-                `,
-            });
+            if (!process.env.RESEND_API_KEY) {
+                console.warn('⚠️ RESEND_API_KEY n\'est pas configuré. L\'email ne sera pas envoyé.');
+            } else {
+                const emailResult = await resend.emails.send({
+                    from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+                    to: email,
+                    subject: 'Vérifiez votre compte E-perfume',
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                            <h2 style="color: #333;">Bienvenue sur E-perfume !</h2>
+                            <p>Bonjour ${name},</p>
+                            <p>Merci de vous être inscrit sur E-perfume. Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :</p>
+                            <p style="margin: 30px 0;">
+                                <a href="${verifyUrl}" style="background-color: #d4af37; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+                                    Vérifier mon compte
+                                </a>
+                            </p>
+                            <p>Ou copiez ce lien dans votre navigateur :</p>
+                            <p style="color: #666; word-break: break-all;">${verifyUrl}</p>
+                            <p style="margin-top: 30px; color: #666; font-size: 12px;">
+                                Si vous n'avez pas créé de compte sur E-perfume, vous pouvez ignorer cet email.
+                            </p>
+                        </div>
+                    `,
+                });
+                console.log('✅ Email de vérification envoyé avec succès à:', email, 'ID:', emailResult?.id || 'N/A');
+            }
         } catch (emailError) {
-            console.error('Erreur lors de l\'envoi de l\'email:', emailError);
+            console.error('❌ Erreur lors de l\'envoi de l\'email de vérification:');
+            console.error('Email:', email);
+            console.error('Erreur complète:', JSON.stringify(emailError, null, 2));
+            console.error('Message:', emailError?.message || emailError);
+            if (emailError?.response) {
+                console.error('Réponse Resend:', JSON.stringify(emailError.response, null, 2));
+            }
             // On ne bloque pas l'inscription si l'email échoue
         }
 
@@ -131,6 +138,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
+            isVerified: user.isVerified,
         });
     } else {
         res.status(404);
@@ -212,6 +220,99 @@ const verifyEmail = asyncHandler(async (req, res) => {
     res.json({ message: 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.' });
 });
 
+// @desc    Request password reset
+// @route   POST /api/users/forgot-password
+// @access  Public
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    // Ne pas révéler si l'email existe ou non pour des raisons de sécurité
+    if (user) {
+        // Générer un token de réinitialisation
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 heure
+        await user.save();
+
+        // Envoyer l'email de réinitialisation
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
+
+        try {
+            if (!process.env.RESEND_API_KEY) {
+                console.warn('⚠️ RESEND_API_KEY n\'est pas configuré. L\'email ne sera pas envoyé.');
+            } else {
+                const emailResult = await resend.emails.send({
+                    from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+                    to: email,
+                    subject: 'Réinitialisation de votre mot de passe - E-perfume',
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                            <h2 style="color: #333;">Réinitialisation de mot de passe</h2>
+                            <p>Bonjour ${user.name},</p>
+                            <p>Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le lien ci-dessous pour créer un nouveau mot de passe :</p>
+                            <p style="margin: 30px 0;">
+                                <a href="${resetUrl}" style="background-color: #d4af37; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+                                    Réinitialiser mon mot de passe
+                                </a>
+                            </p>
+                            <p>Ou copiez ce lien dans votre navigateur :</p>
+                            <p style="color: #666; word-break: break-all;">${resetUrl}</p>
+                            <p style="margin-top: 30px; color: #666; font-size: 12px;">
+                                Ce lien expirera dans 1 heure.
+                            </p>
+                            <p style="color: #666; font-size: 12px;">
+                                Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email.
+                            </p>
+                        </div>
+                    `,
+                });
+                console.log('✅ Email de réinitialisation envoyé avec succès à:', email, 'ID:', emailResult?.id || 'N/A');
+            }
+        } catch (emailError) {
+            console.error('❌ Erreur lors de l\'envoi de l\'email de réinitialisation:');
+            console.error('Email:', email);
+            console.error('Erreur complète:', JSON.stringify(emailError, null, 2));
+            console.error('Message:', emailError?.message || emailError);
+            if (emailError?.response) {
+                console.error('Réponse Resend:', JSON.stringify(emailError.response, null, 2));
+            }
+            // On ne révèle pas l'erreur pour des raisons de sécurité
+        }
+    }
+
+    // Toujours renvoyer le même message pour ne pas révéler si l'email existe
+    res.json({ 
+        message: 'Si un compte existe avec cet email, vous recevrez un lien de réinitialisation.' 
+    });
+});
+
+// @desc    Reset password
+// @route   POST /api/users/reset-password
+// @access  Public
+const resetPassword = asyncHandler(async (req, res) => {
+    const { token, password } = req.body;
+
+    const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+        res.status(400);
+        throw new Error('Token de réinitialisation invalide ou expiré');
+    }
+
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter.' });
+});
+
 module.exports = {
     authUser,
     registerUser,
@@ -221,4 +322,6 @@ module.exports = {
     addToWishlist,
     removeFromWishlist,
     verifyEmail,
+    forgotPassword,
+    resetPassword,
 };

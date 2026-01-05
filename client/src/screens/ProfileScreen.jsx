@@ -12,7 +12,9 @@ import {
   FaTimes, 
   FaEye,
   FaCalendarAlt,
-  FaCreditCard
+  FaCreditCard,
+  FaCheckCircle,
+  FaExclamationCircle
 } from 'react-icons/fa';
 
 function reducer(state, action) {
@@ -40,14 +42,29 @@ const ProfileScreen = () => {
     });
 
     useEffect(() => {
-        const fetchOrders = async () => {
+        const fetchData = async () => {
             try {
                 dispatch({ type: 'FETCH_REQUEST' });
-                const res = await apiFetch('/api/orders/myorders', {
+                
+                // Récupérer les commandes
+                const ordersRes = await apiFetch('/api/orders/myorders', {
                     headers: { Authorization: `Bearer ${userInfo.token}` },
                 });
-                const data = await res.json();
-                dispatch({ type: 'FETCH_SUCCESS', payload: data });
+                const ordersData = await ordersRes.json();
+                
+                // Récupérer le profil pour avoir isVerified à jour
+                const profileRes = await apiFetch('/api/users/profile', {
+                    headers: { Authorization: `Bearer ${userInfo.token}` },
+                });
+                if (profileRes.ok) {
+                    const profileData = await profileRes.json();
+                    // Mettre à jour userInfo avec isVerified
+                    const updatedUserInfo = { ...userInfo, ...profileData };
+                    ctxDispatch({ type: 'USER_SIGNIN', payload: updatedUserInfo });
+                    localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+                }
+                
+                dispatch({ type: 'FETCH_SUCCESS', payload: ordersData });
             } catch (err) {
                 dispatch({ type: 'FETCH_FAIL', payload: err.message });
             }
@@ -56,9 +73,9 @@ const ProfileScreen = () => {
         if (!userInfo) {
             navigate('/login');
         } else {
-            fetchOrders();
+            fetchData();
         }
-    }, [userInfo, navigate]);
+    }, [userInfo, navigate, ctxDispatch]);
 
     const signoutHandler = () => {
         ctxDispatch({ type: 'USER_SIGNOUT' });
@@ -85,7 +102,7 @@ const ProfileScreen = () => {
     };
 
     return (
-        <div className="min-h-screen bg-luxe-cream">
+        <div className="min-h-screen bg-luxe-cream dark:bg-luxe-charcoal">
             <Helmet>
                 <title>Mon Profil - E-perfume</title>
             </Helmet>
@@ -95,10 +112,10 @@ const ProfileScreen = () => {
                 <div className="mb-12">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
                         <div>
-                            <h1 className="font-serif text-4xl md:text-6xl font-light text-luxe-black mb-2">
+                            <h1 className="font-serif text-4xl md:text-6xl font-light text-luxe-black dark:text-luxe-cream mb-2">
                                 Mon Profil
                             </h1>
-                            <p className="font-sans text-sm text-luxe-charcoal/70">
+                            <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
                                 Gérez vos informations et consultez vos commandes
                             </p>
                         </div>
@@ -112,7 +129,7 @@ const ProfileScreen = () => {
                     </div>
 
                     {/* User Info Card */}
-                    <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-8 mb-8 shadow-sm">
+                    <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-cream/10 p-8 mb-8 shadow-sm">
                         <div className="flex items-start gap-6">
                             <div className="w-20 h-20 rounded-full bg-luxe-gold flex items-center justify-center flex-shrink-0">
                                 <FaUser className="w-10 h-10 text-luxe-black" />
@@ -126,11 +143,24 @@ const ProfileScreen = () => {
                                         <FaEnvelope className="w-4 h-4" />
                                         <span className="font-sans text-sm dark:text-luxe-cream">{userInfo?.email}</span>
                                     </div>
-                                    {userInfo?.isAdmin && (
-                                        <span className="inline-block px-4 py-1 rounded-full bg-luxe-gold text-luxe-black text-xs font-medium tracking-wider uppercase w-fit mt-2">
-                                            Administrateur
-                                        </span>
-                                    )}
+                                    <div className="flex items-center gap-2 mt-2">
+                                        {userInfo?.isVerified ? (
+                                            <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-medium">
+                                                <FaCheckCircle className="w-3 h-3" />
+                                                Email vérifié
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-xs font-medium">
+                                                <FaExclamationCircle className="w-3 h-3" />
+                                                Email non vérifié
+                                            </span>
+                                        )}
+                                        {userInfo?.isAdmin && (
+                                            <span className="inline-block px-4 py-1 rounded-full bg-luxe-gold text-luxe-black text-xs font-medium tracking-wider uppercase">
+                                                Administrateur
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -141,11 +171,11 @@ const ProfileScreen = () => {
                 <div>
                     <div className="flex items-center gap-3 mb-6">
                         <FaShoppingBag className="w-5 h-5 text-luxe-gold" />
-                        <h2 className="font-serif text-3xl font-light text-luxe-black">
+                        <h2 className="font-serif text-3xl font-light text-luxe-black dark:text-luxe-cream">
                             Mes Commandes
                         </h2>
                         {orders.length > 0 && (
-                            <span className="px-3 py-1 rounded-full bg-luxe-champagne/30 text-luxe-charcoal/70 text-sm font-sans">
+                            <span className="px-3 py-1 rounded-full bg-luxe-champagne/30 dark:bg-luxe-champagne/20 text-luxe-charcoal/70 dark:text-luxe-cream/70 text-sm font-sans">
                                 {orders.length} {orders.length === 1 ? 'commande' : 'commandes'}
                             </span>
                         )}
@@ -154,28 +184,28 @@ const ProfileScreen = () => {
                     {loading ? (
                         <div className="space-y-4">
                             {[1, 2, 3].map((i) => (
-                                <div key={i} className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 animate-pulse">
+                                <div key={i} className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-cream/10 p-6 animate-pulse">
                                     <div className="flex items-center justify-between">
                                         <div className="space-y-3 flex-1">
-                                            <div className="h-4 bg-luxe-charcoal/10 rounded w-1/4"></div>
-                                            <div className="h-4 bg-luxe-charcoal/10 rounded w-1/3"></div>
+                                            <div className="h-4 bg-luxe-charcoal/10 dark:bg-luxe-cream/10 rounded w-1/4"></div>
+                                            <div className="h-4 bg-luxe-charcoal/10 dark:bg-luxe-cream/10 rounded w-1/3"></div>
                                         </div>
-                                        <div className="h-8 bg-luxe-charcoal/10 rounded w-24"></div>
+                                        <div className="h-8 bg-luxe-charcoal/10 dark:bg-luxe-cream/10 rounded w-24"></div>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     ) : error ? (
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                            <p className="font-sans text-sm text-red-700">{error}</p>
+                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+                            <p className="font-sans text-sm text-red-700 dark:text-red-400">{error}</p>
                         </div>
                     ) : orders.length === 0 ? (
-                        <div className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-12 text-center">
-                            <FaShoppingBag className="w-16 h-16 text-luxe-charcoal/20 mx-auto mb-4" />
-                            <h3 className="font-serif text-xl font-normal text-luxe-black mb-2">
+                        <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-cream/10 p-12 text-center">
+                            <FaShoppingBag className="w-16 h-16 text-luxe-charcoal/20 dark:text-luxe-cream/20 mx-auto mb-4" />
+                            <h3 className="font-serif text-xl font-normal text-luxe-black dark:text-luxe-cream mb-2">
                                 Aucune commande
                             </h3>
-                            <p className="font-sans text-sm text-luxe-charcoal/70 mb-6">
+                            <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-6">
                                 Vous n'avez pas encore passé de commande
                             </p>
                             <Link to="/products" className="btn-luxe-gold inline-flex items-center gap-2">
@@ -187,37 +217,37 @@ const ProfileScreen = () => {
                             {orders.map((order) => (
                                 <div
                                     key={order._id}
-                                    className="bg-luxe-warm-white rounded-lg border border-luxe-charcoal/10 p-6 hover:shadow-lg transition-all duration-300 hover:border-luxe-gold/30 group"
+                                    className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-lg border border-luxe-charcoal/10 dark:border-luxe-cream/10 p-6 hover:shadow-lg transition-all duration-300 hover:border-luxe-gold/30 group"
                                 >
                                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                                         <div className="flex-1 space-y-3">
                                             <div className="flex items-center gap-4 flex-wrap">
                                                 <div>
-                                                    <p className="font-sans text-xs uppercase tracking-wider text-luxe-charcoal/60 mb-1">
+                                                    <p className="font-sans text-xs uppercase tracking-wider text-luxe-charcoal/60 dark:text-luxe-cream/60 mb-1">
                                                         Commande
                                                     </p>
-                                                    <p className="font-mono text-sm text-luxe-black">
+                                                    <p className="font-mono text-sm text-luxe-black dark:text-luxe-cream">
                                                         #{order._id.substring(0, 8).toUpperCase()}
                                                     </p>
                                                 </div>
-                                                <div className="h-8 w-px bg-luxe-charcoal/10"></div>
+                                                <div className="h-8 w-px bg-luxe-charcoal/10 dark:bg-luxe-cream/10"></div>
                                                 <div>
-                                                    <p className="font-sans text-xs uppercase tracking-wider text-luxe-charcoal/60 mb-1">
+                                                    <p className="font-sans text-xs uppercase tracking-wider text-luxe-charcoal/60 dark:text-luxe-cream/60 mb-1">
                                                         Date
                                                     </p>
                                                     <div className="flex items-center gap-2">
-                                                        <FaCalendarAlt className="w-3 h-3 text-luxe-charcoal/40" />
-                                                        <p className="font-sans text-sm text-luxe-black">
+                                                        <FaCalendarAlt className="w-3 h-3 text-luxe-charcoal/40 dark:text-luxe-cream/40" />
+                                                        <p className="font-sans text-sm text-luxe-black dark:text-luxe-cream">
                                                             {formatDate(order.createdAt)}
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <div className="h-8 w-px bg-luxe-charcoal/10"></div>
+                                                <div className="h-8 w-px bg-luxe-charcoal/10 dark:bg-luxe-cream/10"></div>
                                                 <div>
-                                                    <p className="font-sans text-xs uppercase tracking-wider text-luxe-charcoal/60 mb-1">
+                                                    <p className="font-sans text-xs uppercase tracking-wider text-luxe-charcoal/60 dark:text-luxe-cream/60 mb-1">
                                                         Total
                                                     </p>
-                                                    <p className="font-serif text-lg font-normal text-luxe-black">
+                                                    <p className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream">
                                                         {formatPrice(order.totalPrice)}
                                                     </p>
                                                 </div>
@@ -227,18 +257,18 @@ const ProfileScreen = () => {
                                                 <div className="flex items-center gap-2">
                                                     {order.isPaid ? (
                                                         <>
-                                                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
+                                                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs">
                                                                 <FaCheck className="w-3 h-3" />
                                                                 Payé
                                                             </span>
                                                             {order.paidAt && (
-                                                                <span className="font-sans text-xs text-luxe-charcoal/60">
+                                                                <span className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/60">
                                                                     {formatDate(order.paidAt)}
                                                                 </span>
                                                             )}
                                                         </>
                                                     ) : (
-                                                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs">
+                                                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs">
                                                             <FaTimes className="w-3 h-3" />
                                                             Non payé
                                                         </span>
@@ -247,18 +277,18 @@ const ProfileScreen = () => {
                                                 <div className="flex items-center gap-2">
                                                     {order.isDelivered ? (
                                                         <>
-                                                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
+                                                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs">
                                                                 <FaCheck className="w-3 h-3" />
                                                                 Livré
                                                             </span>
                                                             {order.deliveredAt && (
-                                                                <span className="font-sans text-xs text-luxe-charcoal/60">
+                                                                <span className="font-sans text-xs text-luxe-charcoal/60 dark:text-luxe-cream/60">
                                                                     {formatDate(order.deliveredAt)}
                                                                 </span>
                                                             )}
                                                         </>
                                                     ) : (
-                                                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">
+                                                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-xs">
                                                             En attente
                                                         </span>
                                                     )}

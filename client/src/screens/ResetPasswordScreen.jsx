@@ -4,6 +4,8 @@ import { Helmet } from 'react-helmet-async';
 import { FaLock } from 'react-icons/fa';
 import { apiFetch } from '../utils/api';
 import { FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
+import { resetPasswordSchema } from '../schemas/validationSchemas';
+import { safeValidateForm } from '../utils/formValidation';
 
 const ResetPasswordScreen = () => {
     const [searchParams] = useSearchParams();
@@ -29,21 +31,15 @@ const ResetPasswordScreen = () => {
         setErrors({});
         setIsSubmitting(true);
 
-        // Validation
-        if (!password) {
-            setErrors({ password: 'Veuillez entrer un mot de passe' });
-            setIsSubmitting(false);
-            return;
-        }
+        // Validation avec Zod
+        const validation = safeValidateForm(resetPasswordSchema, {
+            password,
+            confirmPassword,
+            token: token || '',
+        });
 
-        if (password.length < 8) {
-            setErrors({ password: 'Le mot de passe doit contenir au moins 8 caractères' });
-            setIsSubmitting(false);
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setErrors({ confirmPassword: 'Les mots de passe ne correspondent pas' });
+        if (!validation.success) {
+            setErrors(validation.errors);
             setIsSubmitting(false);
             return;
         }
@@ -55,8 +51,8 @@ const ResetPasswordScreen = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    token,
-                    password,
+                    token: validation.data.token,
+                    password: validation.data.password,
                 }),
             });
 
@@ -191,7 +187,7 @@ const ResetPasswordScreen = () => {
                             )}
                             {!errors.password && password && (
                                 <p className="mt-1 text-xs text-luxe-charcoal/50 dark:text-luxe-cream/50">
-                                    Minimum 8 caractères
+                                    Minimum 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial
                                 </p>
                             )}
                         </div>
@@ -210,8 +206,23 @@ const ResetPasswordScreen = () => {
                                     placeholder="Confirmez votre nouveau mot de passe"
                                     value={confirmPassword}
                                     onChange={(e) => {
-                                        setConfirmPassword(e.target.value);
-                                        if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: undefined });
+                                        const newConfirmPassword = e.target.value;
+                                        setConfirmPassword(newConfirmPassword);
+                                        
+                                        // Validation en temps réel
+                                        if (newConfirmPassword && password && newConfirmPassword !== password) {
+                                            setErrors({ ...errors, confirmPassword: 'Les mots de passe ne correspondent pas' });
+                                        } else if (newConfirmPassword && password && newConfirmPassword === password) {
+                                            // Effacer l'erreur si les mots de passe correspondent
+                                            const newErrors = { ...errors };
+                                            delete newErrors.confirmPassword;
+                                            setErrors(newErrors);
+                                        } else if (errors.confirmPassword) {
+                                            // Effacer l'erreur si le champ est vide
+                                            const newErrors = { ...errors };
+                                            delete newErrors.confirmPassword;
+                                            setErrors(newErrors);
+                                        }
                                     }}
                                     className={`input-luxe pl-12 w-full ${errors.confirmPassword ? 'border-red-500 dark:border-red-400' : ''}`}
                                     required

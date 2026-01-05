@@ -169,8 +169,25 @@ const RegisterScreen = () => {
                         placeholder="Entrez votre mot de passe"
                         value={password}
                         onChange={(e) => {
-                            setPassword(e.target.value);
-                            if (errors.password) setErrors({ ...errors, password: undefined });
+                            const newPassword = e.target.value;
+                            setPassword(newPassword);
+                            
+                            // Effacer l'erreur du mot de passe si elle existe
+                            const newErrors = { ...errors };
+                            if (errors.password) {
+                                delete newErrors.password;
+                            }
+                            
+                            // Revalider la confirmation si elle a déjà une valeur
+                            if (confirmPassword) {
+                                if (newPassword && confirmPassword && newPassword !== confirmPassword) {
+                                    newErrors.confirmPassword = 'Les mots de passe ne correspondent pas';
+                                } else if (newPassword && confirmPassword && newPassword === confirmPassword) {
+                                    delete newErrors.confirmPassword;
+                                }
+                            }
+                            
+                            setErrors(newErrors);
                         }}
                         className={`register-input ${errors.password ? 'border-red-500' : ''}`}
                         required
@@ -192,8 +209,29 @@ const RegisterScreen = () => {
                         placeholder="Confirmez votre mot de passe"
                         value={confirmPassword}
                         onChange={(e) => {
-                            setConfirmPassword(e.target.value);
-                            if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: undefined });
+                            const newConfirmPassword = e.target.value;
+                            setConfirmPassword(newConfirmPassword);
+                            
+                            // Validation en temps réel
+                            if (newConfirmPassword && password && newConfirmPassword !== password) {
+                                setErrors({ ...errors, confirmPassword: 'Les mots de passe ne correspondent pas' });
+                            } else if (newConfirmPassword && password && newConfirmPassword === password) {
+                                // Effacer l'erreur si les mots de passe correspondent
+                                const newErrors = { ...errors };
+                                delete newErrors.confirmPassword;
+                                setErrors(newErrors);
+                            } else if (errors.confirmPassword) {
+                                // Effacer l'erreur si le champ est vide
+                                const newErrors = { ...errors };
+                                delete newErrors.confirmPassword;
+                                setErrors(newErrors);
+                            }
+                        }}
+                        onBlur={(e) => {
+                            // Validation supplémentaire au blur
+                            if (e.target.value && password && e.target.value !== password) {
+                                setErrors({ ...errors, confirmPassword: 'Les mots de passe ne correspondent pas' });
+                            }
                         }}
                         className={`register-input ${errors.confirmPassword ? 'border-red-500' : ''}`}
                         required

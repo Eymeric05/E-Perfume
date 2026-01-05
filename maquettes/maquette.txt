@@ -1,0 +1,93 @@
+================================================================================
+          E-PARFUME - ARCHITECTURE TECHNIQUE COMPLÈTE & LOGIQUE MÉTIER
+================================================================================
+
+1. SCHÉMA GLOBAL DE L'INFRASTRUCTURE (MODÈLE DÉCOUPLÉ)
+------------------------------------------------------
+
+      ┌────────────────────────┐          ┌────────────────────────┐
+      │    FRONTEND (React)    │          │    BACKEND (Node.js)   │
+      │    Hébergé sur Vercel  │          │    Hébergé sur Render  │
+      └───────────┬────────────┘          └───────────┬────────────┘
+                  │                                   │
+                  │        REQUÊTES API (HTTPS)       │
+                  ├──────────────────────────────────▶│
+                  │  - Method: GET/POST/PUT/DELETE    │
+                  │  - Authorization: Bearer <JWT>    │
+                  │  - Body: JSON (Données métier)    │
+                  │                                   │
+                  │        RÉPONSES API (JSON)        │
+                  │◀──────────────────────────────────┤
+                  │  - Status: 200 (OK), 404 (Erreur) │
+                  │  - Payload: Données / Msg Erreur  │
+                  │                                   │
+      ┌───────────▼────────────┐          ┌───────────▼────────────┐
+      │    STOCKAGE CLIENT     │          │    BASE DE DONNÉES    │
+      │    (LocalStorage)      │          │    (MongoDB Atlas)     │
+      │    - Panier (CartItems)│          │    - Documents NoSQL   │
+      │    - Token JWT (Auth)  │          │    - Schémas Mongoose  │
+      │    - UserInfo (Profil) │          │    - Indexation Gérée  │
+      └────────────────────────┘          └────────────────────────┘
+
+
+2. STRUCTURE DÉTAILLÉE DU CODE (RÔLES ET RESPONSABILITÉS)
+---------------------------------------------------------
+
+   /CLIENT (Frontend - React 19)
+   ├── /src/context  --> GESTION D'ÉTAT : Store global (Panier, Auth, Thème).
+   ├── /src/screens  --> PAGES : Logique d'affichage et appels API (useEffect).
+   ├── /src/schemas  --> VALIDATION : Validation Zod avant envoi au serveur.
+   ├── /src/utils    --> CALCULS : Formatage prix et gestion LocalStorage.
+   └── /src/comp     --> ATOMES : Composants réutilisables (Boutons, Cards).
+
+   /SERVER (Backend - Node/Express)
+   ├── /models       --> DONNÉES : Schémas Mongoose et règles de validation DB.
+   ├── /controllers  --> LOGIQUE : Cerveau de l'app (Calculs prix, Paiements).
+   ├── /routes       --> ADRESSAGE : Endpoints API (/api/products, /api/orders).
+   └── /middleware   --> SÉCURITÉ : Vérification JWT, AdminOnly, ErrorHandler.
+
+
+3. MODÉLISATION DES DONNÉES (MONGODB SCHEMA)
+--------------------------------------------
+
+   COLLECTION: PRODUCTS             COLLECTION: ORDERS (Dénormalisée)
+   ┌──────────────────────┐         ┌───────────────────────────────┐
+   │ - name: String       │         │ - user: ObjectId (Ref User)   │
+   │ - brand: String      │         │ - orderItems: [               │
+   │ - fragranceNotes: {  │         │     { name, price, qty }      │
+   │    Top, Heart, Base  │         │   ] (Snapshot au moment 't')  │
+   │   }                  │         │ - totalPrice: Number          │
+   │ - stock: Number      │         │ - isPaid: Boolean (Statut)    │
+   └──────────────────────┘         └───────────────────────────────┘
+
+
+4. PROTOCOLE DE SÉCURITÉ & FLUX DE PAIEMENT
+-------------------------------------------
+
+   A. AUTHENTIFICATION : 
+      - Inscription : Hashage Bcrypt des mots de passe côté serveur.
+      - Connexion : Génération d'un JWT signé valable 30 jours.
+      - Protection : reCAPTCHA Google pour bloquer les robots.
+
+   B. FLUX DE PAIEMENT (STRIPE / PAYPAL) :
+      - 1. Front demande création de commande (POST /api/orders).
+      - 2. Back calcule les prix réels (Protection contre fraude).
+      - 3. Redirection vers plateforme de paiement sécurisée.
+      - 4. Retour Webhook ou Capture : Mise à jour Order.isPaid = true.
+
+   C. INTÉGRITÉ DES DONNÉES :
+      - Validation double : Zod (Frontend) + Mongoose/Validator (Backend).
+      - Sanitization : Protection contre les injections XSS et NoSQL Injection.
+
+
+5. SERVICES TIERS INTÉGRÉS
+--------------------------
+
+   - CLOUDINARY : Stockage et optimisation des images produits (CDN).
+   - VERCEL : Déploiement continu (CI/CD) du Frontend.
+   - RENDER : Hébergement et auto-déploiement du serveur Node.js.
+   - MONGODB ATLAS : Cluster cloud pour la base de données.
+
+================================================================================
+                       E-PARFUME - PROJET FULL-STACK 2026
+================================================================================

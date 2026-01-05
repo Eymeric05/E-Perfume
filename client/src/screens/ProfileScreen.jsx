@@ -58,10 +58,12 @@ const ProfileScreen = () => {
                 });
                 if (profileRes.ok) {
                     const profileData = await profileRes.json();
-                    // Mettre à jour userInfo avec isVerified
-                    const updatedUserInfo = { ...userInfo, ...profileData };
-                    ctxDispatch({ type: 'USER_SIGNIN', payload: updatedUserInfo });
-                    localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+                    // Mettre à jour userInfo uniquement si isVerified a changé
+                    if (profileData.isVerified !== userInfo.isVerified) {
+                        const updatedUserInfo = { ...userInfo, ...profileData };
+                        ctxDispatch({ type: 'USER_SIGNIN', payload: updatedUserInfo });
+                        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+                    }
                 }
                 
                 dispatch({ type: 'FETCH_SUCCESS', payload: ordersData });
@@ -75,7 +77,8 @@ const ProfileScreen = () => {
         } else {
             fetchData();
         }
-    }, [userInfo, navigate, ctxDispatch]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userInfo?.token, navigate]);
 
     const signoutHandler = () => {
         ctxDispatch({ type: 'USER_SIGNOUT' });

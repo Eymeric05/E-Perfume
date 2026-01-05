@@ -385,6 +385,13 @@ const Header = () => {
             )}
 
           </nav>
+
+          {/* Theme Toggle - Bottom right of sidebar */}
+          <div className="mt-auto pt-4 border-t border-luxe-charcoal/10 dark:border-luxe-cream/10">
+            <div className="flex items-center justify-end py-2">
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -395,13 +402,6 @@ const Header = () => {
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
-
-      {/* Theme Toggle - Fixed bottom right */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <div className="bg-luxe-warm-white dark:bg-luxe-charcoal rounded-full shadow-lg border border-luxe-charcoal/20 dark:border-luxe-gold/30 p-3">
-          <ThemeToggle />
-        </div>
-      </div>
 
       {/* Spacer */}
       <div className="h-24" />

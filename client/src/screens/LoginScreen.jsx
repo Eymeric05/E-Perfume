@@ -195,19 +195,19 @@ const LoginScreen = () => {
                     <div className="mt-4 text-center">
                         <Link
                             to="/forgot-password"
-                            className="font-sans text-sm text-luxe-gold hover:text-luxe-black dark:hover:text-luxe-cream transition-colors duration-200 font-medium"
+                            className="font-sans text-sm text-luxe-charcoal/60 dark:text-luxe-cream/60 hover:text-luxe-gold dark:hover:text-luxe-gold transition-colors duration-200 underline underline-offset-2"
                         >
                             Mot de passe oublié ?
                         </Link>
                     </div>
 
-                    <div className="mt-6 text-center">
-                        <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-3">
+                    <div className="mt-6 pt-6 border-t border-luxe-charcoal/10 dark:border-luxe-cream/10">
+                        <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70 mb-4 text-center">
                             Nouveau client ?
                         </p>
                         <Link
                             to={`/register?redirect=${redirect}`}
-                            className="inline-block btn-luxe-gold w-full text-center"
+                            className="inline-block btn-luxe-secondary w-full text-center"
                         >
                             Créer un compte
                         </Link>

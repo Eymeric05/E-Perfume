@@ -2,8 +2,8 @@
           E-PARFUME - DOSSIER D'EXPLOITATION TECHNIQUE & ARCHITECTURE
 ================================================================================
 
-1. ARCHITECTURE SYSTÈME : MODÈLE DÉCOUPLÉ (DECOUPLED ARCHITECTURE)
-------------------------------------------------------------------
+1. ARCHITECTURE SYSTÈME : MODÈLE DÉCOUPLÉ
+-----------------------------------------
 
       ┌────────────────────────┐          ┌────────────────────────┐
       │    FRONTEND (React)    │          │    BACKEND (Node.js)   │
@@ -11,89 +11,69 @@
       └───────────┬────────────┘          └───────────┬────────────┘
                   │                                   │
                   │        REQUÊTES API (HTTPS)       │
-                  ├──────────────────────────────────▶│
-                  │  - Method: GET/POST/PUT/DELETE    │
-                  │  - Authorization: Bearer <JWT>    │
-                  │  - Body: JSON (Payload métier)    │
+                  ├─────────────────────────────────▶│
+                  │  - Jetons de sécurité (JWT)       │
+                  │  - Données formatées (JSON)       │
                   │                                   │
                   │        RÉPONSES API (JSON)        │
-                  │◀──────────────────────────────────┤
-                  │  - Status Codes: 200/201/400/404  │
-                  │  - Payload: Données / Error Msg   │
+                  │◀─────────────────────────────────|
+                  │  - Statuts (Succès / Erreur)      │
+                  │  - Données traitées               │
                   │                                   │
       ┌───────────▼────────────┐          ┌───────────▼────────────┐
-      │    PERSISTANCE CLIENT  │          │    PERSISTANCE SERVEUR │
+      │    STOCKAGE CLIENT     │          │     BASE DE DONNÉES    │
       │    (LocalStorage)      │          │    (MongoDB Atlas)     │
-      │    - Cart (State Sync) │          │    - Document Storage  │
-      │    - JWT (Exp: 30d)    │          │    - Mongoose Schemas  │
-      │    - DarkMode Preference│          │    - Database Clusters │
+      │    - Panier persistant │          │    - Produits / Ordres │
+      │    - Session (Token)   │          │    - Wishlist (Profil) │
+      │    - Historique (Vue)  │          │    - Comptes vérifiés  │
       └────────────────────────┘          └────────────────────────┘
 
 
-2. ANALYSE STRUCTURELLE DU CODE (MICRO-GESTION DES RESPONSABILITÉS)
--------------------------------------------------------------------
-
-   /CLIENT (Frontend - Architecture Modulaire)
-   ├── /src/context  --> STATE MANAGEMENT : Context API pour l'état global. 
-   │                     Évite le surcoût de Redux sur ce périmètre.
-   ├── /src/screens  --> VIEWS : Composants de pages gérant les cycles de vie 
-   │                     React (Mounting/Updating) et les hooks (useEffect).
-   ├── /src/schemas  --> DATA INTEGRITY : Schémas Zod pour le "Fail-Fast" 
-   │                     (rejeter les données invalides avant l'envoi).
-   ├── /src/utils    --> HELPERS : Fonctions de calcul (TVA, Frais de port) 
-   │                     et manipulation de chaînes (Formatage prix).
-   └── /src/comp     --> COMPONENTS : Architecture atomique pour la réutilisabilité.
-
-   /SERVER (Backend - Architecture Middleware-Driven)
-   ├── /models       --> DATA ACCESS LAYER : Contraintes MongoDB via Mongoose.
-   ├── /controllers  --> BUSINESS LOGIC : Cœur de l'application. Reçoit les 
-   │                     données, traite les règles et renvoie les réponses.
-   ├── /routes       --> ROUTING : Définition des ressources REST (Endpoints).
-   └── /middleware   --> SECURITY LAYER : Vérification JWT, AdminGuard et 
-                         centralisation des erreurs (ErrorMiddleware).
-
-
-3. MODÉLISATION DES DONNÉES & COHÉRENCE MÉTIER
-----------------------------------------------
-
-   COLLECTION: PRODUCTS             COLLECTION: ORDERS (Audit & Traçabilité)
-   ┌──────────────────────┐         ┌──────────────────────────────────────┐
-   │ - Schema Strict      │         │ - Relation: Ref User (ObjectId)      │
-   │ - Fragrance Notes    │         │ - Items: Snapshot Dénormalisé        │
-   │ - Category / Brand   │         │   (Prix figé à l'achat pour facture) │
-   │ - Stock (Atomic Upd) │         │ - Financement: Stripe/PayPal IDs     │
-   └──────────────────────┘         └──────────────────────────────────────┘
-   Logique : Les produits sont liés aux commentaires via une collection séparée
-   pour optimiser les performances de lecture (Query Optimization).
-
-
-4. SÉCURITÉ APPLICATIVE & FLUX FINANCIER
-----------------------------------------
-
-   A. AUTHENTIFICATION & INTÉGRITÉ : 
-      - Session : JWT (JSON Web Token) signé. Architecture Stateless.
-      - Passwords : Algorithme Bcrypt (Salt Rounds: 10). Protection unidirectionnelle.
-      - Anti-Spam : reCAPTCHA v3 avec vérification asynchrone côté serveur.
-
-   B. FLUX TRANSACTIONNEL (ZERO-TRUST) :
-      - Sécurité : Tout calcul de prix fait côté client est ignoré. 
-        Le serveur recalcule le total à partir de la DB (Anti-fraude).
-      - Récupération : En cas d'échec réseau, utilisation de Webhooks pour 
-        assurer la mise à jour asynchrone du statut de paiement.
-
-   C. SANITIZATION & PROTECTION :
-      - NoSQL Injection : Prévention par typage strict via Mongoose.
-      - XSS : Filtrage natif React et Headers de sécurité via Helmet.
-
-
-5. INFRASTRUCTURE & SERVICES EXTERNES
+2. STRUCTURE DU CODE & RESPONSABILITÉS
 --------------------------------------
 
-   - CLOUDINARY : Gestionnaire de médias avec compression automatique (CDN).
-   - VERCEL : CI/CD avec build automatique à chaque 'git push'.
-   - RENDER : Monitoring des logs et gestion des variables d'env sécurisées.
-   - MONGODB ATLAS : Gestion des clusters avec sauvegardes automatiques.
+   /CLIENT (Frontend - React 19)
+   ├── /src/context  --> GESTION D'ÉTAT : Centralisation du panier et de l'auth.
+   ├── /src/screens  --> PAGES : Logique d'affichage et appels au serveur.
+   ├── /src/schemas  --> VALIDATION : Zod vérifie les saisies avant l'envoi.
+   └── /src/utils    --> CALCULS : Logique pure (prix, localStorage).
 
-================================================================================
-                       CONCEPTION & RÉALISATION : 2026
-================================================================================
+   /SERVER (Backend - Node/Express)
+   ├── /models       --> DONNÉES : Schémas Mongoose pour structurer la base.
+   ├── /controllers  --> LOGIQUE MÉTIER : Cerveau du site (Paiements, Mails).
+   ├── /middleware   --> SÉCURITÉ : Vérification des accès et droits Admin.
+   └── /utils        --> SERVICES : Envoi d'emails via l'API Resend.
+
+
+3. SYNTHÈSE DES FONCTIONNALITÉS MAJEURES
+----------------------------------------
+
+   A. GESTION UTILISATEUR & SÉCURITÉ :
+      - Authentification : JWT Stateless et mots de passe hashés (Bcrypt).
+      - Vérification : Inscription protégée par reCAPTCHA et lien mail (Resend).
+      - Profil : Modification des infos et accès à l'historique de commandes.
+
+   B. EXPÉRIENCE BOUTIQUE (UX) :
+      - Catalogue : Recherche temps réel, filtres multi-critères et pagination.
+      - Wishlist : Sauvegardée en BDD pour être synchronisée entre appareils.
+      - Historique : "Récemment consultés" via LocalStorage pour la rapidité.
+      - Panier : Gestion complète (ajout/quantité) avec persistance locale.
+
+   C. PAIEMENT & TRAÇABILITÉ :
+      - Checkout : Tunnel sécurisé avec PayPal et Stripe (Webhooks/Capture).
+      - Dénormalisation : Prix figé dans la commande pour l'intégrité comptable.
+      - Mails : Récapitulatif de commande automatique envoyé via Resend.
+
+   D. DASHBOARD ADMINISTRATEUR :
+      - Gestion Catalogue : CRUD complet des produits et marques.
+      - Modération : Validation manuelle des avis clients avant publication.
+      - Logistique : Suivi des commandes et mise à jour des statuts de livraison.
+
+
+4. INFRASTRUCTURE & SERVICES TIERS
+-----------------------------------
+
+   - RESEND : Emails transactionnels (Sandbox : Audience vérifiée requise).
+   - CLOUDINARY : Hébergement et optimisation automatique des images (CDN).
+   - MONGODB ATLAS : Cluster Cloud NoSQL avec réplication des données.
+   - VERCEL & RENDER : CI/CD pour déploiement automatisé Front et Back.

@@ -36,6 +36,16 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/products" className="font-sans text-sm text-luxe-cream/70 hover:text-luxe-gold transition-colors duration-200">
+                  Parfums
+                </Link>
+              </li>
+              <li>
+                <Link to="/products?category=skincare" className="font-sans text-sm text-luxe-cream/70 hover:text-luxe-gold transition-colors duration-200">
+                  Esthétique
+                </Link>
+              </li>
+              <li>
                 <Link to="/cart" className="font-sans text-sm text-luxe-cream/70 hover:text-luxe-gold transition-colors duration-200">
                   Panier
                 </Link>

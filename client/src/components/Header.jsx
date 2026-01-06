@@ -90,7 +90,8 @@ const Header = () => {
   };
 
   const navLinks = [
-    { path: '/', label: 'COLLECTIONS' },
+    { path: '/', label: 'ACCUEIL' },
+    { path: '/products', label: 'COLLECTIONS' },
     { path: '/products', label: 'PARFUMS', excludeQuery: 'category=skincare' },
     { path: '/products?category=skincare', label: 'ESTHÉTIQUE' },
   ];
@@ -321,7 +322,7 @@ const Header = () => {
                   onClick={() => setIsSidebarOpen(false)}
                   className={getSidebarLinkClass(isActive)}
                 >
-                  {link.label.replace('COLLECTIONS', 'Collections').replace('PARFUMS', 'Parfums').replace('ESTHÉTIQUE', 'Esthétique')}
+                  {link.label.replace('ACCUEIL', 'Accueil').replace('COLLECTIONS', 'Collections').replace('PARFUMS', 'Parfums').replace('ESTHÉTIQUE', 'Esthétique')}
                 </Link>
               );
             })}

@@ -63,7 +63,6 @@ const updateFragranceNotes = async () => {
     const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/e-parfume';
     
     await mongoose.connect(MONGO_URI);
-    console.log('MongoDB Connected');
 
     let updatedCount = 0;
 
@@ -74,14 +73,9 @@ const updateFragranceNotes = async () => {
       );
       
       if (result.modifiedCount > 0) {
-        console.log(`✓ Updated ${productName}: ${result.modifiedCount} product(s)`);
         updatedCount += result.modifiedCount;
-      } else {
-        console.log(`- ${productName}: No products found or already updated`);
       }
     }
-
-    console.log(`\n✅ Successfully updated ${updatedCount} products with fragrance notes`);
     process.exit(0);
   } catch (error) {
     console.error('Error updating fragrance notes:', error);

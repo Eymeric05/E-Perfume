@@ -66,7 +66,6 @@ function compressImage(inputPath, outputPath) {
             
             fs.writeFileSync(outputPath, compressedBuffer);
             
-            console.log(`✓ ${path.basename(inputPath)}: ${(fileSizeBefore / 1024).toFixed(2)}KB → ${(fileSizeAfter / 1024).toFixed(2)}KB (${savings}% réduction)`);
             resolve({
               input: inputPath,
               output: outputPath,
@@ -130,7 +129,6 @@ async function compressDirectory(dirPath, options = {}) {
         if (SUPPORTED_FORMATS.includes(ext)) {
           try {
             if (dryRun) {
-              console.log(`[DRY RUN] Traiterait: ${fullPath}`);
               results.processed++;
             } else {
               // Créer une sauvegarde si demandé
@@ -151,7 +149,7 @@ async function compressDirectory(dirPath, options = {}) {
               await new Promise(resolve => setTimeout(resolve, 500));
             }
           } catch (error) {
-            console.error(`✗ Erreur lors de la compression de ${fullPath}:`, error.message);
+            console.error(`Erreur lors de la compression de ${fullPath}:`, error.message);
             results.errors.push({ file: fullPath, error: error.message });
             results.skipped++;
           }
@@ -164,19 +162,6 @@ async function compressDirectory(dirPath, options = {}) {
 
   await processDirectory(dirPath);
 
-  // Afficher le résumé
-  console.log('\n=== Résumé ===');
-  console.log(`Images traitées: ${results.processed}`);
-  console.log(`Images ignorées: ${results.skipped}`);
-  if (results.errors.length > 0) {
-    console.log(`Erreurs: ${results.errors.length}`);
-  }
-  
-  if (!dryRun && results.processed > 0) {
-    const totalSavings = ((1 - results.savings.totalAfter / results.savings.totalBefore) * 100).toFixed(2);
-    console.log(`\nÉconomie totale: ${(results.savings.totalBefore / 1024 / 1024).toFixed(2)}MB → ${(results.savings.totalAfter / 1024 / 1024).toFixed(2)}MB (${totalSavings}% réduction)`);
-  }
-
   return results;
 }
 
@@ -186,14 +171,8 @@ if (require.main === module) {
   const dirPath = args[0] || 'client/public/images';
   const dryRun = args.includes('--dry-run');
 
-  if (dryRun) {
-    console.log('Mode DRY RUN activé - aucune modification ne sera effectuée\n');
-  }
-
-  console.log(`Compression des images dans: ${dirPath}\n`);
-
   if (!TINYPNG_API_KEY && !dryRun) {
-    console.error('❌ Erreur: TINYPNG_API_KEY n\'est pas défini.');
+    console.error('Erreur: TINYPNG_API_KEY n\'est pas défini.');
     console.error('   Définissez la variable d\'environnement ou ajoutez-la dans votre fichier .env');
     console.error('   Vous pouvez obtenir une clé API gratuite sur: https://tinypng.com/developers');
     process.exit(1);
@@ -201,10 +180,10 @@ if (require.main === module) {
 
   compressDirectory(dirPath, { dryRun })
     .then(() => {
-      console.log('\n✓ Compression terminée');
+      process.exit(0);
     })
     .catch((error) => {
-      console.error('\n❌ Erreur:', error.message);
+      console.error('Erreur:', error.message);
       process.exit(1);
     });
 }

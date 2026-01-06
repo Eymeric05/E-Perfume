@@ -137,8 +137,6 @@ const sendOrderConfirmationEmail = async (order, userEmail, userName) => {
             subject: `Confirmation de commande #${orderNumber} - E-perfume`,
             html: html,
         });
-
-        console.log(`Email de confirmation envoyé pour la commande ${orderNumber} à ${userEmail}`);
     } catch (error) {
         console.error('Erreur lors de l\'envoi de l\'email de confirmation:', error);
         // Ne pas bloquer le processus si l'email échoue

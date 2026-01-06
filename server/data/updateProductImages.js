@@ -60,7 +60,6 @@ const updateProductImages = async () => {
     const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/e-parfume';
     
     await mongoose.connect(MONGO_URI);
-    console.log('MongoDB Connected');
 
     let updatedCount = 0;
     let notFoundCount = 0;
@@ -74,17 +73,11 @@ const updateProductImages = async () => {
       if (product) {
         product.image = update.image;
         await product.save();
-        console.log(`✓ Updated image for: ${update.name} (${update.brand})`);
         updatedCount++;
       } else {
-        console.log(`✗ Product not found: ${update.name} (${update.brand})`);
         notFoundCount++;
       }
     }
-
-    console.log(`\n✅ Update complete!`);
-    console.log(`   Updated: ${updatedCount} products`);
-    console.log(`   Not found: ${notFoundCount} products`);
 
     await mongoose.disconnect();
     process.exit(0);

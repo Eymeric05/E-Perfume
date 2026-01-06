@@ -56,7 +56,6 @@ const BrandScreen = () => {
             brandData = await brandResult.json();
           } catch (e) {
             // Ignore JSON parse errors
-            console.log('No brand data from Brand model');
           }
         }
 

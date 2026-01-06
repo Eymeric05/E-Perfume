@@ -10,7 +10,6 @@ const verifyRecaptcha = async (recaptchaToken) => {
 
   // Si reCAPTCHA n'est pas configuré, on retourne true (mode développement)
   if (!secretKey) {
-    console.warn('reCAPTCHA_SECRET_KEY non configuré, la vérification est ignorée');
     return true;
   }
 

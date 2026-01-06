@@ -76,7 +76,7 @@ const registerUser = asyncHandler(async (req, res) => {
         
         try {
             if (!process.env.RESEND_API_KEY) {
-                console.warn('⚠️ RESEND_API_KEY n\'est pas configuré. L\'email ne sera pas envoyé.');
+                // RESEND_API_KEY n'est pas configuré
             } else {
                 const emailResult = await resend.emails.send({
                     from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
@@ -100,16 +100,9 @@ const registerUser = asyncHandler(async (req, res) => {
                         </div>
                     `,
                 });
-                console.log('✅ Email de vérification envoyé avec succès à:', email, 'ID:', emailResult?.id || 'N/A');
             }
         } catch (emailError) {
-            console.error('❌ Erreur lors de l\'envoi de l\'email de vérification:');
-            console.error('Email:', email);
-            console.error('Erreur complète:', JSON.stringify(emailError, null, 2));
-            console.error('Message:', emailError?.message || emailError);
-            if (emailError?.response) {
-                console.error('Réponse Resend:', JSON.stringify(emailError.response, null, 2));
-            }
+            console.error('Erreur lors de l\'envoi de l\'email de vérification:', emailError.message);
             // On ne bloque pas l'inscription si l'email échoue
         }
 
@@ -118,7 +111,7 @@ const registerUser = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
-            message: 'Compte créé avec succès. Veuillez vérifier votre email pour activer votre compte.',
+            message: 'Compte créé avec succès.',
         });
     } else {
         res.status(400);
@@ -242,7 +235,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
         try {
             if (!process.env.RESEND_API_KEY) {
-                console.warn('⚠️ RESEND_API_KEY n\'est pas configuré. L\'email ne sera pas envoyé.');
+                // RESEND_API_KEY n'est pas configuré
             } else {
                 const emailResult = await resend.emails.send({
                     from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
@@ -269,16 +262,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
                         </div>
                     `,
                 });
-                console.log('✅ Email de réinitialisation envoyé avec succès à:', email, 'ID:', emailResult?.id || 'N/A');
             }
         } catch (emailError) {
-            console.error('❌ Erreur lors de l\'envoi de l\'email de réinitialisation:');
-            console.error('Email:', email);
-            console.error('Erreur complète:', JSON.stringify(emailError, null, 2));
-            console.error('Message:', emailError?.message || emailError);
-            if (emailError?.response) {
-                console.error('Réponse Resend:', JSON.stringify(emailError.response, null, 2));
-            }
+            console.error('Erreur lors de l\'envoi de l\'email de réinitialisation:', emailError.message);
             // On ne révèle pas l'erreur pour des raisons de sécurité
         }
     }

@@ -53,7 +53,6 @@ app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), asyn
           email_address: session.customer_details?.email,
         };
         await order.save();
-        console.log(`Order ${orderId} marked as paid via webhook`);
         
         // Envoyer l'email de confirmation
         if (order.user && order.user.email) {
@@ -137,13 +136,8 @@ mongoose.connect(MONGO_URI, {
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
 })
-  .then(() => {
-    console.log('MongoDB Connected successfully');
-  })
   .catch(err => {
     console.error('MongoDB connection error:', err.message);
-    console.warn('Warning: Server will start but database operations will fail.');
-    console.warn('Please ensure MongoDB is running or set MONGO_URI in .env file');
   });
 
 const userRoutes = require('./routes/userRoutes');
@@ -185,6 +179,4 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT);

@@ -118,11 +118,8 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
                     },
                     onApprove: async (data, actions) => {
                         try {
-                            console.log('PayPal onApprove appelé, orderID:', data.orderID);
-                            
                             // 1. Le paiement est validé par PayPal - capturer la commande
                             const details = await actions.order.capture();
-                            console.log('Paiement PayPal capturé:', details);
                             
                             // 2. On prévient notre serveur Render pour mettre à jour la BDD
                             const response = await apiFetch(`/api/orders/${orderId}/pay`, {
@@ -140,7 +137,6 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
                             });
 
                             const responseData = await response.json();
-                            console.log('Réponse serveur:', responseData);
 
                             if (response.ok) {
                                 // 3. C'est ici que tu peux vider le panier et rediriger
@@ -167,7 +163,7 @@ const PayPalButton = ({ order, orderId, onPaymentSuccess, userInfo, ctxDispatch 
                         alert('Erreur lors de l\'initialisation du paiement PayPal');
                     },
                     onCancel: () => {
-                        console.log('Paiement PayPal annulé');
+                        // Paiement PayPal annulé
                     }
                 });
 

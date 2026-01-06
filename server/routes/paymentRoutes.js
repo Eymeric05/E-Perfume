@@ -156,7 +156,6 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
                     email_address: session.customer_details?.email,
                 };
                 await order.save();
-                console.log(`Order ${orderId} marked as paid via webhook`);
                 
                 // Envoyer l'email de confirmation
                 if (order.user && order.user.email) {
@@ -236,9 +235,6 @@ router.post('/paypal/create-order', protect, async (req, res) => {
 
         // Vérifier que la somme des items correspond au itemsTotal
         const calculatedTotal = itemsToUse.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        if (Math.abs(calculatedTotal - itemsTotal) > 0.01) {
-            console.warn(`Incohérence détectée: itemsTotal=${itemsTotal}, calculé=${calculatedTotal}`);
-        }
 
         request.prefer("return=representation");
         request.requestBody({

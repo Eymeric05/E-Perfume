@@ -307,7 +307,6 @@ const seedProducts = async () => {
     const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/e-parfume';
     
     await mongoose.connect(MONGO_URI);
-    console.log('MongoDB Connected');
 
     // Vérifier ou créer un utilisateur admin pour les produits
     let adminUser = await User.findOne({ isAdmin: true });
@@ -319,12 +318,10 @@ const seedProducts = async () => {
         password: 'admin123',
         isAdmin: true,
       });
-      console.log('Admin user created');
     }
 
     // Supprimer les produits existants (optionnel)
     await Product.deleteMany({});
-    console.log('Products deleted');
 
     let productsToSeed = [];
 
@@ -333,8 +330,6 @@ const seedProducts = async () => {
     
     if (RAPIDAPI_KEY) {
       try {
-        console.log('Fetching fragrances from API...');
-        
         // Rechercher des parfums avec différents termes pour obtenir une variété
         const searchTerms = ['dior', 'chanel', 'versace', 'armani', 'ysl', 'lancome'];
         const allFragrances = [];
@@ -342,7 +337,6 @@ const seedProducts = async () => {
         // Faire plusieurs recherches pour obtenir une variété de parfums
         for (const term of searchTerms.slice(0, 3)) { // Limiter à 3 recherches pour éviter trop d'appels
           try {
-            console.log(`Searching for: ${term}...`);
             const results = await searchFragrances(RAPIDAPI_KEY, term, 5);
             if (results && results.length > 0) {
               allFragrances.push(...results);
@@ -350,13 +344,12 @@ const seedProducts = async () => {
               await new Promise(resolve => setTimeout(resolve, 500));
             }
           } catch (err) {
-            console.warn(`Error searching for ${term}:`, err.message);
+            // Erreur lors de la recherche, ignorer
           }
         }
         
         // Si aucune recherche n'a fonctionné, essayer une recherche vide
         if (allFragrances.length === 0) {
-          console.log('Trying general search...');
           const generalResults = await searchFragrances(RAPIDAPI_KEY, '', 20);
           if (generalResults && generalResults.length > 0) {
             allFragrances.push(...generalResults);
@@ -377,27 +370,22 @@ const seedProducts = async () => {
             }
           }
           
-          console.log(`Fetched ${uniqueFragrances.length} unique fragrances from API`);
           productsToSeed = uniqueFragrances.map(fragrance => 
             transformFragranceToProduct(fragrance, adminUser._id)
           );
         } else {
-          console.log('No fragrances returned from API, using fallback data');
           productsToSeed = products.map(product => ({
             ...product,
             user: adminUser._id,
           }));
         }
       } catch (apiError) {
-        console.warn('Error fetching from API, using fallback data:', apiError.message);
         productsToSeed = products.map(product => ({
           ...product,
           user: adminUser._id,
         }));
       }
     } else {
-      console.log('RAPIDAPI_KEY not found, using fallback data');
-      console.log('To use the FragranceFinder API, add RAPIDAPI_KEY to your .env file');
       productsToSeed = products.map(product => ({
         ...product,
         user: adminUser._id,
@@ -405,7 +393,6 @@ const seedProducts = async () => {
     }
 
     await Product.insertMany(productsToSeed);
-    console.log(`Successfully seeded ${productsToSeed.length} products`);
 
     process.exit();
   } catch (error) {

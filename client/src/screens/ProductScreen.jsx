@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Store } from '../context/StoreContext';
 import { Helmet } from 'react-helmet-async';
-import { FaArrowLeft, FaStar, FaStarHalfAlt, FaRegStar, FaShoppingCart, FaPlus, FaMinus, FaExpand } from 'react-icons/fa';
+import { FaArrowLeft, FaStar, FaStarHalfAlt, FaRegStar, FaShoppingCart, FaPlus, FaMinus, FaExpand, FaTruck, FaUndo, FaShieldAlt } from 'react-icons/fa';
 import ImageZoom from '../components/ImageZoom';
 import WishlistButton from '../components/WishlistButton';
 import SimilarProducts from '../components/SimilarProducts';
@@ -589,19 +589,28 @@ const ProductScreen = () => {
         {/* Additional Info Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-luxe-charcoal/10 dark:border-luxe-gold/20">
           <div>
-            <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-2">Livraison</h4>
+            <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-2 flex items-center gap-2">
+              <FaTruck className="text-luxe-gold" />
+              Livraison
+            </h4>
             <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
               Livraison gratuite à partir de 100€
             </p>
           </div>
           <div>
-            <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-2">Retours</h4>
+            <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-2 flex items-center gap-2">
+              <FaUndo className="text-luxe-gold" />
+              Retours
+            </h4>
             <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
               Retours gratuits sous 30 jours
             </p>
           </div>
           <div>
-            <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-2">Garantie</h4>
+            <h4 className="font-serif text-lg font-normal text-luxe-black dark:text-luxe-cream mb-2 flex items-center gap-2">
+              <FaShieldAlt className="text-luxe-gold" />
+              Garantie
+            </h4>
             <p className="font-sans text-sm text-luxe-charcoal/70 dark:text-luxe-cream/70">
               Produits authentiques garantis
             </p>

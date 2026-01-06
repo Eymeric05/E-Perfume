@@ -91,7 +91,6 @@ const Header = () => {
 
   const navLinks = [
     { path: '/', label: 'ACCUEIL' },
-    { path: '/products', label: 'COLLECTIONS' },
     { path: '/products', label: 'PARFUMS', excludeQuery: 'category=skincare' },
     { path: '/products?category=skincare', label: 'ESTHÉTIQUE' },
   ];

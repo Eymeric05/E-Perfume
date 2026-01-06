@@ -32,11 +32,6 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/products" className="font-sans text-sm text-luxe-cream/70 hover:text-luxe-gold transition-colors duration-200">
-                  Collections
-                </Link>
-              </li>
-              <li>
-                <Link to="/products" className="font-sans text-sm text-luxe-cream/70 hover:text-luxe-gold transition-colors duration-200">
                   Parfums
                 </Link>
               </li>

@@ -47,28 +47,46 @@ const ProfileScreen = () => {
                 dispatch({ type: 'FETCH_REQUEST' });
                 
                 // Récupérer les commandes
-                const ordersRes = await apiFetch('/api/orders/myorders', {
-                    headers: { Authorization: `Bearer ${userInfo.token}` },
-                });
-                const ordersData = await ordersRes.json();
+                let ordersData = [];
+                try {
+                    const ordersRes = await apiFetch('/api/orders/myorders', {
+                        headers: { Authorization: `Bearer ${userInfo.token}` },
+                    });
+                    if (ordersRes.ok) {
+                        const data = await ordersRes.json();
+                        ordersData = Array.isArray(data) ? data : [];
+                    } else {
+                        console.error('Erreur lors de la récupération des commandes:', ordersRes.status);
+                        ordersData = [];
+                    }
+                } catch (err) {
+                    console.error('Erreur lors de la récupération des commandes:', err);
+                    ordersData = [];
+                }
                 
                 // Récupérer le profil pour avoir isVerified à jour
-                const profileRes = await apiFetch('/api/users/profile', {
-                    headers: { Authorization: `Bearer ${userInfo.token}` },
-                });
-                if (profileRes.ok) {
-                    const profileData = await profileRes.json();
-                    // Mettre à jour userInfo uniquement si isVerified a changé
-                    if (profileData.isVerified !== userInfo.isVerified) {
-                        const updatedUserInfo = { ...userInfo, ...profileData };
-                        ctxDispatch({ type: 'USER_SIGNIN', payload: updatedUserInfo });
-                        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+                try {
+                    const profileRes = await apiFetch('/api/users/profile', {
+                        headers: { Authorization: `Bearer ${userInfo.token}` },
+                    });
+                    if (profileRes.ok) {
+                        const profileData = await profileRes.json();
+                        // Mettre à jour userInfo uniquement si isVerified a changé
+                        if (profileData.isVerified !== userInfo.isVerified) {
+                            const updatedUserInfo = { ...userInfo, ...profileData };
+                            ctxDispatch({ type: 'USER_SIGNIN', payload: updatedUserInfo });
+                            localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+                        }
                     }
+                } catch (err) {
+                    console.error('Erreur lors de la récupération du profil:', err);
+                    // On continue même si le profil échoue
                 }
                 
                 dispatch({ type: 'FETCH_SUCCESS', payload: ordersData });
             } catch (err) {
-                dispatch({ type: 'FETCH_FAIL', payload: err.message });
+                console.error('Erreur générale:', err);
+                dispatch({ type: 'FETCH_FAIL', payload: err.message || 'Une erreur est survenue' });
             }
         };
 

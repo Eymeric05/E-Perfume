@@ -77,3 +77,6 @@
    - CLOUDINARY : Hébergement et optimisation automatique des images (CDN).
    - MONGODB ATLAS : Cluster Cloud NoSQL avec réplication des données.
    - VERCEL & RENDER : CI/CD pour déploiement automatisé Front et Back.
+
+
+   FIN DE LA MAQUETTE
